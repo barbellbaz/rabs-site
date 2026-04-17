@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   ArrowRight,
   ArrowUpRight,
@@ -38,6 +38,116 @@ const BRAND = {
   turnaround: "3–5 business days",
   priceAdvantage: "40–60% less than hiring an architect",
 };
+
+/**
+ * =====================================================================
+ *  PRICING
+ * =====================================================================
+ */
+const RATE_PER_SQFT = 0.75;
+
+const SQFT_RANGES = {
+  "0 – 1,500 sq ft": { min: 0, max: 1500 },
+  "1,500 – 3,000 sq ft": { min: 1500, max: 3000 },
+  "3,000 – 6,000 sq ft": { min: 3000, max: 6000 },
+  "6,000 – 10,000 sq ft": { min: 6000, max: 10000 },
+  "10,000+ sq ft": { min: 10000, max: null },
+};
+
+function formatUSD(n) {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    maximumFractionDigits: 0,
+  }).format(n);
+}
+
+function calculateQuote(sqftRange) {
+  const r = SQFT_RANGES[sqftRange];
+  if (!r) return null;
+  const lowTotal = r.min * RATE_PER_SQFT;
+  const highTotal = r.max ? r.max * RATE_PER_SQFT : null;
+  return {
+    rangeLabel: sqftRange,
+    rate: RATE_PER_SQFT,
+    lowTotal,
+    highTotal,
+    display:
+      r.max === null
+        ? `Starting at ${formatUSD(lowTotal)}`
+        : r.min === 0
+          ? `Up to ${formatUSD(highTotal)}`
+          : `${formatUSD(lowTotal)} – ${formatUSD(highTotal)}`,
+  };
+}
+
+/**
+ * =====================================================================
+ *  GOOGLE MAPS LOADER (optional — gracefully degrades if no key)
+ *  Set VITE_GOOGLE_MAPS_API_KEY to enable address autocomplete.
+ * =====================================================================
+ */
+function useGoogleMaps() {
+  const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
+  const [loaded, setLoaded] = useState(
+    typeof window !== "undefined" && !!window.google?.maps?.places
+  );
+
+  useEffect(() => {
+    if (!apiKey || loaded) return;
+    // Script already in DOM?
+    const existing = document.querySelector("script[data-google-maps]");
+    if (existing) {
+      existing.addEventListener("load", () => setLoaded(true));
+      return;
+    }
+    const script = document.createElement("script");
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places&loading=async`;
+    script.async = true;
+    script.defer = true;
+    script.setAttribute("data-google-maps", "true");
+    script.onload = () => setLoaded(true);
+    document.head.appendChild(script);
+  }, [apiKey, loaded]);
+
+  return { loaded, enabled: !!apiKey };
+}
+
+function AddressAutocomplete({ value, onChange, required, className, placeholder }) {
+  const inputRef = useRef(null);
+  const { loaded, enabled } = useGoogleMaps();
+
+  useEffect(() => {
+    if (!loaded || !inputRef.current || !window.google?.maps?.places) return;
+    const autocomplete = new window.google.maps.places.Autocomplete(inputRef.current, {
+      types: ["address"],
+      componentRestrictions: { country: "us" },
+      fields: ["formatted_address"],
+    });
+    const listener = autocomplete.addListener("place_changed", () => {
+      const place = autocomplete.getPlace();
+      if (place.formatted_address) onChange(place.formatted_address);
+    });
+    return () => {
+      if (listener && window.google?.maps?.event) {
+        window.google.maps.event.removeListener(listener);
+      }
+    };
+  }, [loaded, onChange]);
+
+  return (
+    <input
+      ref={inputRef}
+      required={required}
+      type="text"
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      className={className}
+      placeholder={placeholder || (enabled ? "Start typing your home address…" : "123 Main St, City, State")}
+      autoComplete="off"
+    />
+  );
+}
 
 /**
  * =====================================================================
@@ -1002,8 +1112,9 @@ function QuoteForm() {
     e.preventDefault();
     setStatus("sending");
     try {
+      const quote = calculateQuote(form.sqft);
       const payload = {
-        _subject: `New RABS quote request — ${form.name || "unnamed"}`,
+        _subject: `New RABS quote request — ${form.name || "unnamed"} (${quote?.display || "size TBD"})`,
         _template: "table",
         _captcha: "false",
         "Full name": form.name,
@@ -1011,6 +1122,7 @@ function QuoteForm() {
         Phone: form.phone || "(not provided)",
         "Home address": form.address,
         "Square footage": form.sqft,
+        "Estimated quote": quote ? `${quote.display} (at $${RATE_PER_SQFT}/sq ft)` : "TBD",
         "Property type": form.propertyType,
         "Desired deliverable": form.deliverables.join(", ") || "(not specified)",
         Timeline: form.timeline,
@@ -1031,22 +1143,157 @@ function QuoteForm() {
       const json = await res.json();
       if (json.success === "false" || json.success === false) throw new Error("send failed");
       setStatus("sent");
+      setTimeout(() => window.scrollTo({ top: 0, behavior: "smooth" }), 100);
     } catch {
       setStatus("error");
     }
   };
 
   if (status === "sent") {
+    const quote = calculateQuote(form.sqft);
     return (
-      <section id="quote" className="relative overflow-hidden bg-gradient-to-b from-white to-slate-50 py-24 lg:py-32">
-        <div className="mx-auto max-w-2xl px-6 text-center lg:px-10">
-          <div className="mx-auto grid h-14 w-14 place-items-center rounded-full bg-blue-600 text-white">
-            <Check size={28} />
+      <section id="quote" className="relative overflow-hidden bg-gradient-to-b from-slate-50 via-white to-slate-50 py-20 lg:py-28">
+        <div className="pointer-events-none absolute inset-0 text-blue-500/10">
+          <BlueprintGrid className="h-full w-full" />
+        </div>
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,transparent_0%,white_75%)]" />
+
+        <div className="relative mx-auto max-w-4xl px-6 lg:px-10">
+          <div className="text-center">
+            <div className="mx-auto grid h-16 w-16 place-items-center rounded-full bg-blue-600 text-white shadow-xl shadow-blue-900/20">
+              <Check size={32} strokeWidth={2.5} />
+            </div>
+            <DimensionLine label="Your estimate" className="mt-8 justify-center" />
+            <h1 className="mt-4 font-serif text-4xl tracking-tight text-slate-900 lg:text-6xl">
+              Your quote is ready
+              {form.name ? <>, <span className="italic text-blue-600">{form.name.split(" ")[0]}</span></> : null}.
+            </h1>
+            <p className="mt-4 text-lg text-slate-600">
+              We've also emailed a copy to <span className="font-medium text-slate-900">{form.email}</span>. Our scheduling team will reach out within one business day to book your scan.
+            </p>
           </div>
-          <h2 className="mt-6 font-serif text-4xl tracking-tight text-slate-900 lg:text-5xl">Request received.</h2>
-          <p className="mt-4 text-lg text-slate-600">
-            We'll match a short list of packages to your home and email them to{" "}
-            <span className="font-medium">{form.email}</span> within minutes.
+
+          {/* Quote card */}
+          <div className="relative mt-12 overflow-hidden rounded-2xl border-2 border-blue-600 bg-white shadow-2xl shadow-blue-900/10">
+            <div className="border-b border-slate-200 bg-slate-50 px-6 py-4 lg:px-10">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <span className="font-mono text-[11px] uppercase tracking-widest text-slate-500">
+                  Quote · Estimate #{Date.now().toString().slice(-6)}
+                </span>
+                <span className="font-mono text-[11px] uppercase tracking-widest text-slate-500">
+                  {new Date().toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })}
+                </span>
+              </div>
+            </div>
+
+            <div className="px-6 py-8 lg:px-10 lg:py-10">
+              <div className="grid gap-8 md:grid-cols-5">
+                {/* Breakdown */}
+                <div className="md:col-span-3">
+                  <div className="font-mono text-[10px] uppercase tracking-widest text-slate-500">Your home</div>
+                  <div className="mt-1 font-serif text-xl text-slate-900">{form.address}</div>
+
+                  <div className="mt-8 space-y-4 border-t border-slate-100 pt-6">
+                    <div className="flex items-start justify-between gap-4">
+                      <div>
+                        <div className="font-mono text-[10px] uppercase tracking-widest text-slate-500">Size</div>
+                        <div className="mt-1 text-slate-900">{form.sqft || "—"}</div>
+                      </div>
+                      <div className="text-right">
+                        <div className="font-mono text-[10px] uppercase tracking-widest text-slate-500">Rate</div>
+                        <div className="mt-1 text-slate-900">{formatUSD(RATE_PER_SQFT)} / sq ft</div>
+                      </div>
+                    </div>
+
+                    {form.deliverables.length > 0 && (
+                      <div className="border-t border-slate-100 pt-4">
+                        <div className="font-mono text-[10px] uppercase tracking-widest text-slate-500">Deliverables</div>
+                        <div className="mt-1 flex flex-wrap gap-1.5">
+                          {form.deliverables.map((d) => (
+                            <span key={d} className="rounded-md border border-blue-200 bg-blue-50 px-2 py-0.5 text-xs text-blue-700">
+                              {d}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    <div className="flex items-center justify-between gap-4 border-t border-slate-100 pt-4">
+                      <div>
+                        <div className="font-mono text-[10px] uppercase tracking-widest text-slate-500">Timeline</div>
+                        <div className="mt-1 text-slate-900">{form.timeline || "—"}</div>
+                      </div>
+                      <div className="text-right">
+                        <div className="font-mono text-[10px] uppercase tracking-widest text-slate-500">Purpose</div>
+                        <div className="mt-1 text-slate-900">{form.purpose || "—"}</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Total */}
+                <div className="md:col-span-2">
+                  <div className="rounded-xl border border-slate-200 bg-gradient-to-br from-blue-50 to-white p-6 lg:p-8">
+                    <div className="font-mono text-[10px] uppercase tracking-widest text-blue-700">
+                      Estimated total
+                    </div>
+                    <div className="mt-3 font-serif text-4xl leading-none tracking-tight text-slate-900 lg:text-5xl">
+                      {quote ? quote.display : "Custom quote"}
+                    </div>
+                    <p className="mt-4 text-sm leading-relaxed text-slate-600">
+                      Based on {formatUSD(RATE_PER_SQFT)}/sq ft for your home size. Final price is confirmed after our technician's on-site scan.
+                    </p>
+                    <div className="mt-6 flex flex-col gap-2 border-t border-slate-200 pt-5 text-xs text-slate-500">
+                      <div className="flex items-center gap-2">
+                        <Check size={13} className="text-blue-600" /> All drawings included
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Check size={13} className="text-blue-600" /> Delivered in {BRAND.turnaround}
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Check size={13} className="text-blue-600" /> No hidden fees
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* What's next */}
+          <div className="mt-12 grid gap-6 md:grid-cols-4">
+            {[
+              { n: "01", t: "Confirmation", b: "Check your inbox — your quote is on its way." },
+              { n: "02", t: "We call you", b: "Our scheduler books your scan within 1 business day." },
+              { n: "03", t: "On-site scan", b: "Technician captures your home in under 3 hours." },
+              { n: "04", t: "Drawings delivered", b: `In your inbox within ${BRAND.turnaround}.` },
+            ].map((s, i) => (
+              <div key={i} className="rounded-xl border border-slate-200 bg-white p-5">
+                <div className="font-mono text-2xl font-light text-blue-600/60">{s.n}</div>
+                <div className="mt-2 font-serif text-lg text-slate-900">{s.t}</div>
+                <p className="mt-1 text-sm text-slate-600">{s.b}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-10 flex flex-col items-center justify-center gap-3 text-center sm:flex-row">
+            <button
+              onClick={() => window.print()}
+              className="inline-flex items-center gap-2 rounded-full border border-slate-300 bg-white px-5 py-3 text-sm font-medium text-slate-900 transition-colors hover:border-slate-900"
+            >
+              Print or save quote
+            </button>
+            <a
+              href={`mailto:${BRAND.email}?subject=Question about my RABS quote`}
+              className="inline-flex items-center gap-2 rounded-full bg-slate-900 px-5 py-3 text-sm font-medium text-white transition-all hover:bg-blue-600"
+            >
+              Questions? Email us
+            </a>
+          </div>
+
+          <p className="mt-8 text-center text-xs text-slate-500">
+            This is a preliminary estimate based on the info you provided. Final pricing is confirmed after the on-site scan.
+            {" "}Questions? Email <a href={`mailto:${BRAND.email}`} className="underline">{BRAND.email}</a>.
           </p>
         </div>
       </section>
@@ -1085,7 +1332,7 @@ function QuoteForm() {
               <input type="tel" value={form.phone} onChange={(e) => update("phone", e.target.value)} className={inputCls} placeholder="(555) 000-0000" />
             </Field>
             <Field label="Home address" required>
-              <input required type="text" value={form.address} onChange={(e) => update("address", e.target.value)} className={inputCls} placeholder="123 Main St, City, State" />
+              <AddressAutocomplete required value={form.address} onChange={(v) => update("address", v)} className={inputCls} />
             </Field>
             <Field label="Approx. square footage" required>
               <Select required value={form.sqft} onChange={(v) => update("sqft", v)} options={["0 – 1,500 sq ft", "1,500 – 3,000 sq ft", "3,000 – 6,000 sq ft", "6,000 – 10,000 sq ft", "10,000+ sq ft"]} />
@@ -1189,7 +1436,6 @@ function Select({ value, onChange, options, required }) {
  * =====================================================================
  */
 const SERVICE_AREAS = [
-  ["Alaska", ["Anchorage"]],
   ["Arizona", ["Chandler", "Gilbert", "Glendale", "Mesa", "Phoenix", "Scottsdale", "Tucson"]],
   ["California", ["Anaheim", "Bakersfield", "Chula Vista", "Fresno", "Irvine", "Long Beach", "Los Angeles", "Oakland", "Riverside", "Sacramento", "San Diego", "San Francisco", "San Jose", "Santa Ana", "Stockton"]],
   ["Colorado", ["Aurora", "Colorado Springs", "Denver"]],
@@ -1341,8 +1587,8 @@ export default function Rabs() {
           ctaLabel="Start your request"
         />
         <Testimonials />
-        <ServiceAreas />
         <QuoteForm />
+        <ServiceAreas />
       </main>
       <Footer />
     </div>

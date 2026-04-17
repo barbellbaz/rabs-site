@@ -11,6 +11,7 @@ import {
   Layers,
   MapPin,
   Menu,
+  Plus,
   Ruler,
   ScanLine,
   Shield,
@@ -84,18 +85,26 @@ function calculateQuote(sqftRange) {
 /**
  * =====================================================================
  *  GOOGLE MAPS LOADER (optional — gracefully degrades if no key)
- *  Set VITE_GOOGLE_MAPS_API_KEY to enable address autocomplete.
+ *  Key is injected into window.__RABS_GMAPS_KEY__ by index.html
+ *  at build time. Set VITE_GOOGLE_MAPS_API_KEY in your env to enable.
  * =====================================================================
  */
+function getGoogleMapsApiKey() {
+  if (typeof window === "undefined") return null;
+  const key = window.__RABS_GMAPS_KEY__;
+  // Empty string, undefined, or the un-replaced placeholder all mean "no key"
+  if (!key || key.includes("%VITE_") || key === "undefined") return null;
+  return key;
+}
+
 function useGoogleMaps() {
-  const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
+  const apiKey = getGoogleMapsApiKey();
   const [loaded, setLoaded] = useState(
     typeof window !== "undefined" && !!window.google?.maps?.places
   );
 
   useEffect(() => {
     if (!apiKey || loaded) return;
-    // Script already in DOM?
     const existing = document.querySelector("script[data-google-maps]");
     if (existing) {
       existing.addEventListener("load", () => setLoaded(true));
@@ -227,7 +236,7 @@ function Nav() {
     { href: "#deliverables", label: "Deliverables" },
     { href: "#process", label: "Process" },
     { href: "#pricing", label: "Pricing" },
-    { href: "#testimonials", label: "Reviews" },
+    { href: "#faq", label: "FAQ" },
   ];
 
   return (
@@ -446,7 +455,7 @@ function Hero() {
                 </div>
 
                 <div className="flex items-center justify-between border-t border-slate-200 bg-white px-5 py-3 text-xs">
-                  <span className="font-mono uppercase tracking-wider text-slate-500">Scan complete · 0.5 mm accuracy</span>
+                  <span className="font-mono uppercase tracking-wider text-slate-500">Scan complete · 20mm @ 10m</span>
                   <span className="inline-flex items-center gap-1 font-medium text-green-600">
                     <span className="h-1.5 w-1.5 rounded-full bg-green-500" /> Ready
                   </span>
@@ -527,7 +536,7 @@ function PainPoints() {
       pain: "Cost overruns from surprise measurements.",
       statBig: "78%",
       statCaption: "of home renovations go over budget.",
-      body: "Inaccurate plans mean change orders, rework, and costs you didn't plan for. Millimeter-accurate as-builts upfront eliminate the guesswork — and the surprise invoices.",
+      body: "Inaccurate plans mean change orders, rework, and costs you didn't plan for. Laser-accurate as-builts upfront eliminate the guesswork — and the surprise invoices.",
       source: "RenoFi industry analysis via Nasdaq, 2024",
     },
     {
@@ -764,7 +773,7 @@ function Process() {
   const steps = [
     { n: "01", title: "Request a quote", body: "Tell us the address, square footage, and what you need. Takes under 90 seconds." },
     { n: "02", title: "Packages matched to you", body: "Within minutes, we email a short list of packages sized to your home and timeline." },
-    { n: "03", title: "On-site laser scan", body: "A technician arrives and captures every surface with millimeter accuracy. Most homes take under 3 hours." },
+    { n: "03", title: "On-site laser scan", body: "A technician arrives and captures every surface with laser precision (20 mm at 10 m, or better). Most homes take under 3 hours." },
     { n: "04", title: "Deliverables in 3–5 days", body: "You receive your drawings — floor plans, elevations, ceiling plans — ready for your architect, contractor, or records." },
   ];
 
@@ -1311,7 +1320,7 @@ function QuoteForm() {
 
       <div className="relative mx-auto max-w-5xl px-6 lg:px-10">
         <div className="mx-auto max-w-2xl text-center">
-          <DimensionLine label="08 · Request quote" className="justify-center" />
+          <DimensionLine label="09 · Request quote" className="justify-center" />
           <h2 className="mt-4 font-serif text-4xl tracking-tight text-slate-900 lg:text-5xl">
             Get your matched packages.
           </h2>
@@ -1430,6 +1439,140 @@ function Select({ value, onChange, options, required }) {
 
 /**
  * =====================================================================
+ *  FAQ — quick answers grouped by topic
+ * =====================================================================
+ */
+function FAQ() {
+  const faqs = [
+    {
+      category: "Pricing & billing",
+      items: [
+        {
+          q: "How is my quote calculated?",
+          a: "We charge a flat rate of $0.75 per square foot. Your estimate appears instantly after you submit the form, and final pricing is confirmed after the on-site scan.",
+        },
+        {
+          q: "Are there any hidden fees?",
+          a: "No — the quoted price covers the scan, the drawings, and delivery. No travel fees and no file-format upcharges.",
+        },
+        {
+          q: "When and how do I pay?",
+          a: "Fifty percent is due to book your scan date, fifty percent on delivery of your drawings. We accept credit cards, ACH, and bank transfer.",
+        },
+        {
+          q: "What if I need revisions?",
+          a: "Minor revisions to your drawings are included free. Larger scope changes are quoted separately before any extra work begins.",
+        },
+      ],
+    },
+    {
+      category: "Scan day",
+      items: [
+        {
+          q: "How long does the scan take?",
+          a: "Homes under 3,000 sq ft are typically done in under 2 hours. Larger properties usually wrap in 3–4 hours.",
+        },
+        {
+          q: "Do I need to be home?",
+          a: "Someone over 18 needs to let the technician in. You don't have to shadow them — they work independently and respect your space.",
+        },
+        {
+          q: "Does every room need to be accessible?",
+          a: "Yes — closets, basements, and attics should be unlocked so the scanner has clear line-of-sight to capture every surface accurately.",
+        },
+        {
+          q: "What should I do to prepare?",
+          a: "Move pets to a contained area and clear main walkways. You don't need to clean or tidy — the scanner sees through clutter.",
+        },
+      ],
+    },
+    {
+      category: "Accuracy & deliverables",
+      items: [
+        {
+          q: "How accurate are your scans?",
+          a: "Our laser scanners achieve 20 mm accuracy at 10 m range — or better. Plenty precise for renovation, insurance, and permitting work.",
+        },
+        {
+          q: "What file formats do I get?",
+          a: "Every drawing is delivered as both PDF (for viewing and printing) and DWG (for AutoCAD, Revit, and other CAD software).",
+        },
+        {
+          q: "Do all three drawings come with every package?",
+          a: "No — you choose what you need: floor plans, exterior elevations, reflected ceiling plans, or all three. Pricing scales accordingly.",
+        },
+        {
+          q: "How fast is delivery?",
+          a: "3–5 business days from the scan date. Rush delivery (48–72 hours) is available for an added fee.",
+        },
+      ],
+    },
+  ];
+
+  return (
+    <section id="faq" className="bg-slate-50 py-24 lg:py-32">
+      <div className="mx-auto max-w-4xl px-6 lg:px-10">
+        <div className="text-center">
+          <DimensionLine label="08 · FAQ" className="justify-center" />
+          <h2 className="mt-4 font-serif text-4xl tracking-tight text-slate-900 lg:text-5xl">
+            Questions, answered.
+          </h2>
+          <p className="mt-4 text-lg text-slate-600">
+            Quick answers to what homeowners ask most. Don't see yours?{" "}
+            <a href={`mailto:${BRAND.email}`} className="text-blue-600 underline hover:text-blue-700">
+              Email us
+            </a>
+            .
+          </p>
+        </div>
+
+        <div className="mt-16 space-y-12">
+          {faqs.map((cat, i) => (
+            <div key={i}>
+              <h3 className="border-b border-slate-200 pb-3 font-mono text-[11px] uppercase tracking-widest text-slate-500">
+                {cat.category}
+              </h3>
+              <div className="divide-y divide-slate-200">
+                {cat.items.map((item, j) => (
+                  <details
+                    key={j}
+                    className="group py-5 [&_summary::-webkit-details-marker]:hidden"
+                  >
+                    <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-serif text-lg text-slate-900 transition-colors hover:text-blue-600">
+                      <span>{item.q}</span>
+                      <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full border border-slate-200 text-slate-400 transition-all group-open:rotate-45 group-open:border-blue-600 group-open:bg-blue-50 group-open:text-blue-600">
+                        <Plus size={14} />
+                      </span>
+                    </summary>
+                    <p className="mt-3 pr-10 leading-relaxed text-slate-600">{item.a}</p>
+                  </details>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-16 flex flex-col items-center gap-3 rounded-2xl border border-slate-200 bg-white p-8 text-center sm:flex-row sm:justify-between sm:text-left">
+          <div>
+            <h3 className="font-serif text-xl text-slate-900">Still have a question?</h3>
+            <p className="mt-1 text-sm text-slate-600">
+              We reply to every email within one business day.
+            </p>
+          </div>
+          <a
+            href={`mailto:${BRAND.email}`}
+            className="inline-flex items-center gap-2 rounded-full bg-slate-900 px-5 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-600"
+          >
+            Email us
+          </a>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/**
+ * =====================================================================
  *  SERVICE AREAS — SEO block. Every US city with 250k+ population,
  *  alphabetical by state. Targets long-tail searches like
  *  "as builts san diego", "as built drawings houston", etc.
@@ -1472,8 +1615,33 @@ const SERVICE_AREAS = [
 ];
 
 function ServiceAreas() {
+  // Flatten all cities for the marquee
+  const allCities = SERVICE_AREAS.flatMap(([state, cities]) =>
+    cities.map((city) => ({ city, state }))
+  );
+  const mid = Math.ceil(allCities.length / 2);
+  const row1 = allCities.slice(0, mid);
+  const row2 = allCities.slice(mid);
+
+  const Pill = ({ city, state }) => (
+    <a
+      href="#quote"
+      className="inline-flex shrink-0 items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm text-slate-700 transition-all hover:border-blue-400 hover:bg-blue-50 hover:text-blue-700 hover:shadow-sm"
+      title={`As-built drawings in ${city}, ${state}`}
+    >
+      <MapPin size={13} className="shrink-0 text-blue-600" />
+      <span className="whitespace-nowrap font-medium">As-builts in {city}</span>
+      <span className="whitespace-nowrap font-mono text-[10px] uppercase tracking-widest text-slate-400">
+        {state}
+      </span>
+    </a>
+  );
+
   return (
-    <section id="service-areas" className="border-t border-slate-200 bg-slate-50 py-20 lg:py-28">
+    <section
+      id="service-areas"
+      className="relative overflow-hidden border-t border-slate-200 bg-slate-50 py-20 lg:py-28"
+    >
       <div className="mx-auto max-w-7xl px-6 lg:px-10">
         <div className="mx-auto max-w-3xl text-center">
           <DimensionLine label="Service areas" className="justify-center" />
@@ -1481,42 +1649,82 @@ function ServiceAreas() {
             As-built drawings in every major U.S. city.
           </h2>
           <p className="mt-4 text-slate-600">
-            We scan homes in every major metro area across the country. If you don't see your city listed,{" "}
-            <a href="#quote" className="text-blue-600 underline hover:text-blue-700">request a quote anyway</a> — we
-            likely serve you.
+            We scan homes in every major metro area across the country. If you don't see your city,{" "}
+            <a href="#quote" className="text-blue-600 underline hover:text-blue-700">
+              request a quote anyway
+            </a>{" "}
+            — we likely serve you.
           </p>
         </div>
+      </div>
 
-        <div className="mt-14 grid gap-x-8 gap-y-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {SERVICE_AREAS.map(([state, cities]) => (
-            <div key={state}>
-              <h3 className="border-b border-slate-200 pb-2 font-mono text-[11px] uppercase tracking-widest text-slate-500">
-                {state}
-              </h3>
-              <ul className="mt-3 space-y-1.5">
-                {cities.map((city) => (
-                  <li key={city}>
-                    <a
-                      href="#quote"
-                      className="text-sm text-slate-700 transition-colors hover:text-blue-600"
-                      title={`As-built drawings in ${city}, ${state}`}
-                    >
-                      As-builts in {city}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
+      {/* Opposing-direction marquee rows, edge-faded */}
+      <div
+        className="relative mt-14 space-y-3"
+        style={{
+          WebkitMaskImage:
+            "linear-gradient(to right, transparent, black 6%, black 94%, transparent)",
+          maskImage:
+            "linear-gradient(to right, transparent, black 6%, black 94%, transparent)",
+        }}
+      >
+        {/* Row 1 — scrolls left */}
+        <div className="overflow-hidden">
+          <div className="marquee-track marquee-left flex w-max gap-3">
+            {row1.map((c, i) => (
+              <Pill key={`r1a-${i}`} {...c} />
+            ))}
+            {row1.map((c, i) => (
+              <Pill key={`r1b-${i}`} {...c} />
+            ))}
+          </div>
         </div>
 
-        <p className="mx-auto mt-14 max-w-3xl text-center text-xs text-slate-500">
-          Residential As-Built Services delivers laser-scanned floor plans, exterior elevations, and reflected ceiling
-          plans to homeowners, contractors, and architects across the United States. Whether you're in New York, Los
-          Angeles, Chicago, Houston, Phoenix, or any major metro — we deliver precise as-built drawings in 3–5 business
-          days, at a fraction of what an architect would charge.
-        </p>
+        {/* Row 2 — scrolls right */}
+        <div className="overflow-hidden">
+          <div className="marquee-track marquee-right flex w-max gap-3">
+            {row2.map((c, i) => (
+              <Pill key={`r2a-${i}`} {...c} />
+            ))}
+            {row2.map((c, i) => (
+              <Pill key={`r2b-${i}`} {...c} />
+            ))}
+          </div>
+        </div>
       </div>
+
+      <p className="mx-auto mt-14 max-w-3xl px-6 text-center text-xs text-slate-500 lg:px-10">
+        Residential As-Built Services delivers laser-scanned floor plans, exterior elevations, and reflected
+        ceiling plans to homeowners, contractors, and architects across the United States. Whether you're in
+        New York, Los Angeles, Chicago, Houston, Phoenix, or any major metro — we deliver precise as-built
+        drawings in 3–5 business days, at a fraction of what an architect would charge.
+      </p>
+
+      <style>{`
+        @keyframes marquee-left {
+          from { transform: translateX(0); }
+          to   { transform: translateX(-50%); }
+        }
+        @keyframes marquee-right {
+          from { transform: translateX(-50%); }
+          to   { transform: translateX(0); }
+        }
+        .marquee-track {
+          animation-duration: 90s;
+          animation-timing-function: linear;
+          animation-iteration-count: infinite;
+          will-change: transform;
+        }
+        .marquee-left  { animation-name: marquee-left; }
+        .marquee-right { animation-name: marquee-right; }
+        .marquee-track:hover,
+        .marquee-track:focus-within {
+          animation-play-state: paused;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .marquee-track { animation: none; transform: translateX(0) !important; }
+        }
+      `}</style>
     </section>
   );
 }
@@ -1587,6 +1795,7 @@ export default function Rabs() {
           ctaLabel="Start your request"
         />
         <Testimonials />
+        <FAQ />
         <QuoteForm />
         <ServiceAreas />
       </main>

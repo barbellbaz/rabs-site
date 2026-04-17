@@ -97,14 +97,14 @@ function getGoogleMapsApiKey() {
   return key;
 }
 
-function useGoogleMaps() {
+function useGoogleMaps(shouldLoad = false) {
   const apiKey = getGoogleMapsApiKey();
   const [loaded, setLoaded] = useState(
     typeof window !== "undefined" && !!window.google?.maps?.places
   );
 
   useEffect(() => {
-    if (!apiKey || loaded) return;
+    if (!apiKey || loaded || !shouldLoad) return;
     const existing = document.querySelector("script[data-google-maps]");
     if (existing) {
       existing.addEventListener("load", () => setLoaded(true));
@@ -117,14 +117,15 @@ function useGoogleMaps() {
     script.setAttribute("data-google-maps", "true");
     script.onload = () => setLoaded(true);
     document.head.appendChild(script);
-  }, [apiKey, loaded]);
+  }, [apiKey, loaded, shouldLoad]);
 
   return { loaded, enabled: !!apiKey };
 }
 
 function AddressAutocomplete({ value, onChange, required, className, placeholder }) {
   const inputRef = useRef(null);
-  const { loaded, enabled } = useGoogleMaps();
+  const [shouldLoad, setShouldLoad] = useState(false);
+  const { loaded, enabled } = useGoogleMaps(shouldLoad);
 
   useEffect(() => {
     if (!loaded || !inputRef.current || !window.google?.maps?.places) return;
@@ -151,6 +152,7 @@ function AddressAutocomplete({ value, onChange, required, className, placeholder
       type="text"
       value={value}
       onChange={(e) => onChange(e.target.value)}
+      onFocus={() => setShouldLoad(true)}
       className={className}
       placeholder={placeholder || (enabled ? "Start typing your home address…" : "123 Main St, City, State")}
       autoComplete="off"
@@ -226,8 +228,16 @@ function Nav() {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 12);
-    window.addEventListener("scroll", onScroll);
+    let ticking = false;
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        setScrolled(window.scrollY > 12);
+        ticking = false;
+      });
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
@@ -307,17 +317,36 @@ function StickyCTA() {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => {
-      const scrollY = window.scrollY;
+    let ticking = false;
+    let formTop = Infinity;
+    // Cache form position — recompute on resize instead of every scroll
+    const recalcFormTop = () => {
       const formEl = document.getElementById("quote");
-      const formTop = formEl ? formEl.getBoundingClientRect().top + window.scrollY : Infinity;
-      const pastHero = scrollY > 600;
-      const nearForm = scrollY + window.innerHeight * 0.6 > formTop;
-      setVisible(pastHero && !nearForm);
+      formTop = formEl ? formEl.getBoundingClientRect().top + window.scrollY : Infinity;
     };
+
+    const handleScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        const scrollY = window.scrollY;
+        const pastHero = scrollY > 600;
+        const nearForm = scrollY + window.innerHeight * 0.6 > formTop;
+        setVisible(pastHero && !nearForm);
+        ticking = false;
+      });
+    };
+
+    // Initial measurement after DOM settles
+    recalcFormTop();
+    // Recompute on resize (cheap, rare) instead of every scroll (expensive, constant)
+    window.addEventListener("resize", recalcFormTop, { passive: true });
     window.addEventListener("scroll", handleScroll, { passive: true });
     handleScroll();
-    return () => window.removeEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", recalcFormTop);
+    };
   }, []);
 
   return (
@@ -1285,24 +1314,17 @@ function QuoteForm() {
             ))}
           </div>
 
-          <div className="mt-10 flex flex-col items-center justify-center gap-3 text-center sm:flex-row">
+          <div className="mt-10 flex justify-center text-center">
             <button
               onClick={() => window.print()}
-              className="inline-flex items-center gap-2 rounded-full border border-slate-300 bg-white px-5 py-3 text-sm font-medium text-slate-900 transition-colors hover:border-slate-900"
+              className="inline-flex items-center gap-2 rounded-full bg-slate-900 px-5 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-600"
             >
               Print or save quote
             </button>
-            <a
-              href={`mailto:${BRAND.email}?subject=Question about my RABS quote`}
-              className="inline-flex items-center gap-2 rounded-full bg-slate-900 px-5 py-3 text-sm font-medium text-white transition-all hover:bg-blue-600"
-            >
-              Questions? Email us
-            </a>
           </div>
 
           <p className="mt-8 text-center text-xs text-slate-500">
-            This is a preliminary estimate based on the info you provided. Final pricing is confirmed after the on-site scan.
-            {" "}Questions? Email <a href={`mailto:${BRAND.email}`} className="underline">{BRAND.email}</a>.
+            This is a preliminary estimate based on the info you provided. Final pricing is confirmed after the on-site scan. Our team will be in touch within one business day.
           </p>
         </div>
       </section>
@@ -1396,8 +1418,7 @@ function QuoteForm() {
 
           {status === "error" && (
             <p className="mt-4 text-sm text-red-600">
-              Something went wrong. Please try again, or email{" "}
-              <a href={`mailto:${BRAND.email}`} className="underline">{BRAND.email}</a>.
+              Something went wrong. Please check your connection and try again.
             </p>
           )}
         </form>
@@ -1519,10 +1540,10 @@ function FAQ() {
           </h2>
           <p className="mt-4 text-lg text-slate-600">
             Quick answers to what homeowners ask most. Don't see yours?{" "}
-            <a href={`mailto:${BRAND.email}`} className="text-blue-600 underline hover:text-blue-700">
-              Email us
-            </a>
-            .
+            <a href="#quote" className="text-blue-600 underline hover:text-blue-700">
+              Drop it in the quote form
+            </a>{" "}
+            and we'll answer when we reach out.
           </p>
         </div>
 
@@ -1556,14 +1577,15 @@ function FAQ() {
           <div>
             <h3 className="font-serif text-xl text-slate-900">Still have a question?</h3>
             <p className="mt-1 text-sm text-slate-600">
-              We reply to every email within one business day.
+              Request a quote and add your question in the notes field — we'll answer within one business day.
             </p>
           </div>
           <a
-            href={`mailto:${BRAND.email}`}
-            className="inline-flex items-center gap-2 rounded-full bg-slate-900 px-5 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-600"
+            href="#quote"
+            className="inline-flex shrink-0 items-center gap-2 rounded-full bg-slate-900 px-5 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-600"
           >
-            Email us
+            Request a quote
+            <ArrowRight size={14} />
           </a>
         </div>
       </div>
@@ -1630,7 +1652,8 @@ function ServiceAreas() {
       title={`As-built drawings in ${city}, ${state}`}
     >
       <MapPin size={13} className="shrink-0 text-blue-600" />
-      <span className="whitespace-nowrap font-medium">As-builts in {city}</span>
+      <span className="sr-only">As-builts in </span>
+      <span className="whitespace-nowrap font-medium">{city}</span>
       <span className="whitespace-nowrap font-mono text-[10px] uppercase tracking-widest text-slate-400">
         {state}
       </span>
@@ -1710,7 +1733,7 @@ function ServiceAreas() {
           to   { transform: translateX(0); }
         }
         .marquee-track {
-          animation-duration: 90s;
+          animation-duration: 125s;
           animation-timing-function: linear;
           animation-iteration-count: infinite;
           will-change: transform;
@@ -1750,9 +1773,13 @@ function Footer() {
           </div>
 
           <div className="flex flex-wrap gap-x-8 gap-y-2 text-sm text-slate-600">
-            <a href={`mailto:${BRAND.email}`} className="hover:text-slate-900">{BRAND.email}</a>
-            <a href={`tel:${BRAND.phone}`} className="hover:text-slate-900">{BRAND.phone}</a>
-            <a href="#quote" className="hover:text-slate-900">Request quote</a>
+            <a
+              href="#quote"
+              className="inline-flex items-center gap-2 rounded-full bg-slate-900 px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-blue-600"
+            >
+              Request a quote
+              <ArrowRight size={14} />
+            </a>
           </div>
         </div>
 
@@ -1778,26 +1805,26 @@ export default function Rabs() {
       <main>
         <Hero />
         <Stats />
-        <PainPoints />
+        <div className="cv-auto"><PainPoints /></div>
         <CTABanner
           headline="Stop paying for guesswork."
           sub="Get laser-accurate plans of your home — in 3–5 business days, for 40–60% less than hiring an architect."
           ctaLabel="Get your quote"
         />
-        <Deliverables />
-        <Process />
-        <PricingAnchor />
-        <WhyUs />
-        <Samples />
+        <div className="cv-auto"><Deliverables /></div>
+        <div className="cv-auto"><Process /></div>
+        <div className="cv-auto"><PricingAnchor /></div>
+        <div className="cv-auto"><WhyUs /></div>
+        <div className="cv-auto"><Samples /></div>
         <CTABanner
           headline="Your home deserves precise plans."
           sub="Flat pricing. Fast delivery. Real people who do this all day."
           ctaLabel="Start your request"
         />
-        <Testimonials />
-        <FAQ />
+        <div className="cv-auto"><Testimonials /></div>
+        <div className="cv-auto"><FAQ /></div>
         <QuoteForm />
-        <ServiceAreas />
+        <div className="cv-auto"><ServiceAreas /></div>
       </main>
       <Footer />
     </div>

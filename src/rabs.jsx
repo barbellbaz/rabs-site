@@ -435,7 +435,7 @@ function PainPoints() {
       pain: "Field measuring burns your design hours.",
       statBig: "75%",
       statCaption: "of construction projects miss their original deadline.",
-      body: "Weeks spent measuring existing conditions is design time you don't get back. Hand us the address — we deliver point clouds or Revit models ready to design against.",
+      body: "Weeks spent measuring existing conditions is design time you don't get back. Hand us the address — we deliver clean, accurate plans and elevations ready to design against.",
       source: "McKinsey Global Institute, construction productivity study",
     },
   ];
@@ -539,25 +539,37 @@ function Deliverables() {
   const tiers = [
     {
       icon: Ruler,
-      name: "2D Floor Plans",
-      pitch: "Dimensioned plans ready for renovation, insurance, or sale.",
+      name: "Floor Plans",
+      pitch: "Dimensioned plans of every level, ready for renovation, insurance, or sale.",
       formats: ["PDF", "DWG"],
-      bullets: ["Fully dimensioned floor plans", "Walls, doors, windows, and fixtures", "Elevations & sections on request"],
-    },
-    {
-      icon: Layers,
-      name: "3D Revit / BIM",
-      pitch: "Parametric models your architect or contractor can build on.",
-      formats: ["RVT", "IFC"],
-      bullets: ["LOD 200–300 Revit model", "Walls, floors, ceilings, openings", "MEP placeholders on request"],
+      bullets: [
+        "Fully dimensioned floor plans",
+        "Walls, doors, windows, and fixtures",
+        "Every level of your home",
+      ],
       highlight: true,
     },
     {
-      icon: ScanLine,
-      name: "Point Cloud",
-      pitch: "Raw scan data for custom design or engineering workflows.",
-      formats: ["RCP", "E57", "LAS"],
-      bullets: ["Registered & cleaned point cloud", "Industry-standard formats", "Ready for Revit, AutoCAD, or Rhino"],
+      icon: Home,
+      name: "Exterior Elevations",
+      pitch: "North, south, east, west — all four exterior faces, accurately drawn.",
+      formats: ["PDF", "DWG"],
+      bullets: [
+        "All four exterior elevations",
+        "Window, door, and roof geometry",
+        "Material callouts where relevant",
+      ],
+    },
+    {
+      icon: Layers,
+      name: "Reflected Ceiling Plans",
+      pitch: "Top-down ceiling plans showing fixtures, beams, and heights.",
+      formats: ["PDF", "DWG"],
+      bullets: [
+        "Lighting and fixture locations",
+        "Beam and soffit layouts",
+        "Ceiling heights throughout",
+      ],
     },
   ];
 
@@ -567,11 +579,11 @@ function Deliverables() {
         <div className="mx-auto max-w-2xl text-center">
           <DimensionLine label="02 · Deliverables" className="justify-center" />
           <h2 className="mt-4 font-serif text-4xl tracking-tight text-slate-900 lg:text-5xl">
-            One scan. Every format your project needs.
+            One scan. Every drawing you need.
           </h2>
           <p className="mt-4 text-lg text-slate-600">
-            Tell us what you're building toward — we match a package to your project. Every tier comes from the same
-            millimeter-accurate scan of your home.
+            We capture your entire home in a single scan, then draft the drawings your project requires.
+            Order one, two, or all three — priced to your home.
           </p>
         </div>
 
@@ -643,7 +655,7 @@ function Process() {
     { n: "01", title: "Request a quote", body: "Tell us the address, square footage, and what you need. Takes under 90 seconds." },
     { n: "02", title: "Packages matched to you", body: "Within minutes, we email a short list of packages sized to your home and timeline." },
     { n: "03", title: "On-site laser scan", body: "A technician arrives and captures every surface with millimeter accuracy. Most homes take under 3 hours." },
-    { n: "04", title: "Deliverables in 3–5 days", body: "You receive drawings, models, or point clouds — ready for your architect, contractor, or records." },
+    { n: "04", title: "Deliverables in 3–5 days", body: "You receive your drawings — floor plans, elevations, ceiling plans — ready for your architect, contractor, or records." },
   ];
 
   return (
@@ -850,12 +862,12 @@ function WhyUs() {
  */
 function Samples() {
   const samples = [
-    { title: "Single-family ranch · 2D", tag: "2D Floor Plan" },
-    { title: "Brownstone triplex · 3D", tag: "Revit Model" },
-    { title: "Mid-century split · Point cloud", tag: "Point Cloud" },
-    { title: "Victorian row · 2D", tag: "2D Floor Plan" },
-    { title: "New-build condo · 3D", tag: "Revit Model" },
-    { title: "Craftsman bungalow · 2D", tag: "2D Floor Plan" },
+    { title: "Single-family ranch · Floor plan", tag: "Floor Plan" },
+    { title: "Brownstone triplex · Elevations", tag: "Elevations" },
+    { title: "Mid-century split · Ceiling plan", tag: "Ceiling Plan" },
+    { title: "Victorian row · Floor plan", tag: "Floor Plan" },
+    { title: "New-build condo · Elevations", tag: "Elevations" },
+    { title: "Craftsman bungalow · Full set", tag: "Full Set" },
   ];
 
   return (
@@ -990,7 +1002,34 @@ function QuoteForm() {
     e.preventDefault();
     setStatus("sending");
     try {
-      await new Promise((r) => setTimeout(r, 900));
+      const payload = {
+        _subject: `New RABS quote request — ${form.name || "unnamed"}`,
+        _template: "table",
+        _captcha: "false",
+        "Full name": form.name,
+        Email: form.email,
+        Phone: form.phone || "(not provided)",
+        "Home address": form.address,
+        "Square footage": form.sqft,
+        "Property type": form.propertyType,
+        "Desired deliverable": form.deliverables.join(", ") || "(not specified)",
+        Timeline: form.timeline,
+        Purpose: form.purpose,
+        "Additional notes": form.notes || "(none)",
+      };
+
+      const res = await fetch("https://formsubmit.co/ajax/info@dcmsnetwork.com", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!res.ok) throw new Error("send failed");
+      const json = await res.json();
+      if (json.success === "false" || json.success === false) throw new Error("send failed");
       setStatus("sent");
     } catch {
       setStatus("error");
@@ -1042,14 +1081,14 @@ function QuoteForm() {
             <Field label="Email" required>
               <input required type="email" value={form.email} onChange={(e) => update("email", e.target.value)} className={inputCls} placeholder="you@email.com" />
             </Field>
-            <Field label="Phone" required>
-              <input required type="tel" value={form.phone} onChange={(e) => update("phone", e.target.value)} className={inputCls} placeholder="(555) 000-0000" />
+            <Field label="Phone (optional)">
+              <input type="tel" value={form.phone} onChange={(e) => update("phone", e.target.value)} className={inputCls} placeholder="(555) 000-0000" />
             </Field>
             <Field label="Home address" required>
               <input required type="text" value={form.address} onChange={(e) => update("address", e.target.value)} className={inputCls} placeholder="123 Main St, City, State" />
             </Field>
             <Field label="Approx. square footage" required>
-              <input required type="number" min="100" value={form.sqft} onChange={(e) => update("sqft", e.target.value)} className={inputCls} placeholder="2,400" />
+              <Select required value={form.sqft} onChange={(v) => update("sqft", v)} options={["0 – 1,500 sq ft", "1,500 – 3,000 sq ft", "3,000 – 6,000 sq ft", "6,000 – 10,000 sq ft", "10,000+ sq ft"]} />
             </Field>
             <Field label="Property type" required>
               <Select required value={form.propertyType} onChange={(v) => update("propertyType", v)} options={["Single-family home", "Condo", "Townhouse", "Multi-family", "Other"]} />
@@ -1057,7 +1096,7 @@ function QuoteForm() {
 
             <Field label="Desired deliverable" className="md:col-span-2">
               <div className="flex flex-wrap gap-2">
-                {["2D Floor Plans", "3D Revit / BIM", "Point Cloud", "Not sure yet"].map((d) => {
+                {["Floor Plans", "Exterior Elevations", "Reflected Ceiling Plans", "All three", "Not sure yet"].map((d) => {
                   const active = form.deliverables.includes(d);
                   return (
                     <button
@@ -1144,6 +1183,100 @@ function Select({ value, onChange, options, required }) {
 
 /**
  * =====================================================================
+ *  SERVICE AREAS — SEO block. Every US city with 250k+ population,
+ *  alphabetical by state. Targets long-tail searches like
+ *  "as builts san diego", "as built drawings houston", etc.
+ * =====================================================================
+ */
+const SERVICE_AREAS = [
+  ["Alaska", ["Anchorage"]],
+  ["Arizona", ["Chandler", "Gilbert", "Glendale", "Mesa", "Phoenix", "Scottsdale", "Tucson"]],
+  ["California", ["Anaheim", "Bakersfield", "Chula Vista", "Fresno", "Irvine", "Long Beach", "Los Angeles", "Oakland", "Riverside", "Sacramento", "San Diego", "San Francisco", "San Jose", "Santa Ana", "Stockton"]],
+  ["Colorado", ["Aurora", "Colorado Springs", "Denver"]],
+  ["District of Columbia", ["Washington"]],
+  ["Florida", ["Hialeah", "Jacksonville", "Miami", "Orlando", "St. Petersburg", "Tampa"]],
+  ["Georgia", ["Atlanta"]],
+  ["Hawaii", ["Honolulu"]],
+  ["Idaho", ["Boise"]],
+  ["Illinois", ["Chicago"]],
+  ["Indiana", ["Fort Wayne", "Indianapolis"]],
+  ["Kansas", ["Wichita"]],
+  ["Kentucky", ["Lexington", "Louisville"]],
+  ["Louisiana", ["New Orleans"]],
+  ["Maryland", ["Baltimore"]],
+  ["Massachusetts", ["Boston"]],
+  ["Michigan", ["Detroit"]],
+  ["Minnesota", ["Minneapolis", "St. Paul"]],
+  ["Missouri", ["Kansas City", "St. Louis"]],
+  ["Nebraska", ["Lincoln", "Omaha"]],
+  ["Nevada", ["Henderson", "Las Vegas", "North Las Vegas", "Reno"]],
+  ["New Jersey", ["Jersey City", "Newark"]],
+  ["New Mexico", ["Albuquerque"]],
+  ["New York", ["Buffalo", "New York"]],
+  ["North Carolina", ["Charlotte", "Durham", "Greensboro", "Raleigh", "Winston-Salem"]],
+  ["Ohio", ["Cincinnati", "Cleveland", "Columbus", "Toledo"]],
+  ["Oklahoma", ["Oklahoma City", "Tulsa"]],
+  ["Oregon", ["Portland"]],
+  ["Pennsylvania", ["Philadelphia", "Pittsburgh"]],
+  ["Tennessee", ["Memphis", "Nashville"]],
+  ["Texas", ["Arlington", "Austin", "Corpus Christi", "Dallas", "El Paso", "Fort Worth", "Frisco", "Garland", "Houston", "Irving", "Laredo", "Lubbock", "McKinney", "Plano", "San Antonio"]],
+  ["Virginia", ["Chesapeake", "Norfolk", "Richmond", "Virginia Beach"]],
+  ["Washington", ["Seattle", "Spokane", "Tacoma"]],
+  ["Wisconsin", ["Madison", "Milwaukee"]],
+];
+
+function ServiceAreas() {
+  return (
+    <section id="service-areas" className="border-t border-slate-200 bg-slate-50 py-20 lg:py-28">
+      <div className="mx-auto max-w-7xl px-6 lg:px-10">
+        <div className="mx-auto max-w-3xl text-center">
+          <DimensionLine label="Service areas" className="justify-center" />
+          <h2 className="mt-4 font-serif text-3xl tracking-tight text-slate-900 lg:text-4xl">
+            As-built drawings in every major U.S. city.
+          </h2>
+          <p className="mt-4 text-slate-600">
+            We scan homes in every major metro area across the country. If you don't see your city listed,{" "}
+            <a href="#quote" className="text-blue-600 underline hover:text-blue-700">request a quote anyway</a> — we
+            likely serve you.
+          </p>
+        </div>
+
+        <div className="mt-14 grid gap-x-8 gap-y-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {SERVICE_AREAS.map(([state, cities]) => (
+            <div key={state}>
+              <h3 className="border-b border-slate-200 pb-2 font-mono text-[11px] uppercase tracking-widest text-slate-500">
+                {state}
+              </h3>
+              <ul className="mt-3 space-y-1.5">
+                {cities.map((city) => (
+                  <li key={city}>
+                    <a
+                      href="#quote"
+                      className="text-sm text-slate-700 transition-colors hover:text-blue-600"
+                      title={`As-built drawings in ${city}, ${state}`}
+                    >
+                      As-builts in {city}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+
+        <p className="mx-auto mt-14 max-w-3xl text-center text-xs text-slate-500">
+          Residential As-Built Services delivers laser-scanned floor plans, exterior elevations, and reflected ceiling
+          plans to homeowners, contractors, and architects across the United States. Whether you're in New York, Los
+          Angeles, Chicago, Houston, Phoenix, or any major metro — we deliver precise as-built drawings in 3–5 business
+          days, at a fraction of what an architect would charge.
+        </p>
+      </div>
+    </section>
+  );
+}
+
+/**
+ * =====================================================================
  *  FOOTER
  * =====================================================================
  */
@@ -1208,6 +1341,7 @@ export default function Rabs() {
           ctaLabel="Start your request"
         />
         <Testimonials />
+        <ServiceAreas />
         <QuoteForm />
       </main>
       <Footer />

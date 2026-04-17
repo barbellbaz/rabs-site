@@ -47,6 +47,22 @@ const BRAND = {
  */
 const RATE_PER_SQFT = 0.75;
 
+const EXACT_SQFT_KEY = "I know the exact sq ft";
+
+const DETAIL_OPTIONS = [
+  "Walls",
+  "Half walls",
+  "Doors",
+  "Railings",
+  "Steps",
+  "Window dimensions",
+  "Window sill heights",
+  "Bathroom fixtures",
+  "Sidewalks",
+  "Parking surfaces",
+  "Landscape plans",
+];
+
 const SQFT_RANGES = {
   "0 – 1,500 sq ft": { min: 0, max: 1500 },
   "1,500 – 3,000 sq ft": { min: 1500, max: 3000 },
@@ -63,7 +79,24 @@ function formatUSD(n) {
   }).format(n);
 }
 
-function calculateQuote(sqftRange) {
+function calculateQuote(sqftRange, sqftExact) {
+  // Exact path — precise quote based on entered number
+  if (sqftRange === EXACT_SQFT_KEY) {
+    const n = parseInt(sqftExact, 10);
+    if (!isNaN(n) && n > 0) {
+      const total = n * RATE_PER_SQFT;
+      return {
+        rangeLabel: `${n.toLocaleString()} sq ft`,
+        rate: RATE_PER_SQFT,
+        lowTotal: total,
+        highTotal: total,
+        display: formatUSD(total),
+        exact: true,
+      };
+    }
+    return null;
+  }
+  // Range path
   const r = SQFT_RANGES[sqftRange];
   if (!r) return null;
   const lowTotal = r.min * RATE_PER_SQFT;
@@ -79,6 +112,7 @@ function calculateQuote(sqftRange) {
         : r.min === 0
           ? `Up to ${formatUSD(highTotal)}`
           : `${formatUSD(lowTotal)} – ${formatUSD(highTotal)}`,
+    exact: false,
   };
 }
 
@@ -188,11 +222,12 @@ function BlueprintGrid({ className = "" }) {
   );
 }
 
-function HouseSilhouette({ className = "" }) {
+function HouseSilhouette({ className = "", style }) {
   return (
     <svg
       aria-hidden="true"
       className={className}
+      style={style}
       viewBox="0 0 200 180"
       xmlns="http://www.w3.org/2000/svg"
       fill="none"
@@ -210,7 +245,7 @@ function HouseSilhouette({ className = "" }) {
 
 function DimensionLine({ label, className = "" }) {
   return (
-    <div className={`flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.2em] text-blue-600/70 ${className}`}>
+    <div className={`flex items-center gap-2 font-mono txt-10 uppercase trk-02 text-blue-600/70 ${className}`}>
       <span className="h-px w-8 bg-blue-600/40" />
       <span>{label}</span>
       <span className="h-px w-8 bg-blue-600/40" />
@@ -378,10 +413,10 @@ function Hero() {
       <div className="pointer-events-none absolute inset-0 text-blue-500/20">
         <BlueprintGrid className="h-full w-full" />
       </div>
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,white_85%)]" />
+      <div className="pointer-events-none absolute inset-0 bg-fade-center" />
 
-      <HouseSilhouette className="pointer-events-none absolute left-[5%] top-[18%] h-24 w-24 text-blue-300/30 hidden lg:block" />
-      <HouseSilhouette className="pointer-events-none absolute right-[6%] bottom-[15%] h-20 w-20 text-blue-300/30 hidden lg:block" />
+      <HouseSilhouette className="pointer-events-none absolute h-24 w-24 text-blue-300/30 hidden lg:block" style={{ left: '5%', top: '18%' }} />
+      <HouseSilhouette className="pointer-events-none absolute h-20 w-20 text-blue-300/30 hidden lg:block" style={{ right: '6%', bottom: '15%' }} />
 
       <div className="relative mx-auto max-w-7xl px-6 lg:px-10">
         <div className="grid items-center gap-12 lg:grid-cols-12">
@@ -391,7 +426,7 @@ function Hero() {
               Residential specialists · Nationwide
             </div>
 
-            <h1 className="font-serif text-5xl leading-[1.05] tracking-tight text-slate-900 lg:text-7xl">
+            <h1 className="font-serif text-5xl lead-105 tracking-tight text-slate-900 lg:text-7xl">
               Your home.{" "}
               <span className="italic text-blue-600">Measured precisely.</span>{" "}
               Delivered in days.
@@ -446,7 +481,7 @@ function Hero() {
                   <span className="font-mono text-xs uppercase tracking-widest text-slate-500">your_home.dwg</span>
                 </div>
 
-                <div className="relative aspect-[4/5] bg-gradient-to-br from-blue-50 via-white to-blue-50">
+                <div className="relative bg-gradient-to-br from-blue-50 via-white to-blue-50" style={{ aspectRatio: '4 / 5' }}>
                   <div className="pointer-events-none absolute inset-0 text-blue-500/40">
                     <BlueprintGrid className="h-full w-full" />
                   </div>
@@ -484,7 +519,7 @@ function Hero() {
                 </div>
 
                 <div className="flex items-center justify-between border-t border-slate-200 bg-white px-5 py-3 text-xs">
-                  <span className="font-mono uppercase tracking-wider text-slate-500">Scan complete · 20mm @ 10m</span>
+                  <span className="font-mono uppercase tracking-wider text-slate-500">Scan complete · 1/2″ @ 30 ft</span>
                   <span className="inline-flex items-center gap-1 font-medium text-green-600">
                     <span className="h-1.5 w-1.5 rounded-full bg-green-500" /> Ready
                   </span>
@@ -540,7 +575,7 @@ function Stats() {
                   <Icon size={20} />
                 </div>
                 <div>
-                  <div className="font-mono text-[11px] uppercase tracking-widest text-slate-500">{item.label}</div>
+                  <div className="font-mono txt-11 uppercase tracking-widest text-slate-500">{item.label}</div>
                   <div className="font-serif text-2xl text-slate-900">{item.value}</div>
                 </div>
               </div>
@@ -614,7 +649,7 @@ function PainPoints() {
                   <div className="grid h-11 w-11 place-items-center rounded-lg bg-blue-50 text-blue-600">
                     <Icon size={20} />
                   </div>
-                  <span className="font-mono text-[11px] uppercase tracking-widest text-slate-500">
+                  <span className="font-mono txt-11 uppercase tracking-widest text-slate-500">
                     {s.audience}
                   </span>
                 </div>
@@ -628,7 +663,7 @@ function PainPoints() {
 
                 <p className="mt-5 text-sm leading-relaxed text-slate-600">{s.body}</p>
 
-                <p className="mt-5 border-t border-slate-100 pt-4 font-mono text-[10px] uppercase tracking-wider text-slate-400">
+                <p className="mt-5 border-t border-slate-100 pt-4 font-mono txt-10 uppercase tracking-wider text-slate-400">
                   Source: {s.source}
                 </p>
               </article>
@@ -748,7 +783,7 @@ function Deliverables() {
                 }`}
               >
                 {tier.highlight && (
-                  <div className="absolute -top-3 left-8 rounded-full bg-blue-600 px-3 py-1 text-[10px] font-semibold uppercase tracking-widest text-white">
+                  <div className="absolute -top-3 left-8 rounded-full bg-blue-600 px-3 py-1 txt-10 font-semibold uppercase tracking-widest text-white">
                     Most requested
                   </div>
                 )}
@@ -760,7 +795,7 @@ function Deliverables() {
 
                 <div className="mt-5 flex flex-wrap gap-1.5">
                   {tier.formats.map((f) => (
-                    <span key={f} className={`rounded-md border px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider ${tier.highlight ? "border-slate-700 text-slate-300" : "border-slate-200 text-slate-500"}`}>
+                    <span key={f} className={`rounded-md border px-2 py-0.5 font-mono txt-10 uppercase tracking-wider ${tier.highlight ? "border-slate-700 text-slate-300" : "border-slate-200 text-slate-500"}`}>
                       {f}
                     </span>
                   ))}
@@ -802,7 +837,7 @@ function Process() {
   const steps = [
     { n: "01", title: "Request a quote", body: "Tell us the address, square footage, and what you need. Takes under 90 seconds." },
     { n: "02", title: "Packages matched to you", body: "Within minutes, we email a short list of packages sized to your home and timeline." },
-    { n: "03", title: "On-site laser scan", body: "A technician arrives and captures every surface with laser precision (20 mm at 10 m, or better). Most homes take under 3 hours." },
+    { n: "03", title: "On-site laser scan", body: "A technician arrives and captures every surface with laser precision (1/2 inch at 30 feet, or better). Most homes take under 3 hours." },
     { n: "04", title: "Deliverables in 3–5 days", body: "You receive your drawings — floor plans, elevations, ceiling plans — ready for your architect, contractor, or records." },
   ];
 
@@ -875,7 +910,7 @@ function PricingAnchor() {
               Get your matched price
               <ArrowRight size={16} />
             </a>
-            <p className="mt-4 font-mono text-[10px] uppercase tracking-wider text-slate-400">
+            <p className="mt-4 font-mono txt-10 uppercase tracking-wider text-slate-400">
               Architect fee sources: HomeGuide 2026; HomeAdvisor 2025.
             </p>
           </div>
@@ -885,7 +920,7 @@ function PricingAnchor() {
               <div className="rounded-2xl border border-slate-200 bg-slate-50 p-6 lg:p-8">
                 <div className="flex items-center gap-2 text-slate-500">
                   <DollarSign size={18} />
-                  <span className="font-mono text-[11px] uppercase tracking-widest">Architect route</span>
+                  <span className="font-mono txt-11 uppercase tracking-widest">Architect route</span>
                 </div>
                 <div className="mt-6">
                   <div className="font-serif text-4xl text-slate-900 line-through decoration-red-400/70 decoration-2 lg:text-5xl">
@@ -916,7 +951,7 @@ function PricingAnchor() {
                 <div className="relative">
                   <div className="flex items-center gap-2">
                     <TrendingDown size={18} />
-                    <span className="font-mono text-[11px] uppercase tracking-widest">RABS route</span>
+                    <span className="font-mono txt-11 uppercase tracking-widest">RABS route</span>
                   </div>
                   <div className="mt-6">
                     <div className="font-serif text-4xl lg:text-5xl">40–60%</div>
@@ -1034,20 +1069,20 @@ function Samples() {
         <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {samples.map((s, i) => (
             <figure key={i} className="group relative overflow-hidden rounded-xl border border-slate-200 bg-white">
-              <div className="relative aspect-[4/3] bg-gradient-to-br from-blue-100 via-slate-50 to-blue-50">
+              <div className="relative bg-gradient-to-br from-blue-100 via-slate-50 to-blue-50" style={{ aspectRatio: '4 / 3' }}>
                 <div className="pointer-events-none absolute inset-0 text-blue-500/30">
                   <BlueprintGrid className="h-full w-full" />
                 </div>
                 <HouseSilhouette className="absolute left-1/2 top-1/2 h-20 w-20 -translate-x-1/2 -translate-y-1/2 text-blue-400/40" />
                 <div className="absolute bottom-3 left-1/2 -translate-x-1/2">
-                  <span className="rounded-md bg-white/80 px-3 py-1 font-mono text-[10px] uppercase tracking-widest text-slate-500 backdrop-blur-sm">
+                  <span className="rounded-md bg-white/80 px-3 py-1 font-mono txt-10 uppercase tracking-widest text-slate-500 backdrop-blur-sm">
                     Placeholder · swap in real scan
                   </span>
                 </div>
               </div>
               <figcaption className="flex items-center justify-between border-t border-slate-100 px-5 py-4">
                 <span className="text-sm font-medium text-slate-900">{s.title}</span>
-                <span className="rounded-md border border-slate-200 px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider text-slate-500">
+                <span className="rounded-md border border-slate-200 px-2 py-0.5 font-mono txt-10 uppercase tracking-wider text-slate-500">
                   {s.tag}
                 </span>
               </figcaption>
@@ -1134,8 +1169,9 @@ function Testimonials() {
 function QuoteForm() {
   const [status, setStatus] = useState("idle");
   const [form, setForm] = useState({
-    name: "", email: "", phone: "", address: "", sqft: "",
-    propertyType: "", deliverables: [], timeline: "", purpose: "", notes: "",
+    name: "", email: "", phone: "", address: "", sqft: "", sqftExact: "",
+    propertyType: "", deliverables: [], details: [],
+    timeline: "", purpose: "", notes: "",
   });
 
   const update = (k, v) => setForm((f) => ({ ...f, [k]: v }));
@@ -1145,12 +1181,21 @@ function QuoteForm() {
       deliverables: f.deliverables.includes(val) ? f.deliverables.filter((d) => d !== val) : [...f.deliverables, val],
     }));
   };
+  const toggleDetail = (val) => {
+    setForm((f) => ({
+      ...f,
+      details: f.details.includes(val) ? f.details.filter((d) => d !== val) : [...f.details, val],
+    }));
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setStatus("sending");
     try {
-      const quote = calculateQuote(form.sqft);
+      const quote = calculateQuote(form.sqft, form.sqftExact);
+      const sqftDisplay = form.sqft === EXACT_SQFT_KEY && form.sqftExact
+        ? `${parseInt(form.sqftExact, 10).toLocaleString()} sq ft (exact)`
+        : form.sqft;
       const payload = {
         _subject: `New RABS quote request — ${form.name || "unnamed"} (${quote?.display || "size TBD"})`,
         _template: "table",
@@ -1159,12 +1204,13 @@ function QuoteForm() {
         Email: form.email,
         Phone: form.phone || "(not provided)",
         "Home address": form.address,
-        "Square footage": form.sqft,
+        "Square footage": sqftDisplay,
         "Estimated quote": quote ? `${quote.display} (at $${RATE_PER_SQFT}/sq ft)` : "TBD",
         "Property type": form.propertyType,
         "Desired deliverable": form.deliverables.join(", ") || "(not specified)",
-        Timeline: form.timeline,
-        Purpose: form.purpose,
+        "Details to include": form.details.join(", ") || "(none specified)",
+        Timeline: form.timeline || "(not specified)",
+        Purpose: form.purpose || "(not specified)",
         "Additional notes": form.notes || "(none)",
       };
 
@@ -1188,13 +1234,13 @@ function QuoteForm() {
   };
 
   if (status === "sent") {
-    const quote = calculateQuote(form.sqft);
+    const quote = calculateQuote(form.sqft, form.sqftExact);
     return (
       <section id="quote" className="relative overflow-hidden bg-gradient-to-b from-slate-50 via-white to-slate-50 py-20 lg:py-28">
         <div className="pointer-events-none absolute inset-0 text-blue-500/10">
           <BlueprintGrid className="h-full w-full" />
         </div>
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,transparent_0%,white_75%)]" />
+        <div className="pointer-events-none absolute inset-0 bg-fade-top" />
 
         <div className="relative mx-auto max-w-4xl px-6 lg:px-10">
           <div className="text-center">
@@ -1215,10 +1261,10 @@ function QuoteForm() {
           <div className="relative mt-12 overflow-hidden rounded-2xl border-2 border-blue-600 bg-white shadow-2xl shadow-blue-900/10">
             <div className="border-b border-slate-200 bg-slate-50 px-6 py-4 lg:px-10">
               <div className="flex flex-wrap items-center justify-between gap-3">
-                <span className="font-mono text-[11px] uppercase tracking-widest text-slate-500">
+                <span className="font-mono txt-11 uppercase tracking-widest text-slate-500">
                   Quote · Estimate #{Date.now().toString().slice(-6)}
                 </span>
-                <span className="font-mono text-[11px] uppercase tracking-widest text-slate-500">
+                <span className="font-mono txt-11 uppercase tracking-widest text-slate-500">
                   {new Date().toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })}
                 </span>
               </div>
@@ -1228,24 +1274,28 @@ function QuoteForm() {
               <div className="grid gap-8 md:grid-cols-5">
                 {/* Breakdown */}
                 <div className="md:col-span-3">
-                  <div className="font-mono text-[10px] uppercase tracking-widest text-slate-500">Your home</div>
+                  <div className="font-mono txt-10 uppercase tracking-widest text-slate-500">Your home</div>
                   <div className="mt-1 font-serif text-xl text-slate-900">{form.address}</div>
 
                   <div className="mt-8 space-y-4 border-t border-slate-100 pt-6">
                     <div className="flex items-start justify-between gap-4">
                       <div>
-                        <div className="font-mono text-[10px] uppercase tracking-widest text-slate-500">Size</div>
-                        <div className="mt-1 text-slate-900">{form.sqft || "—"}</div>
+                        <div className="font-mono txt-10 uppercase tracking-widest text-slate-500">Size</div>
+                        <div className="mt-1 text-slate-900">
+                          {form.sqft === EXACT_SQFT_KEY && form.sqftExact
+                            ? `${parseInt(form.sqftExact, 10).toLocaleString()} sq ft`
+                            : form.sqft || "—"}
+                        </div>
                       </div>
                       <div className="text-right">
-                        <div className="font-mono text-[10px] uppercase tracking-widest text-slate-500">Rate</div>
+                        <div className="font-mono txt-10 uppercase tracking-widest text-slate-500">Rate</div>
                         <div className="mt-1 text-slate-900">{formatUSD(RATE_PER_SQFT)} / sq ft</div>
                       </div>
                     </div>
 
                     {form.deliverables.length > 0 && (
                       <div className="border-t border-slate-100 pt-4">
-                        <div className="font-mono text-[10px] uppercase tracking-widest text-slate-500">Deliverables</div>
+                        <div className="font-mono txt-10 uppercase tracking-widest text-slate-500">Deliverables</div>
                         <div className="mt-1 flex flex-wrap gap-1.5">
                           {form.deliverables.map((d) => (
                             <span key={d} className="rounded-md border border-blue-200 bg-blue-50 px-2 py-0.5 text-xs text-blue-700">
@@ -1256,13 +1306,28 @@ function QuoteForm() {
                       </div>
                     )}
 
+                    {form.details.length > 0 && (
+                      <div className="border-t border-slate-100 pt-4">
+                        <div className="font-mono txt-10 uppercase tracking-widest text-slate-500">
+                          Details to include
+                        </div>
+                        <div className="mt-1 flex flex-wrap gap-1.5">
+                          {form.details.map((d) => (
+                            <span key={d} className="rounded-md border border-slate-200 bg-slate-50 px-2 py-0.5 text-xs text-slate-700">
+                              {d}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
                     <div className="flex items-center justify-between gap-4 border-t border-slate-100 pt-4">
                       <div>
-                        <div className="font-mono text-[10px] uppercase tracking-widest text-slate-500">Timeline</div>
+                        <div className="font-mono txt-10 uppercase tracking-widest text-slate-500">Timeline</div>
                         <div className="mt-1 text-slate-900">{form.timeline || "—"}</div>
                       </div>
                       <div className="text-right">
-                        <div className="font-mono text-[10px] uppercase tracking-widest text-slate-500">Purpose</div>
+                        <div className="font-mono txt-10 uppercase tracking-widest text-slate-500">Purpose</div>
                         <div className="mt-1 text-slate-900">{form.purpose || "—"}</div>
                       </div>
                     </div>
@@ -1272,7 +1337,7 @@ function QuoteForm() {
                 {/* Total */}
                 <div className="md:col-span-2">
                   <div className="rounded-xl border border-slate-200 bg-gradient-to-br from-blue-50 to-white p-6 lg:p-8">
-                    <div className="font-mono text-[10px] uppercase tracking-widest text-blue-700">
+                    <div className="font-mono txt-10 uppercase tracking-widest text-blue-700">
                       Estimated total
                     </div>
                     <div className="mt-3 font-serif text-4xl leading-none tracking-tight text-slate-900 lg:text-5xl">
@@ -1366,7 +1431,35 @@ function QuoteForm() {
               <AddressAutocomplete required value={form.address} onChange={(v) => update("address", v)} className={inputCls} />
             </Field>
             <Field label="Approx. square footage" required>
-              <Select required value={form.sqft} onChange={(v) => update("sqft", v)} options={["0 – 1,500 sq ft", "1,500 – 3,000 sq ft", "3,000 – 6,000 sq ft", "6,000 – 10,000 sq ft", "10,000+ sq ft"]} />
+              <Select
+                required
+                value={form.sqft}
+                onChange={(v) => {
+                  update("sqft", v);
+                  if (v !== EXACT_SQFT_KEY) update("sqftExact", "");
+                }}
+                options={[
+                  "0 – 1,500 sq ft",
+                  "1,500 – 3,000 sq ft",
+                  "3,000 – 6,000 sq ft",
+                  "6,000 – 10,000 sq ft",
+                  "10,000+ sq ft",
+                  EXACT_SQFT_KEY,
+                ]}
+              />
+              {form.sqft === EXACT_SQFT_KEY && (
+                <input
+                  required
+                  type="number"
+                  min="100"
+                  max="100000"
+                  value={form.sqftExact}
+                  onChange={(e) => update("sqftExact", e.target.value)}
+                  className={`${inputCls} mt-2`}
+                  placeholder="Enter exact sq ft (e.g. 2,400)"
+                  autoFocus
+                />
+              )}
             </Field>
             <Field label="Property type" required>
               <Select required value={form.propertyType} onChange={(v) => update("propertyType", v)} options={["Single-family home", "Condo", "Townhouse", "Multi-family", "Other"]} />
@@ -1374,7 +1467,17 @@ function QuoteForm() {
 
             <Field label="Desired deliverable" className="md:col-span-2">
               <div className="flex flex-wrap gap-2">
-                {["Floor Plans", "Exterior Elevations", "Reflected Ceiling Plans", "All three", "Not sure yet"].map((d) => {
+                {[
+                  "Floor Plans",
+                  "Exterior Elevations",
+                  "Interior Elevations",
+                  "Reflected Ceiling Plans",
+                  "Roof Plans",
+                  "Revit Models",
+                  "Virtual Visits (Matterport)",
+                  "All of the above",
+                  "Not sure yet",
+                ].map((d) => {
                   const active = form.deliverables.includes(d);
                   return (
                     <button
@@ -1390,11 +1493,32 @@ function QuoteForm() {
               </div>
             </Field>
 
-            <Field label="Timeline" required>
-              <Select required value={form.timeline} onChange={(v) => update("timeline", v)} options={["ASAP", "1–2 weeks", "Within a month", "Flexible"]} />
+            <Field label="Details to include (optional)" className="md:col-span-2">
+              <p className="-mt-0.5 mb-2.5 text-xs text-slate-500">
+                Tell us which elements matter for your project. Pick as many as apply — it helps us price accurately.
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {DETAIL_OPTIONS.map((d) => {
+                  const active = form.details.includes(d);
+                  return (
+                    <button
+                      key={d}
+                      type="button"
+                      onClick={() => toggleDetail(d)}
+                      className={`rounded-full border px-3.5 py-1.5 text-sm transition-all ${active ? "border-blue-600 bg-blue-600 text-white" : "border-slate-200 bg-white text-slate-700 hover:border-slate-300"}`}
+                    >
+                      {d}
+                    </button>
+                  );
+                })}
+              </div>
             </Field>
-            <Field label="Purpose" required>
-              <Select required value={form.purpose} onChange={(v) => update("purpose", v)} options={["Renovation / remodel", "Insurance", "Sale / listing", "Permit / zoning", "Historical / records", "Other"]} />
+
+            <Field label="Timeline (optional)">
+              <Select value={form.timeline} onChange={(v) => update("timeline", v)} options={["ASAP", "1–2 weeks", "Within a month", "Flexible"]} />
+            </Field>
+            <Field label="Purpose (optional)">
+              <Select value={form.purpose} onChange={(v) => update("purpose", v)} options={["Renovation / remodel", "Insurance", "Sale / listing", "Permit / zoning", "Historical / records", "Other"]} />
             </Field>
 
             <Field label="Anything else?" className="md:col-span-2">
@@ -1430,7 +1554,7 @@ function QuoteForm() {
 function Field({ label, required, className = "", children }) {
   return (
     <label className={`block ${className}`}>
-      <span className="mb-1.5 block font-mono text-[11px] uppercase tracking-widest text-slate-500">
+      <span className="mb-1.5 block font-mono txt-11 uppercase tracking-widest text-slate-500">
         {label}
         {required && <span className="ml-1 text-blue-600">*</span>}
       </span>
@@ -1512,7 +1636,7 @@ function FAQ() {
       items: [
         {
           q: "How accurate are your scans?",
-          a: "Our laser scanners achieve 20 mm accuracy at 10 m range — or better. Plenty precise for renovation, insurance, and permitting work.",
+          a: "Our laser scanners achieve 1/2 inch accuracy at 30 feet — or better. Plenty precise for renovation, insurance, and permitting work.",
         },
         {
           q: "What file formats do I get?",
@@ -1550,14 +1674,14 @@ function FAQ() {
         <div className="mt-16 space-y-12">
           {faqs.map((cat, i) => (
             <div key={i}>
-              <h3 className="border-b border-slate-200 pb-3 font-mono text-[11px] uppercase tracking-widest text-slate-500">
+              <h3 className="border-b border-slate-200 pb-3 font-mono txt-11 uppercase tracking-widest text-slate-500">
                 {cat.category}
               </h3>
               <div className="divide-y divide-slate-200">
                 {cat.items.map((item, j) => (
                   <details
                     key={j}
-                    className="group py-5 [&_summary::-webkit-details-marker]:hidden"
+                    className="group py-5"
                   >
                     <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-serif text-lg text-slate-900 transition-colors hover:text-blue-600">
                       <span>{item.q}</span>
@@ -1654,7 +1778,7 @@ function ServiceAreas() {
       <MapPin size={13} className="shrink-0 text-blue-600" />
       <span className="sr-only">As-builts in </span>
       <span className="whitespace-nowrap font-medium">{city}</span>
-      <span className="whitespace-nowrap font-mono text-[10px] uppercase tracking-widest text-slate-400">
+      <span className="whitespace-nowrap font-mono txt-10 uppercase tracking-widest text-slate-400">
         {state}
       </span>
     </a>
@@ -1768,7 +1892,7 @@ function Footer() {
             </div>
             <div>
               <div className="font-serif text-lg text-slate-900">{BRAND.legalName}</div>
-              <div className="font-mono text-[10px] uppercase tracking-widest text-slate-500">{BRAND.tagline}</div>
+              <div className="font-mono txt-10 uppercase tracking-widest text-slate-500">{BRAND.tagline}</div>
             </div>
           </div>
 
@@ -1800,6 +1924,22 @@ function Footer() {
 export default function Rabs() {
   return (
     <div className="min-h-screen bg-white font-sans text-slate-900 antialiased">
+      <style>{`
+        /* Custom CSS to replace Tailwind arbitrary values for artifact-sandbox compatibility */
+        .txt-10 { font-size: 10px; line-height: 1.3; }
+        .txt-11 { font-size: 11px; line-height: 1.35; }
+        .lead-105 { line-height: 1.05; }
+        .trk-02 { letter-spacing: 0.2em; }
+        .bg-fade-center {
+          background-image: radial-gradient(ellipse at center, transparent 0%, #ffffff 85%);
+        }
+        .bg-fade-top {
+          background-image: radial-gradient(ellipse at top, transparent 0%, #ffffff 75%);
+        }
+        /* Hide default details/summary marker in FAQ accordion */
+        details > summary { list-style: none; }
+        details > summary::-webkit-details-marker { display: none; }
+      `}</style>
       <Nav />
       <StickyCTA />
       <main>

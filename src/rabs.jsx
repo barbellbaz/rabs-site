@@ -38,6 +38,7 @@ const BRAND = {
   coverage: "Nationwide",
   turnaround: "3–5 business days",
   priceAdvantage: "40–60% less than hiring an architect",
+  logoUrl: "/images/Rabs-logo.jpeg",
 };
 
 /**
@@ -49,6 +50,18 @@ const RATE_PER_SQFT = 0.75;
 
 const EXACT_SQFT_KEY = "I know the exact sq ft";
 
+// Services included in the base scan price
+const DELIVERABLE_SERVICES = [
+  "Floor Plans",
+  "Exterior Elevations",
+  "Interior Elevations",
+  "Reflected Ceiling Plans",
+  "Roof Plans",
+  "Revit Models",
+  "Virtual Visits (Matterport)",
+];
+
+// Optional detail elements that may require scope clarification
 const DETAIL_OPTIONS = [
   "Walls",
   "Half walls",
@@ -291,10 +304,14 @@ function Nav() {
       }`}
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-10">
-        <a href="#top" className="flex items-center gap-2">
-          <div className="grid h-8 w-8 place-items-center rounded-md bg-blue-600 text-white">
-            <ScanLine size={18} strokeWidth={2.25} />
-          </div>
+        <a href="#top" className="flex items-center gap-2.5">
+          <img
+            src={BRAND.logoUrl}
+            alt={`${BRAND.legalName} logo`}
+            className="h-9 w-9 rounded-md object-cover"
+            width="36"
+            height="36"
+          />
           <span className="font-serif text-xl tracking-tight text-slate-900">{BRAND.name}</span>
         </a>
 
@@ -427,13 +444,12 @@ function Hero() {
             </div>
 
             <h1 className="font-serif text-5xl lead-105 tracking-tight text-slate-900 lg:text-7xl">
-              Your home.{" "}
-              <span className="italic text-blue-600">Measured precisely.</span>{" "}
-              Delivered in days.
+              Your home. Delivered in days.{" "}
+              <span className="italic text-blue-600">At half the cost.</span>
             </h1>
 
             <p className="mt-6 max-w-xl text-lg leading-relaxed text-slate-600">
-              Laser-scanned as-built drawings for residential renovations, insurance claims, and home sales.{" "}
+              Accurate as-built drawings for residential renovations, insurance claims, and home sales — without architect retainers or weeks of waiting.{" "}
               <span className="font-medium text-slate-900">Typically {BRAND.priceAdvantage}.</span>
             </p>
 
@@ -837,7 +853,7 @@ function Process() {
   const steps = [
     { n: "01", title: "Request a quote", body: "Tell us the address, square footage, and what you need. Takes under 90 seconds." },
     { n: "02", title: "Packages matched to you", body: "Within minutes, we email a short list of packages sized to your home and timeline." },
-    { n: "03", title: "On-site laser scan", body: "A technician arrives and captures every surface with laser precision (1/2 inch at 30 feet, or better). Most homes take under 3 hours." },
+    { n: "03", title: "On-site survey", body: "A technician arrives and captures every surface with laser precision (1/2 inch at 30 feet, or better). Most homes wrap in under a day." },
     { n: "04", title: "Deliverables in 3–5 days", body: "You receive your drawings — floor plans, elevations, ceiling plans — ready for your architect, contractor, or records." },
   ];
 
@@ -960,7 +976,7 @@ function PricingAnchor() {
                   <ul className="mt-8 space-y-3 text-sm text-blue-50">
                     <li className="flex gap-2">
                       <Check size={16} className="mt-0.5 shrink-0 text-blue-200" />
-                      <span>Scanned in under 3 hours</span>
+                      <span>Surveyed in under a day</span>
                     </li>
                     <li className="flex gap-2">
                       <Check size={16} className="mt-0.5 shrink-0 text-blue-200" />
@@ -1170,23 +1186,10 @@ function QuoteForm() {
   const [status, setStatus] = useState("idle");
   const [form, setForm] = useState({
     name: "", email: "", phone: "", address: "", sqft: "", sqftExact: "",
-    propertyType: "", deliverables: [], details: [],
-    timeline: "", purpose: "", notes: "",
+    propertyType: "", timeline: "", purpose: "", notes: "",
   });
 
   const update = (k, v) => setForm((f) => ({ ...f, [k]: v }));
-  const toggleDeliverable = (val) => {
-    setForm((f) => ({
-      ...f,
-      deliverables: f.deliverables.includes(val) ? f.deliverables.filter((d) => d !== val) : [...f.deliverables, val],
-    }));
-  };
-  const toggleDetail = (val) => {
-    setForm((f) => ({
-      ...f,
-      details: f.details.includes(val) ? f.details.filter((d) => d !== val) : [...f.details, val],
-    }));
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -1207,8 +1210,6 @@ function QuoteForm() {
         "Square footage": sqftDisplay,
         "Estimated quote": quote ? `${quote.display} (at $${RATE_PER_SQFT}/sq ft)` : "TBD",
         "Property type": form.propertyType,
-        "Desired deliverable": form.deliverables.join(", ") || "(not specified)",
-        "Details to include": form.details.join(", ") || "(none specified)",
         Timeline: form.timeline || "(not specified)",
         Purpose: form.purpose || "(not specified)",
         "Additional notes": form.notes || "(none)",
@@ -1293,34 +1294,6 @@ function QuoteForm() {
                       </div>
                     </div>
 
-                    {form.deliverables.length > 0 && (
-                      <div className="border-t border-slate-100 pt-4">
-                        <div className="font-mono txt-10 uppercase tracking-widest text-slate-500">Deliverables</div>
-                        <div className="mt-1 flex flex-wrap gap-1.5">
-                          {form.deliverables.map((d) => (
-                            <span key={d} className="rounded-md border border-blue-200 bg-blue-50 px-2 py-0.5 text-xs text-blue-700">
-                              {d}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-
-                    {form.details.length > 0 && (
-                      <div className="border-t border-slate-100 pt-4">
-                        <div className="font-mono txt-10 uppercase tracking-widest text-slate-500">
-                          Details to include
-                        </div>
-                        <div className="mt-1 flex flex-wrap gap-1.5">
-                          {form.details.map((d) => (
-                            <span key={d} className="rounded-md border border-slate-200 bg-slate-50 px-2 py-0.5 text-xs text-slate-700">
-                              {d}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-
                     <div className="flex items-center justify-between gap-4 border-t border-slate-100 pt-4">
                       <div>
                         <div className="font-mono txt-10 uppercase tracking-widest text-slate-500">Timeline</div>
@@ -1368,7 +1341,7 @@ function QuoteForm() {
             {[
               { n: "01", t: "Confirmation", b: "Check your inbox — your quote is on its way." },
               { n: "02", t: "We call you", b: "Our scheduler books your scan within 1 business day." },
-              { n: "03", t: "On-site scan", b: "Technician captures your home in under 3 hours." },
+              { n: "03", t: "On-site survey", b: "A discreet, friendly technician wraps your home in under a day." },
               { n: "04", t: "Drawings delivered", b: `In your inbox within ${BRAND.turnaround}.` },
             ].map((s, i) => (
               <div key={i} className="rounded-xl border border-slate-200 bg-white p-5">
@@ -1463,55 +1436,6 @@ function QuoteForm() {
             </Field>
             <Field label="Property type" required>
               <Select required value={form.propertyType} onChange={(v) => update("propertyType", v)} options={["Single-family home", "Condo", "Townhouse", "Multi-family", "Other"]} />
-            </Field>
-
-            <Field label="Desired deliverable" className="md:col-span-2">
-              <div className="flex flex-wrap gap-2">
-                {[
-                  "Floor Plans",
-                  "Exterior Elevations",
-                  "Interior Elevations",
-                  "Reflected Ceiling Plans",
-                  "Roof Plans",
-                  "Revit Models",
-                  "Virtual Visits (Matterport)",
-                  "All of the above",
-                  "Not sure yet",
-                ].map((d) => {
-                  const active = form.deliverables.includes(d);
-                  return (
-                    <button
-                      key={d}
-                      type="button"
-                      onClick={() => toggleDeliverable(d)}
-                      className={`rounded-full border px-4 py-2 text-sm transition-all ${active ? "border-blue-600 bg-blue-600 text-white" : "border-slate-200 bg-white text-slate-700 hover:border-slate-300"}`}
-                    >
-                      {d}
-                    </button>
-                  );
-                })}
-              </div>
-            </Field>
-
-            <Field label="Details to include (optional)" className="md:col-span-2">
-              <p className="-mt-0.5 mb-2.5 text-xs text-slate-500">
-                Tell us which elements matter for your project. Pick as many as apply — it helps us price accurately.
-              </p>
-              <div className="flex flex-wrap gap-2">
-                {DETAIL_OPTIONS.map((d) => {
-                  const active = form.details.includes(d);
-                  return (
-                    <button
-                      key={d}
-                      type="button"
-                      onClick={() => toggleDetail(d)}
-                      className={`rounded-full border px-3.5 py-1.5 text-sm transition-all ${active ? "border-blue-600 bg-blue-600 text-white" : "border-slate-200 bg-white text-slate-700 hover:border-slate-300"}`}
-                    >
-                      {d}
-                    </button>
-                  );
-                })}
-              </div>
             </Field>
 
             <Field label="Timeline (optional)">
@@ -1615,7 +1539,7 @@ function FAQ() {
       items: [
         {
           q: "How long does the scan take?",
-          a: "Homes under 3,000 sq ft are typically done in under 2 hours. Larger properties usually wrap in 3–4 hours.",
+          a: "Most homes wrap in under a single day. Our technicians are discreet, friendly, and swift.",
         },
         {
           q: "Do I need to be home?",
@@ -1627,7 +1551,7 @@ function FAQ() {
         },
         {
           q: "What should I do to prepare?",
-          a: "Move pets to a contained area and clear main walkways. You don't need to clean or tidy — the scanner sees through clutter.",
+          a: "Move pets to a contained area and clear main walkways. Make sure every space has good lighting — either sunlight or artificial — so the scanner can properly capture each room. You don't need to clean or tidy; the scanner sees through clutter.",
         },
       ],
     },
@@ -1643,12 +1567,49 @@ function FAQ() {
           a: "Every drawing is delivered as both PDF (for viewing and printing) and DWG (for AutoCAD, Revit, and other CAD software).",
         },
         {
-          q: "Do all three drawings come with every package?",
-          a: "No — you choose what you need: floor plans, exterior elevations, reflected ceiling plans, or all three. Pricing scales accordingly.",
+          q: "What deliverables can you produce?",
+          a: "Floor plans, exterior elevations, interior elevations, reflected ceiling plans, roof plans, Revit models, and virtual Matterport walk-throughs. You pick what you need — see the 'What's included' section below for details on each.",
         },
         {
           q: "How fast is delivery?",
           a: "3–5 business days from the scan date. Rush delivery (48–72 hours) is available for an added fee.",
+        },
+      ],
+    },
+    {
+      category: "What's included in each deliverable",
+      items: [
+        {
+          q: "Floor Plans — what's included?",
+          a: "Dimensioned plans of every level showing walls, doors, windows, and permanent fixtures. Half walls, railings, and steps are included by default.",
+        },
+        {
+          q: "Exterior Elevations — what's included?",
+          a: "All four exterior faces with door and window locations, roof geometry, and major material callouts. Window sill heights and exact window dimensions available as add-ons.",
+        },
+        {
+          q: "Interior Elevations — what's included?",
+          a: "Wall-by-wall interior views showing cabinetry, millwork, outlets, and fixture heights. Ideal for kitchens, bathrooms, and built-ins.",
+        },
+        {
+          q: "Reflected Ceiling Plans — what's included?",
+          a: "Top-down ceiling plans with lighting and fixture locations, beam and soffit layouts, and ceiling heights throughout.",
+        },
+        {
+          q: "Roof Plans — what's included?",
+          a: "Top-down view of the roof with pitches, ridges, valleys, chimneys, skylights, and any rooftop equipment.",
+        },
+        {
+          q: "Revit Models — what's included?",
+          a: "LOD 200–300 parametric BIM model with walls, floors, ceilings, and openings. MEP placeholders available on request.",
+        },
+        {
+          q: "Virtual Visits (Matterport) — what's included?",
+          a: "An interactive 3D walk-through of the home your clients or buyers can explore online, plus a dollhouse view and measurement tool.",
+        },
+        {
+          q: "What counts as an optional add-on?",
+          a: "Elements like bathroom fixtures, landscape plans, parking surfaces, sidewalks, and precise window sill heights or dimensions. Mention these when our scheduler calls — they may adjust the final quote slightly.",
         },
       ],
     },
@@ -1887,9 +1848,13 @@ function Footer() {
       <div className="mx-auto max-w-7xl px-6 lg:px-10">
         <div className="flex flex-col justify-between gap-8 md:flex-row md:items-center">
           <div className="flex items-center gap-3">
-            <div className="grid h-8 w-8 place-items-center rounded-md bg-blue-600 text-white">
-              <ScanLine size={18} strokeWidth={2.25} />
-            </div>
+            <img
+              src={BRAND.logoUrl}
+              alt={`${BRAND.legalName} logo`}
+              className="h-10 w-10 rounded-md object-cover"
+              width="40"
+              height="40"
+            />
             <div>
               <div className="font-serif text-lg text-slate-900">{BRAND.legalName}</div>
               <div className="font-mono txt-10 uppercase tracking-widest text-slate-500">{BRAND.tagline}</div>

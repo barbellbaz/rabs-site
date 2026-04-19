@@ -303,14 +303,14 @@ function Nav() {
         scrolled ? "border-b border-slate-200/60 bg-white/80 backdrop-blur-md" : "bg-transparent"
       }`}
     >
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-10">
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-2.5 lg:px-10">
         <a href="#top" className="flex items-center gap-2.5">
           <img
             src={BRAND.logoUrl}
             alt={`${BRAND.legalName} logo`}
-            className="h-9 w-9 rounded-md object-cover"
-            width="36"
-            height="36"
+            className="h-20 w-20 rounded-md object-cover"
+            width="80"
+            height="80"
           />
           <span className="font-serif text-xl tracking-tight text-slate-900">{BRAND.name}</span>
         </a>
@@ -1851,9 +1851,9 @@ function Footer() {
             <img
               src={BRAND.logoUrl}
               alt={`${BRAND.legalName} logo`}
-              className="h-10 w-10 rounded-md object-cover"
-              width="40"
-              height="40"
+              className="h-20 w-20 rounded-md object-cover"
+              width="80"
+              height="80"
             />
             <div>
               <div className="font-serif text-lg text-slate-900">{BRAND.legalName}</div>

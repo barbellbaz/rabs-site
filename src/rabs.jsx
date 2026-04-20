@@ -20,6 +20,7 @@ import {
   Sparkles,
   Star,
   Triangle,
+  Trees,
   Wallpaper,
   X,
   Zap,
@@ -40,7 +41,7 @@ const BRAND = {
   projectsDelivered: "1,200+",
   coverage: "Nationwide",
   turnaround: "3–5 business days",
-  priceAdvantage: "a flat rate, no hourly meter",
+  priceAdvantage: "a flat rate, matched to your home",
   logoUrl: "/images/Rabs-logo.jpeg",
 };
 
@@ -457,7 +458,7 @@ function Hero() {
             </h1>
 
             <p className="mt-6 max-w-xl text-lg leading-relaxed text-slate-600">
-              <span className="font-medium text-slate-900">Fast, accurate, affordable, and dependable</span> as-built drawings for residential renovations. Flat pricing. Delivered in days. No hourly meter.
+              <span className="font-medium text-slate-900">Fast, accurate, affordable, and dependable</span> as-built drawings for residential renovations. Flat pricing. Delivered in days.
             </p>
 
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
@@ -912,7 +913,6 @@ function Deliverables() {
       formats: ["PDF", "DWG"],
       bullets: [
         "Lighting and fixture locations",
-        "Beam and soffit layouts",
         "Ceiling heights throughout",
       ],
     },
@@ -921,8 +921,14 @@ function Deliverables() {
   const advanced = [
     {
       icon: Triangle,
-      name: "Roof Plans",
+      name: "Roof Plans*",
       pitch: "Top-down roof plans with pitches, ridges, valleys, skylights, and chimneys.",
+      formats: ["PDF", "DWG"],
+    },
+    {
+      icon: Trees,
+      name: "Site & Landscape Plans",
+      pitch: "Top-down site plans with property, landscape, and outdoor features — for redesigns, additions, and pools.",
       formats: ["PDF", "DWG"],
     },
     {
@@ -1045,7 +1051,7 @@ function Deliverables() {
           <div className="h-px flex-1 bg-slate-200" />
         </div>
 
-        <div className="mt-8 grid gap-6 md:grid-cols-3">
+        <div className="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
           {advanced.map((item, i) => {
             const Icon = item.icon;
             return (
@@ -1076,6 +1082,10 @@ function Deliverables() {
             );
           })}
         </div>
+
+        <p className="mt-6 text-center font-mono txt-10 uppercase tracking-wider text-slate-400">
+          *Roof plan availability varies by property — ask us about yours.
+        </p>
       </div>
     </section>
   );
@@ -1166,7 +1176,7 @@ function PricingAnchor() {
             <DimensionLine label="04 · Pricing" />
             <h2 className="mt-4 font-serif text-4xl tracking-tight text-slate-900 lg:text-5xl">
               Priced by the square foot.{" "}
-              <span className="italic text-blue-600">No hourly meter.</span>
+              <span className="italic text-blue-600">Matched to your home.</span>
             </h2>
             <p className="mt-5 text-lg leading-relaxed text-slate-600">
               We work alongside architects, designers, and contractors every day. They design and build.
@@ -1218,8 +1228,8 @@ function PricingAnchor() {
                   </span>
                 </div>
                 <p className="mt-4 max-w-md leading-relaxed text-blue-50">
-                  One flat rate for laser scanning, drafting, and delivery. No hourly meter. No revision
-                  fees. Final price confirmed after the on-site scan.
+                  One flat rate for laser scanning, drafting, and delivery. No revision fees. Final price
+                  confirmed after the on-site scan.
                 </p>
 
                 <ul className="mt-6 grid gap-2 text-sm text-blue-50 sm:grid-cols-2">
@@ -1278,7 +1288,7 @@ function PricingAnchor() {
 function WhyUs() {
   const reasons = [
     { icon: Zap, title: "Delivered in days", body: `Drawings in your inbox within ${BRAND.turnaround} — not weeks. Every scan is prioritized.` },
-    { icon: DollarSign, title: "Priced to your home", body: "No hourly meters. No surprise fees. Flat pricing matched to your square footage and scope." },
+    { icon: DollarSign, title: "Priced to your home", body: "No surprise fees. Flat pricing matched to your square footage and scope." },
     { icon: Sparkles, title: "Built by specialists", body: `${BRAND.yearsExperience} years of residential scanning. ${BRAND.projectsDelivered} homes measured, drawn, and delivered.` },
   ];
 
@@ -1919,8 +1929,9 @@ function FAQ() {
         { q: "Floor Plans — what's included?", a: "Dimensioned plans of every level showing walls, doors, windows, and permanent fixtures. Half walls, railings, and steps are included by default." },
         { q: "Exterior Elevations — what's included?", a: "All four exterior faces of your home, drawn flat and to scale. Essential for permit submittals, facade renovations, and any curb-appeal work. Shows door and window locations and roof geometry. Precise window dimensions and sill heights available as add-ons." },
         { q: "Interior Elevations — what's included?", a: "Flat views of every interior wall, drawn to scale, showing door and window openings in elevation. A clean foundation for interior design and renovation planning. Note: fine details like cabinetry, millwork, and fixtures are measured on-site as needed — they aren't part of the standard deliverable." },
-        { q: "Reflected Ceiling Plans — what's included?", a: "Top-down ceiling plans with lighting and fixture locations, beam and soffit layouts, and ceiling heights throughout." },
-        { q: "Roof Plans — what's included?", a: "Top-down view of the roof with pitches, ridges, valleys, chimneys, skylights, and any rooftop equipment." },
+        { q: "Reflected Ceiling Plans — what's included?", a: "Top-down ceiling plans with lighting and fixture locations and ceiling heights throughout." },
+        { q: "Roof Plans — what's included?", a: "Top-down view of the roof with pitches, ridges, valleys, chimneys, skylights, and any rooftop equipment. Note: availability varies by property — access, roof pitch, height, and drone-flight permissions can all affect what we can capture. Ask us about your specific property when you request a quote." },
+        { q: "Site & Landscape Plans — what's included?", a: "Top-down plans of your property showing the building footprint, landscape features, hardscape, driveways, pools, and outbuildings. Useful for landscape redesigns, additions, new developments, pool planning, and general site upkeep." },
         { q: "Revit Models — what's included?", a: "LOD 200–300 parametric BIM model with walls, floors, ceilings, and openings. MEP placeholders available on request." },
         { q: "Virtual Visits (Matterport) — what's included?", a: "An interactive 3D walk-through of the home your clients or buyers can explore online, plus a dollhouse view and measurement tool." },
         { q: "What counts as an optional add-on?", a: "Elements like bathroom fixtures, landscape plans, parking surfaces, sidewalks, and precise window sill heights or dimensions. Mention these when our scheduler calls — they may adjust the final quote slightly." },

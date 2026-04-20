@@ -2,11 +2,14 @@ import { useState, useEffect, useRef } from "react";
 import {
   ArrowRight,
   ArrowUpRight,
+  Box,
   Check,
   ChevronDown,
   Clock,
   DollarSign,
+  Eye,
   HardHat,
+  Handshake,
   Home,
   Layers,
   MapPin,
@@ -17,7 +20,7 @@ import {
   Shield,
   Sparkles,
   Star,
-  TrendingDown,
+  Triangle,
   X,
   Zap,
 } from "lucide-react";
@@ -37,9 +40,29 @@ const BRAND = {
   projectsDelivered: "1,200+",
   coverage: "Nationwide",
   turnaround: "3–5 business days",
-  priceAdvantage: "40–60% less than hiring an architect",
+  priceAdvantage: "a flat rate, no hourly meter",
   logoUrl: "/images/Rabs-logo.jpeg",
 };
+
+/**
+ * Small inline logo mark used as a sandbox-safe placeholder for BRAND.logoUrl.
+ * In production, swap <LogoMark /> back for <img src={BRAND.logoUrl} ... />.
+ */
+function LogoMark({ className = "h-20 w-20" }) {
+  return (
+    <div
+      className={`grid place-items-center rounded-md bg-slate-900 text-white shadow-sm ${className}`}
+      aria-label={`${BRAND.legalName} logo`}
+    >
+      <div className="text-center leading-none">
+        <div className="font-serif text-2xl tracking-tight">RABS</div>
+        <div className="mt-0.5 font-mono text-[7px] uppercase tracking-[0.2em] text-blue-300">
+          as-builts
+        </div>
+      </div>
+    </div>
+  );
+}
 
 /**
  * =====================================================================
@@ -93,7 +116,6 @@ function formatUSD(n) {
 }
 
 function calculateQuote(sqftRange, sqftExact) {
-  // Exact path — precise quote based on entered number
   if (sqftRange === EXACT_SQFT_KEY) {
     const n = parseInt(sqftExact, 10);
     if (!isNaN(n) && n > 0) {
@@ -109,7 +131,6 @@ function calculateQuote(sqftRange, sqftExact) {
     }
     return null;
   }
-  // Range path
   const r = SQFT_RANGES[sqftRange];
   if (!r) return null;
   const lowTotal = r.min * RATE_PER_SQFT;
@@ -132,14 +153,11 @@ function calculateQuote(sqftRange, sqftExact) {
 /**
  * =====================================================================
  *  GOOGLE MAPS LOADER (optional — gracefully degrades if no key)
- *  Key is injected into window.__RABS_GMAPS_KEY__ by index.html
- *  at build time. Set VITE_GOOGLE_MAPS_API_KEY in your env to enable.
  * =====================================================================
  */
 function getGoogleMapsApiKey() {
   if (typeof window === "undefined") return null;
   const key = window.__RABS_GMAPS_KEY__;
-  // Empty string, undefined, or the un-replaced placeholder all mean "no key"
   if (!key || key.includes("%VITE_") || key === "undefined") return null;
   return key;
 }
@@ -305,13 +323,7 @@ function Nav() {
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-2.5 lg:px-10">
         <a href="#top" className="flex items-center">
-          <img
-            src={BRAND.logoUrl}
-            alt={`${BRAND.legalName} logo`}
-            className="h-20 w-20 rounded-md object-cover"
-            width="80"
-            height="80"
-          />
+          <LogoMark className="h-20 w-20" />
         </a>
 
         <nav className="hidden items-center gap-7 lg:flex">
@@ -370,7 +382,6 @@ function StickyCTA() {
   useEffect(() => {
     let ticking = false;
     let formTop = Infinity;
-    // Cache form position — recompute on resize instead of every scroll
     const recalcFormTop = () => {
       const formEl = document.getElementById("quote");
       formTop = formEl ? formEl.getBoundingClientRect().top + window.scrollY : Infinity;
@@ -388,9 +399,7 @@ function StickyCTA() {
       });
     };
 
-    // Initial measurement after DOM settles
     recalcFormTop();
-    // Recompute on resize (cheap, rare) instead of every scroll (expensive, constant)
     window.addEventListener("resize", recalcFormTop, { passive: true });
     window.addEventListener("scroll", handleScroll, { passive: true });
     handleScroll();
@@ -420,7 +429,7 @@ function StickyCTA() {
 
 /**
  * =====================================================================
- *  HERO — residential-first positioning with pricing anchor
+ *  HERO
  * =====================================================================
  */
 function Hero() {
@@ -448,7 +457,7 @@ function Hero() {
             </h1>
 
             <p className="mt-6 max-w-xl text-lg leading-relaxed text-slate-600">
-              <span className="font-medium text-slate-900">Fast, accurate, affordable, and dependable</span> as-built drawings for residential renovations. Delivered in days — for {BRAND.priceAdvantage}.
+              <span className="font-medium text-slate-900">Fast, accurate, affordable, and dependable</span> as-built drawings for residential renovations. Flat pricing. Delivered in days. No hourly meter.
             </p>
 
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
@@ -501,84 +510,54 @@ function Hero() {
                   </div>
 
                   <svg viewBox="0 0 400 500" className="absolute inset-0 h-full w-full p-6" fill="none" stroke="currentColor" strokeWidth="2">
-                    {/* === Dimension annotations (overall) === */}
                     <g stroke="#2563eb" strokeWidth="1" fill="#2563eb">
-                      {/* Top overall width */}
                       <line x1="30" y1="32" x2="370" y2="32" stroke="#2563eb" />
                       <line x1="30" y1="26" x2="30" y2="38" stroke="#2563eb" />
                       <line x1="370" y1="26" x2="370" y2="38" stroke="#2563eb" />
                       <text x="200" y="24" fontSize="10" textAnchor="middle" stroke="none" className="font-mono">42' - 0"</text>
-                      {/* Right overall height */}
                       <line x1="378" y1="50" x2="378" y2="470" stroke="#2563eb" />
                       <line x1="372" y1="50" x2="384" y2="50" stroke="#2563eb" />
                       <line x1="372" y1="470" x2="384" y2="470" stroke="#2563eb" />
                       <text x="388" y="263" fontSize="10" stroke="none" className="font-mono">52' - 0"</text>
                     </g>
 
-                    {/* === Floor fill === */}
                     <rect x="30" y="50" width="340" height="420" fill="#fafbff" stroke="none" />
-
-                    {/* === Exterior walls (thick) === */}
                     <rect x="30" y="50" width="340" height="420" stroke="#0f172a" strokeWidth="4" fill="none" />
 
-                    {/* === BALCONY (top-right, outside but connected) === */}
                     <g stroke="#0f172a" strokeWidth="1" strokeDasharray="3 3">
                       <rect x="270" y="50" width="100" height="60" fill="#eef2ff" />
                     </g>
                     <g stroke="#0f172a" strokeWidth="3" fill="none">
-                      {/* Balcony railing suggestion */}
                       <line x1="275" y1="55" x2="365" y2="55" strokeWidth="1.5" />
                       <line x1="275" y1="60" x2="365" y2="60" strokeWidth="0.5" />
                       <line x1="275" y1="55" x2="275" y2="105" strokeWidth="1.5" />
                       <line x1="365" y1="55" x2="365" y2="105" strokeWidth="1.5" />
                     </g>
 
-                    {/* === Interior walls === */}
                     <g stroke="#0f172a" strokeWidth="2.5">
-                      {/* Horizontal divider between living zone and bedroom zone */}
                       <line x1="30" y1="230" x2="170" y2="230" />
                       <line x1="210" y1="230" x2="370" y2="230" />
-
-                      {/* Kitchen / Living divider (top half) */}
                       <line x1="170" y1="110" x2="170" y2="230" />
-
-                      {/* Vestibule walls */}
                       <line x1="30" y1="110" x2="170" y2="110" />
                       <line x1="100" y1="110" x2="100" y2="160" />
                       <line x1="100" y1="160" x2="170" y2="160" />
-
-                      {/* Balcony door wall */}
                       <line x1="270" y1="110" x2="310" y2="110" />
                       <line x1="335" y1="110" x2="370" y2="110" />
-
-                      {/* Bottom zone: vertical spine creating corridor */}
                       <line x1="150" y1="260" x2="150" y2="310" />
                       <line x1="150" y1="340" x2="150" y2="470" />
                       <line x1="240" y1="260" x2="240" y2="310" />
                       <line x1="240" y1="340" x2="240" y2="470" />
-
-                      {/* Bedroom 3 (far left) */}
                       <line x1="30" y1="350" x2="150" y2="350" />
-
-                      {/* Master bath divider (right side) */}
                       <line x1="240" y1="390" x2="370" y2="390" />
                     </g>
 
-                    {/* === Door swings === */}
                     <g stroke="#0f172a" strokeWidth="1" fill="none">
-                      {/* Entry door (vestibule) */}
                       <path d="M 100 130 A 28 28 0 0 1 128 158" />
                       <line x1="100" y1="130" x2="100" y2="158" strokeWidth="0.5" strokeDasharray="2 2" />
-                      {/* Kitchen → Living doorway is open (no swing) */}
-                      {/* Bed 1 → corridor */}
                       <path d="M 150 290 A 25 25 0 0 1 125 315" />
-                      {/* Bed 2 → corridor */}
                       <path d="M 240 290 A 25 25 0 0 0 265 315" />
-                      {/* Bed 3 → corridor */}
                       <path d="M 150 330 A 25 25 0 0 1 175 355" />
-                      {/* Master bath */}
                       <path d="M 240 405 A 22 22 0 0 1 262 427" />
-                      {/* Balcony sliding door (double arrows) */}
                       <g strokeWidth="1">
                         <line x1="310" y1="107" x2="335" y2="107" strokeWidth="3" />
                         <path d="M 315 102 L 310 107 L 315 112" />
@@ -586,134 +565,95 @@ function Hero() {
                       </g>
                     </g>
 
-                    {/* === Kitchen fixtures === */}
                     <g stroke="#0f172a" strokeWidth="1" fill="none">
-                      {/* Counter along left + top wall */}
                       <rect x="35" y="115" width="60" height="18" />
                       <rect x="35" y="115" width="18" height="50" />
-                      {/* Sink */}
                       <rect x="42" y="118" width="14" height="12" />
-                      {/* Stove — 4 burners */}
                       <rect x="60" y="117" width="28" height="14" />
                       <circle cx="67" cy="122" r="2.5" fill="#0f172a" fillOpacity="0.4" />
                       <circle cx="81" cy="122" r="2.5" fill="#0f172a" fillOpacity="0.4" />
                       <circle cx="67" cy="128" r="2.5" fill="#0f172a" fillOpacity="0.4" />
                       <circle cx="81" cy="128" r="2.5" fill="#0f172a" fillOpacity="0.4" />
-                      {/* Fridge */}
                       <rect x="38" y="195" width="22" height="28" />
                       <line x1="38" y1="203" x2="60" y2="203" strokeWidth="0.5" />
-                      {/* Island */}
                       <rect x="75" y="175" width="60" height="25" rx="1" />
                     </g>
 
-                    {/* === Living room furniture === */}
                     <g stroke="#0f172a" strokeWidth="1" fill="none">
-                      {/* Sofa */}
                       <rect x="185" y="195" width="70" height="22" rx="3" />
                       <line x1="185" y1="202" x2="255" y2="202" strokeWidth="0.5" />
-                      {/* Coffee table */}
                       <rect x="200" y="170" width="40" height="18" rx="1" />
-                      {/* Armchair */}
                       <rect x="285" y="185" width="26" height="28" rx="2" />
-                      {/* Rug outline */}
                       <rect x="180" y="155" width="140" height="70" strokeDasharray="2 3" strokeOpacity="0.4" />
                     </g>
 
-                    {/* === Vestibule === */}
                     <g stroke="#0f172a" strokeWidth="0.75" fill="none">
-                      {/* Floor tile hint */}
                       <line x1="30" y1="135" x2="100" y2="135" strokeOpacity="0.3" />
                       <line x1="65" y1="110" x2="65" y2="160" strokeOpacity="0.3" />
                     </g>
 
-                    {/* === Master Bedroom (top of bottom zone, middle) === */}
                     <g stroke="#0f172a" strokeWidth="1" fill="none">
-                      {/* Master bed */}
                       <rect x="165" y="270" width="60" height="40" rx="2" />
                       <line x1="165" y1="278" x2="225" y2="278" strokeWidth="0.5" />
-                      {/* Pillows */}
                       <rect x="169" y="272" width="12" height="5" />
                       <rect x="209" y="272" width="12" height="5" />
                     </g>
 
-                    {/* === Bedroom 2 === */}
                     <g stroke="#0f172a" strokeWidth="1" fill="none">
                       <rect x="260" y="260" width="45" height="30" rx="2" />
                       <line x1="260" y1="266" x2="305" y2="266" strokeWidth="0.5" />
                     </g>
 
-                    {/* === Bedroom 3 === */}
                     <g stroke="#0f172a" strokeWidth="1" fill="none">
                       <rect x="50" y="380" width="45" height="30" rx="2" />
                       <line x1="50" y1="386" x2="95" y2="386" strokeWidth="0.5" />
                     </g>
 
-                    {/* === Master Bathroom === */}
                     <g stroke="#0f172a" strokeWidth="1" fill="none">
-                      {/* Tub */}
                       <rect x="250" y="405" width="45" height="24" rx="3" />
                       <line x1="254" y1="409" x2="291" y2="409" strokeWidth="0.5" />
-                      {/* Vanity */}
                       <rect x="310" y="405" width="55" height="18" />
-                      {/* Sink */}
                       <rect x="325" y="408" width="14" height="10" />
-                      {/* Toilet */}
                       <ellipse cx="318" cy="445" rx="7" ry="10" />
                       <rect x="313" y="452" width="10" height="8" />
                     </g>
 
-                    {/* === Room labels === */}
                     <g fill="#0f172a" stroke="none" className="font-mono" fontSize="8">
                       <text x="65" y="178" textAnchor="middle">KITCHEN</text>
                       <text x="65" y="186" textAnchor="middle" fontSize="6" fill="#64748b">13' × 10'</text>
-
                       <text x="250" y="143" textAnchor="middle">LIVING ROOM</text>
                       <text x="250" y="151" textAnchor="middle" fontSize="6" fill="#64748b">18' × 15'</text>
-
                       <text x="320" y="82" textAnchor="middle" fontSize="7">BALCONY</text>
-
                       <text x="65" y="145" textAnchor="middle" fontSize="7">VESTIBULE</text>
-
                       <text x="195" y="335" textAnchor="middle">MASTER BED</text>
                       <text x="195" y="343" textAnchor="middle" fontSize="6" fill="#64748b">14' × 12'</text>
-
                       <text x="282" y="335" textAnchor="middle">BEDROOM 2</text>
                       <text x="282" y="343" textAnchor="middle" fontSize="6" fill="#64748b">11' × 10'</text>
-
                       <text x="72" y="438" textAnchor="middle">BEDROOM 3</text>
                       <text x="72" y="446" textAnchor="middle" fontSize="6" fill="#64748b">11' × 10'</text>
-
                       <text x="305" y="440" textAnchor="middle">MASTER BATH</text>
                       <text x="305" y="448" textAnchor="middle" fontSize="6" fill="#64748b">9' × 7'</text>
                     </g>
 
-                    {/* === Window indicators (thin double lines on exterior walls) === */}
                     <g stroke="#2563eb" strokeWidth="1">
-                      {/* Top-left (kitchen) */}
                       <line x1="50" y1="50" x2="90" y2="50" />
                       <line x1="50" y1="53" x2="90" y2="53" />
-                      {/* Left wall (bed 3) */}
                       <line x1="30" y1="400" x2="30" y2="440" />
                       <line x1="33" y1="400" x2="33" y2="440" />
-                      {/* Bottom (master bed) */}
                       <line x1="175" y1="467" x2="225" y2="467" />
                       <line x1="175" y1="470" x2="225" y2="470" />
-                      {/* Bottom-right (bed 2 / master bath) */}
                       <line x1="260" y1="467" x2="305" y2="467" />
                       <line x1="260" y1="470" x2="305" y2="470" />
-                      {/* Right wall (bed 2) */}
                       <line x1="367" y1="260" x2="367" y2="300" />
                       <line x1="370" y1="260" x2="370" y2="300" />
                     </g>
 
-                    {/* === Compass rose (subtle, top-left corner) === */}
                     <g transform="translate(55, 478)" stroke="#2563eb" strokeWidth="0.8" fill="none">
                       <circle r="10" />
                       <path d="M 0 -10 L 2 0 L 0 10 L -2 0 Z" fill="#2563eb" fillOpacity="0.6" stroke="none" />
                       <text x="0" y="-12" fontSize="6" textAnchor="middle" fill="#2563eb" stroke="none" className="font-mono">N</text>
                     </g>
 
-                    {/* === Scan sweep animation === */}
                     <line x1="30" y1="50" x2="370" y2="50" stroke="#2563eb" strokeWidth="2" strokeDasharray="4 4" className="origin-top scan-sweep" />
                   </svg>
                 </div>
@@ -789,7 +729,7 @@ function Stats() {
 
 /**
  * =====================================================================
- *  PAIN POINTS — 3 stakeholder cards with REAL cited stats
+ *  PAIN POINTS
  * =====================================================================
  */
 function PainPoints() {
@@ -898,7 +838,7 @@ function PainPoints() {
 
 /**
  * =====================================================================
- *  CTA BANNER — mid-page conversion moment
+ *  CTA BANNER
  * =====================================================================
  */
 function CTABanner({ headline, sub, ctaLabel = "Request a quote" }) {
@@ -930,7 +870,7 @@ function CTABanner({ headline, sub, ctaLabel = "Request a quote" }) {
  * =====================================================================
  */
 function Deliverables() {
-  const tiers = [
+  const primary = [
     {
       icon: Ruler,
       name: "Floor Plans",
@@ -942,6 +882,17 @@ function Deliverables() {
         "Every level of your home",
       ],
       highlight: true,
+    },
+    {
+      icon: ScanLine,
+      name: "Interior Elevations",
+      pitch: "Wall-by-wall interior views with cabinetry, millwork, outlets, and fixture heights.",
+      formats: ["PDF", "DWG"],
+      bullets: [
+        "Kitchens, baths, and built-ins",
+        "Cabinetry and millwork heights",
+        "Outlet and fixture locations",
+      ],
     },
     {
       icon: Home,
@@ -967,6 +918,27 @@ function Deliverables() {
     },
   ];
 
+  const advanced = [
+    {
+      icon: Triangle,
+      name: "Roof Plans",
+      pitch: "Top-down roof plans with pitches, ridges, valleys, skylights, and chimneys.",
+      formats: ["PDF", "DWG"],
+    },
+    {
+      icon: Box,
+      name: "Revit Models",
+      pitch: "LOD 200–300 parametric BIM model ready to design against.",
+      formats: ["RVT"],
+    },
+    {
+      icon: Eye,
+      name: "Virtual Visits",
+      pitch: "Matterport 3D walk-through with dollhouse view and built-in measurement tool.",
+      formats: ["Web"],
+    },
+  ];
+
   return (
     <section id="deliverables" className="bg-white py-24 lg:py-32">
       <div className="mx-auto max-w-7xl px-6 lg:px-10">
@@ -977,45 +949,72 @@ function Deliverables() {
           </h2>
           <p className="mt-4 text-lg text-slate-600">
             We capture your entire home in a single scan, then draft the drawings your project requires.
-            Order one, two, or all three — priced to your home.
+            Pick what you need — priced to your home.
           </p>
         </div>
 
-        <div className="mt-16 grid gap-6 md:grid-cols-3">
-          {tiers.map((tier, i) => {
+        {/* Primary drawings — the core 4 */}
+        <div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          {primary.map((tier, i) => {
             const Icon = tier.icon;
             return (
               <div
                 key={i}
-                className={`group relative flex flex-col rounded-2xl border p-8 transition-all ${
+                className={`group relative flex flex-col rounded-2xl border p-7 transition-all ${
                   tier.highlight
                     ? "border-blue-600 bg-slate-900 text-white shadow-xl shadow-blue-900/20"
                     : "border-slate-200 bg-white hover:border-slate-300 hover:shadow-lg"
                 }`}
               >
                 {tier.highlight && (
-                  <div className="absolute -top-3 left-8 rounded-full bg-blue-600 px-3 py-1 txt-10 font-semibold uppercase tracking-widest text-white">
+                  <div className="absolute -top-3 left-6 rounded-full bg-blue-600 px-3 py-1 txt-10 font-semibold uppercase tracking-widest text-white">
                     Most requested
                   </div>
                 )}
-                <div className={`grid h-12 w-12 place-items-center rounded-lg ${tier.highlight ? "bg-blue-500/20 text-blue-300" : "bg-blue-50 text-blue-600"}`}>
-                  <Icon size={22} />
+                <div
+                  className={`grid h-11 w-11 place-items-center rounded-lg ${
+                    tier.highlight ? "bg-blue-500/20 text-blue-300" : "bg-blue-50 text-blue-600"
+                  }`}
+                >
+                  <Icon size={20} />
                 </div>
-                <h3 className="mt-5 font-serif text-2xl">{tier.name}</h3>
-                <p className={`mt-2 text-sm leading-relaxed ${tier.highlight ? "text-slate-300" : "text-slate-600"}`}>{tier.pitch}</p>
+                <h3 className="mt-5 font-serif text-xl leading-tight lg:text-2xl">{tier.name}</h3>
+                <p
+                  className={`mt-2 text-sm leading-relaxed ${
+                    tier.highlight ? "text-slate-300" : "text-slate-600"
+                  }`}
+                >
+                  {tier.pitch}
+                </p>
 
-                <div className="mt-5 flex flex-wrap gap-1.5">
+                <div className="mt-4 flex flex-wrap gap-1.5">
                   {tier.formats.map((f) => (
-                    <span key={f} className={`rounded-md border px-2 py-0.5 font-mono txt-10 uppercase tracking-wider ${tier.highlight ? "border-slate-700 text-slate-300" : "border-slate-200 text-slate-500"}`}>
+                    <span
+                      key={f}
+                      className={`rounded-md border px-2 py-0.5 font-mono txt-10 uppercase tracking-wider ${
+                        tier.highlight
+                          ? "border-slate-700 text-slate-300"
+                          : "border-slate-200 text-slate-500"
+                      }`}
+                    >
                       {f}
                     </span>
                   ))}
                 </div>
 
-                <ul className={`mt-6 space-y-3 text-sm ${tier.highlight ? "text-slate-200" : "text-slate-700"}`}>
+                <ul
+                  className={`mt-5 space-y-2.5 text-sm ${
+                    tier.highlight ? "text-slate-200" : "text-slate-700"
+                  }`}
+                >
                   {tier.bullets.map((b, j) => (
-                    <li key={j} className="flex gap-2.5">
-                      <Check size={16} className={`mt-0.5 shrink-0 ${tier.highlight ? "text-blue-300" : "text-blue-600"}`} />
+                    <li key={j} className="flex gap-2">
+                      <Check
+                        size={15}
+                        className={`mt-0.5 shrink-0 ${
+                          tier.highlight ? "text-blue-300" : "text-blue-600"
+                        }`}
+                      />
                       <span>{b}</span>
                     </li>
                   ))}
@@ -1023,13 +1022,56 @@ function Deliverables() {
 
                 <a
                   href="#quote"
-                  className={`mt-8 inline-flex items-center gap-2 border-t pt-5 text-sm font-medium transition-colors ${
-                    tier.highlight ? "border-slate-800 text-blue-300 hover:text-blue-200" : "border-slate-100 text-blue-600 hover:text-blue-700"
+                  className={`mt-6 inline-flex items-center gap-2 border-t pt-4 text-sm font-medium transition-colors ${
+                    tier.highlight
+                      ? "border-slate-800 text-blue-300 hover:text-blue-200"
+                      : "border-slate-100 text-blue-600 hover:text-blue-700"
                   }`}
                 >
                   Request matched pricing
                   <ArrowUpRight size={14} />
                 </a>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Advanced offerings — the 3 extras */}
+        <div className="mt-12 flex items-center gap-4">
+          <div className="h-px flex-1 bg-slate-200" />
+          <span className="font-mono txt-11 uppercase tracking-widest text-slate-500">
+            Also available
+          </span>
+          <div className="h-px flex-1 bg-slate-200" />
+        </div>
+
+        <div className="mt-8 grid gap-6 md:grid-cols-3">
+          {advanced.map((item, i) => {
+            const Icon = item.icon;
+            return (
+              <div
+                key={i}
+                className="group flex items-start gap-4 rounded-xl border border-slate-200 bg-slate-50/50 p-6 transition-all hover:border-slate-300 hover:bg-white hover:shadow-md"
+              >
+                <div className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-blue-50 text-blue-600">
+                  <Icon size={18} />
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-baseline justify-between gap-3">
+                    <h3 className="font-serif text-lg text-slate-900">{item.name}</h3>
+                    <div className="flex gap-1">
+                      {item.formats.map((f) => (
+                        <span
+                          key={f}
+                          className="rounded border border-slate-200 bg-white px-1.5 py-0.5 font-mono txt-10 uppercase tracking-wider text-slate-500"
+                        >
+                          {f}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                  <p className="mt-1.5 text-sm leading-relaxed text-slate-600">{item.pitch}</p>
+                </div>
               </div>
             );
           })}
@@ -1046,10 +1088,21 @@ function Deliverables() {
  */
 function Process() {
   const steps = [
-    { n: "01", title: "Request a quote", body: "Tell us the address, square footage, and what you need. Takes under 90 seconds." },
-    { n: "02", title: "Packages matched to you", body: "Within minutes, we email a short list of packages sized to your home and timeline." },
-    { n: "03", title: "On-site survey", body: "A technician arrives and captures every surface with laser precision (1/2 inch at 30 feet, or better). Most homes wrap in under a day." },
-    { n: "04", title: "Deliverables in 3–5 days", body: "You receive your drawings — floor plans, elevations, ceiling plans — ready for your architect, contractor, or records." },
+    {
+      n: "01",
+      title: "Request & get matched pricing",
+      body: "Tell us the address, square footage, and what you need. Within minutes we email back pricing and matched package options. Total effort on your end: under 90 seconds.",
+    },
+    {
+      n: "02",
+      title: "On-site scan",
+      body: "A technician captures every surface with laser precision (1/2 inch at 30 feet, or better). Most homes wrap in a single day.",
+    },
+    {
+      n: "03",
+      title: "Drawings delivered",
+      body: "Your drawings — floor plans, elevations, ceiling plans, Revit, or whatever you ordered — land in your inbox within 3–5 business days, ready for your architect, designer, contractor, or records.",
+    },
   ];
 
   return (
@@ -1059,7 +1112,7 @@ function Process() {
           <div className="lg:col-span-4">
             <DimensionLine label="03 · Process" />
             <h2 className="mt-4 font-serif text-4xl tracking-tight text-slate-900 lg:text-5xl">
-              Four steps. No friction.
+              Easy as <span className="italic text-blue-600">1, 2, 3.</span>
             </h2>
             <p className="mt-4 text-lg text-slate-600">
               From first click to delivered drawings, every step is designed to keep you moving — not stuck in back-and-forth.
@@ -1095,10 +1148,16 @@ function Process() {
 
 /**
  * =====================================================================
- *  PRICING ANCHOR — architect comparison with citations
+ *  PRICING ANCHOR — flat-rate positioning. Architect-friendly framing.
  * =====================================================================
  */
 function PricingAnchor() {
+  const examples = [
+    { label: "1,500 sq ft", price: 1500 * RATE_PER_SQFT },
+    { label: "2,500 sq ft", price: 2500 * RATE_PER_SQFT },
+    { label: "4,000 sq ft", price: 4000 * RATE_PER_SQFT },
+  ];
+
   return (
     <section id="pricing" className="relative overflow-hidden bg-white py-24 lg:py-32">
       <div className="mx-auto max-w-7xl px-6 lg:px-10">
@@ -1106,115 +1165,103 @@ function PricingAnchor() {
           <div className="lg:col-span-5">
             <DimensionLine label="04 · Pricing" />
             <h2 className="mt-4 font-serif text-4xl tracking-tight text-slate-900 lg:text-5xl">
-              Architect-quality plans.{" "}
-              <span className="italic text-blue-600">Fraction of the price.</span>
+              Priced by the square foot.{" "}
+              <span className="italic text-blue-600">No hourly meter.</span>
             </h2>
-            <p className="mt-4 text-lg text-slate-600">
-              Hiring an architect just to document your existing home can run{" "}
-              <span className="font-medium text-slate-900">10–20% of total construction cost</span> — before they even start designing.
-              We scan and deliver the same as-built documentation for a flat fee, matched to your home.
+            <p className="mt-5 text-lg leading-relaxed text-slate-600">
+              We work alongside architects, designers, and contractors every day. They design and build.
+              We handle the measurement and documentation — the on-site grind, the exacting CAD drafting
+              of existing conditions — so they can focus on what they do best.
             </p>
-            <a
-              href="#quote"
-              className="mt-8 inline-flex items-center gap-2 rounded-full bg-slate-900 px-6 py-3.5 text-sm font-semibold text-white transition-all hover:bg-blue-600"
-            >
-              Get your matched price
-              <ArrowRight size={16} />
-            </a>
-            <p className="mt-4 font-mono txt-10 uppercase tracking-wider text-slate-400">
-              Architect fee sources:{" "}
-              <a
-                href="https://homeguide.com/costs/architect-cost"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="underline decoration-slate-300 underline-offset-2 transition-colors hover:text-blue-600 hover:decoration-blue-400"
-              >
-                HomeGuide 2026
-              </a>
-              ;{" "}
-              <a
-                href="https://www.homeadvisor.com/cost/architects-and-engineers/hire-an-architect/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="underline decoration-slate-300 underline-offset-2 transition-colors hover:text-blue-600 hover:decoration-blue-400"
-              >
-                HomeAdvisor 2025
-              </a>
-              .
+            <p className="mt-4 text-lg leading-relaxed text-slate-600">
+              One flat rate, matched to your home. No hidden fees, no revision surprises.
             </p>
+
+            <div className="mt-8 inline-flex items-start gap-3 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3">
+              <Handshake size={18} className="mt-0.5 shrink-0 text-blue-600" />
+              <span className="text-sm text-slate-700">
+                <span className="font-medium text-slate-900">Architects & designers:</span> we invoice you
+                direct, or invoice your client — your call.
+              </span>
+            </div>
+
+            <div className="mt-8">
+              <a
+                href="#quote"
+                className="group inline-flex items-center gap-2 rounded-full bg-slate-900 px-6 py-3.5 text-sm font-semibold text-white transition-all hover:bg-blue-600"
+              >
+                Get your matched price
+                <ArrowRight size={16} className="transition-transform group-hover:translate-x-0.5" />
+              </a>
+            </div>
           </div>
 
           <div className="lg:col-span-7">
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <div className="rounded-2xl border border-slate-200 bg-slate-50 p-6 lg:p-8">
-                <div className="flex items-center gap-2 text-slate-500">
+            {/* Headline rate card */}
+            <div className="relative overflow-hidden rounded-2xl border-2 border-blue-600 bg-gradient-to-br from-blue-600 to-blue-700 p-8 text-white shadow-xl shadow-blue-900/20 lg:p-10">
+              <div className="pointer-events-none absolute inset-0 text-white/10">
+                <BlueprintGrid className="h-full w-full" />
+              </div>
+              <div className="relative">
+                <div className="flex items-center gap-2">
                   <DollarSign size={18} />
-                  <span className="font-mono txt-11 uppercase tracking-widest">Architect route</span>
+                  <span className="font-mono txt-11 uppercase tracking-widest">
+                    Flat rate · all deliverables
+                  </span>
                 </div>
-                <div className="mt-6">
-                  <div className="font-serif text-4xl text-slate-900 line-through decoration-red-400/70 decoration-2 lg:text-5xl">
-                    10–20%
-                  </div>
-                  <div className="mt-2 text-sm text-slate-600">of total construction cost</div>
+                <div className="mt-6 flex items-baseline gap-3">
+                  <span className="font-serif text-6xl tracking-tight lg:text-7xl">
+                    {formatUSD(RATE_PER_SQFT)}
+                  </span>
+                  <span className="font-mono txt-11 uppercase tracking-widest text-blue-100">
+                    per sq ft
+                  </span>
                 </div>
-                <ul className="mt-8 space-y-3 text-sm text-slate-600">
-                  <li className="flex gap-2">
-                    <X size={16} className="mt-0.5 shrink-0 text-slate-400" />
-                    <span>Weeks of field measurement</span>
+                <p className="mt-4 max-w-md leading-relaxed text-blue-50">
+                  One flat rate for laser scanning, drafting, and delivery. No hourly meter. No revision
+                  fees. Final price confirmed after the on-site scan.
+                </p>
+
+                <ul className="mt-6 grid gap-2 text-sm text-blue-50 sm:grid-cols-2">
+                  <li className="flex items-center gap-2">
+                    <Check size={14} className="shrink-0 text-blue-200" />
+                    <span>1/2" accuracy at 30 ft</span>
                   </li>
-                  <li className="flex gap-2">
-                    <X size={16} className="mt-0.5 shrink-0 text-slate-400" />
-                    <span>Billed hourly at $100–$250/hr</span>
+                  <li className="flex items-center gap-2">
+                    <Check size={14} className="shrink-0 text-blue-200" />
+                    <span>PDF + DWG included</span>
                   </li>
-                  <li className="flex gap-2">
-                    <X size={16} className="mt-0.5 shrink-0 text-slate-400" />
-                    <span>Renovation fees +2–5% extra</span>
+                  <li className="flex items-center gap-2">
+                    <Check size={14} className="shrink-0 text-blue-200" />
+                    <span>3–5 business day delivery</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check size={14} className="shrink-0 text-blue-200" />
+                    <span>Minor revisions free</span>
                   </li>
                 </ul>
               </div>
-
-              <div className="relative overflow-hidden rounded-2xl border-2 border-blue-600 bg-gradient-to-br from-blue-600 to-blue-700 p-6 text-white shadow-xl shadow-blue-900/20 lg:p-8">
-                <div className="pointer-events-none absolute inset-0 text-white/10">
-                  <BlueprintGrid className="h-full w-full" />
-                </div>
-                <div className="relative">
-                  <div className="flex items-center gap-2">
-                    <TrendingDown size={18} />
-                    <span className="font-mono txt-11 uppercase tracking-widest">RABS route</span>
-                  </div>
-                  <div className="mt-6">
-                    <div className="font-serif text-4xl lg:text-5xl">40–60%</div>
-                    <div className="mt-2 text-sm text-blue-100">less than an architect</div>
-                  </div>
-                  <ul className="mt-8 space-y-3 text-sm text-blue-50">
-                    <li className="flex gap-2">
-                      <Check size={16} className="mt-0.5 shrink-0 text-blue-200" />
-                      <span>Surveyed in under a day</span>
-                    </li>
-                    <li className="flex gap-2">
-                      <Check size={16} className="mt-0.5 shrink-0 text-blue-200" />
-                      <span>Flat price matched to your home</span>
-                    </li>
-                    <li className="flex gap-2">
-                      <Check size={16} className="mt-0.5 shrink-0 text-blue-200" />
-                      <span>Delivered in 3–5 business days</span>
-                    </li>
-                  </ul>
-                </div>
-              </div>
             </div>
 
-            <p className="mt-4 text-center text-xs italic text-slate-500">
-              Architect fees for residential renovations typically range from 10–20% of construction cost (
-              <a
-                href="https://homeguide.com/costs/architect-cost"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="underline decoration-slate-300 underline-offset-2 transition-colors hover:text-blue-600 hover:decoration-blue-400"
-              >
-                HomeGuide, 2026
-              </a>
-              ).
+            {/* Example sizes */}
+            <div className="mt-4 grid grid-cols-3 gap-3">
+              {examples.map((ex, i) => (
+                <div
+                  key={i}
+                  className="rounded-xl border border-slate-200 bg-white p-4 text-center transition-all hover:border-blue-300 hover:shadow-sm"
+                >
+                  <div className="font-mono txt-10 uppercase tracking-widest text-slate-500">
+                    {ex.label}
+                  </div>
+                  <div className="mt-2 font-serif text-2xl tracking-tight text-slate-900 lg:text-3xl">
+                    {formatUSD(ex.price)}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <p className="mt-3 text-center text-xs text-slate-500">
+              Example estimates at {formatUSD(RATE_PER_SQFT)}/sq ft. Final pricing confirmed after on-site scan.
             </p>
           </div>
         </div>
@@ -1231,7 +1278,7 @@ function PricingAnchor() {
 function WhyUs() {
   const reasons = [
     { icon: Zap, title: "Delivered in days", body: `Drawings in your inbox within ${BRAND.turnaround} — not weeks. Every scan is prioritized.` },
-    { icon: DollarSign, title: "Priced to your home", body: "No hourly meters or architect-firm markups. Flat pricing matched to your square footage and scope." },
+    { icon: DollarSign, title: "Priced to your home", body: "No hourly meters. No surprise fees. Flat pricing matched to your square footage and scope." },
     { icon: Sparkles, title: "Built by specialists", body: `${BRAND.yearsExperience} years of residential scanning. ${BRAND.projectsDelivered} homes measured, drawn, and delivered.` },
   ];
 
@@ -1480,7 +1527,6 @@ function QuoteForm() {
             </p>
           </div>
 
-          {/* Quote card */}
           <div className="relative mt-12 overflow-hidden rounded-2xl border-2 border-blue-600 bg-white shadow-2xl shadow-blue-900/10">
             <div className="border-b border-slate-200 bg-slate-50 px-6 py-4 lg:px-10">
               <div className="flex flex-wrap items-center justify-between gap-3">
@@ -1495,7 +1541,6 @@ function QuoteForm() {
 
             <div className="px-6 py-8 lg:px-10 lg:py-10">
               <div className="grid gap-8 md:grid-cols-5">
-                {/* Breakdown */}
                 <div className="md:col-span-3">
                   <div className="font-mono txt-10 uppercase tracking-widest text-slate-500">Your home</div>
                   <div className="mt-1 font-serif text-xl text-slate-900">{form.address}</div>
@@ -1529,7 +1574,6 @@ function QuoteForm() {
                   </div>
                 </div>
 
-                {/* Total */}
                 <div className="md:col-span-2">
                   <div className="rounded-xl border border-slate-200 bg-gradient-to-br from-blue-50 to-white p-6 lg:p-8">
                     <div className="font-mono txt-10 uppercase tracking-widest text-blue-700">
@@ -1558,7 +1602,6 @@ function QuoteForm() {
             </div>
           </div>
 
-          {/* What's next */}
           <div className="mt-12 grid gap-6 md:grid-cols-4">
             {[
               { n: "01", t: "Confirmation", b: "Check your inbox — your quote is on its way." },
@@ -1730,7 +1773,7 @@ function Select({ value, onChange, options, required }) {
 
 /**
  * =====================================================================
- *  FAQ — quick answers grouped by topic
+ *  FAQ
  * =====================================================================
  */
 function FAQ() {
@@ -1738,101 +1781,41 @@ function FAQ() {
     {
       category: "Pricing & billing",
       items: [
-        {
-          q: "How is my quote calculated?",
-          a: "We charge a flat rate of $0.75 per square foot. Your estimate appears instantly after you submit the form, and final pricing is confirmed after the on-site scan.",
-        },
-        {
-          q: "Are there any hidden fees?",
-          a: "No — the quoted price covers the scan, the drawings, and delivery. No travel fees and no file-format upcharges.",
-        },
-        {
-          q: "When and how do I pay?",
-          a: "Fifty percent is due to book your scan date, fifty percent on delivery of your drawings. We accept credit cards, ACH, and bank transfer.",
-        },
-        {
-          q: "What if I need revisions?",
-          a: "Minor revisions to your drawings are included free. Larger scope changes are quoted separately before any extra work begins.",
-        },
+        { q: "How is my quote calculated?", a: "We charge a flat rate of $0.75 per square foot. Your estimate appears instantly after you submit the form, and final pricing is confirmed after the on-site scan." },
+        { q: "Are there any hidden fees?", a: "No — the quoted price covers the scan, the drawings, and delivery. No travel fees and no file-format upcharges." },
+        { q: "When and how do I pay?", a: "Fifty percent is due to book your scan date, fifty percent on delivery of your drawings. We accept credit cards, ACH, and bank transfer." },
+        { q: "What if I need revisions?", a: "Minor revisions to your drawings are included free. Larger scope changes are quoted separately before any extra work begins." },
       ],
     },
     {
       category: "Scan day",
       items: [
-        {
-          q: "How long does the scan take?",
-          a: "Most homes wrap in under a single day. Our technicians are discreet, friendly, and swift.",
-        },
-        {
-          q: "Do I need to be home?",
-          a: "Someone over 18 needs to let the technician in. You don't have to shadow them — they work independently and respect your space.",
-        },
-        {
-          q: "Does every room need to be accessible?",
-          a: "Yes — closets, basements, and attics should be unlocked so the scanner has clear line-of-sight to capture every surface accurately.",
-        },
-        {
-          q: "What should I do to prepare?",
-          a: "Move pets to a contained area and clear main walkways. Make sure every space has good lighting — either sunlight or artificial — so the scanner can properly capture each room. You don't need to clean or tidy; the scanner sees through clutter.",
-        },
+        { q: "How long does the scan take?", a: "Most homes wrap in under a single day. Our technicians are discreet, friendly, and swift." },
+        { q: "Do I need to be home?", a: "Someone over 18 needs to let the technician in. You don't have to shadow them — they work independently and respect your space." },
+        { q: "Does every room need to be accessible?", a: "Yes — closets, basements, and attics should be unlocked so the scanner has clear line-of-sight to capture every surface accurately." },
+        { q: "What should I do to prepare?", a: "Move pets to a contained area and clear main walkways. Make sure every space has good lighting — either sunlight or artificial — so the scanner can properly capture each room. You don't need to clean or tidy; the scanner sees through clutter." },
       ],
     },
     {
       category: "Accuracy & deliverables",
       items: [
-        {
-          q: "How accurate are your scans?",
-          a: "Our laser scanners achieve 1/2 inch accuracy at 30 feet — or better. Plenty precise for renovation, insurance, and permitting work.",
-        },
-        {
-          q: "What file formats do I get?",
-          a: "Every drawing is delivered as both PDF (for viewing and printing) and DWG (for AutoCAD, Revit, and other CAD software).",
-        },
-        {
-          q: "What deliverables can you produce?",
-          a: "Floor plans, exterior elevations, interior elevations, reflected ceiling plans, roof plans, Revit models, and virtual Matterport walk-throughs. You pick what you need — see the 'What's included' section below for details on each.",
-        },
-        {
-          q: "How fast is delivery?",
-          a: "3–5 business days from the scan date. Rush delivery (48–72 hours) is available for an added fee.",
-        },
+        { q: "How accurate are your scans?", a: "Our laser scanners achieve 1/2 inch accuracy at 30 feet — or better. Plenty precise for renovation, insurance, and permitting work." },
+        { q: "What file formats do I get?", a: "Every drawing is delivered as both PDF (for viewing and printing) and DWG (for AutoCAD, Revit, and other CAD software)." },
+        { q: "What deliverables can you produce?", a: "Floor plans, exterior elevations, interior elevations, reflected ceiling plans, roof plans, Revit models, and virtual Matterport walk-throughs. You pick what you need — see the 'What's included' section below for details on each." },
+        { q: "How fast is delivery?", a: "3–5 business days from the scan date. Rush delivery (48–72 hours) is available for an added fee." },
       ],
     },
     {
       category: "What's included in each deliverable",
       items: [
-        {
-          q: "Floor Plans — what's included?",
-          a: "Dimensioned plans of every level showing walls, doors, windows, and permanent fixtures. Half walls, railings, and steps are included by default.",
-        },
-        {
-          q: "Exterior Elevations — what's included?",
-          a: "All four exterior faces with door and window locations, roof geometry, and major material callouts. Window sill heights and exact window dimensions available as add-ons.",
-        },
-        {
-          q: "Interior Elevations — what's included?",
-          a: "Wall-by-wall interior views showing cabinetry, millwork, outlets, and fixture heights. Ideal for kitchens, bathrooms, and built-ins.",
-        },
-        {
-          q: "Reflected Ceiling Plans — what's included?",
-          a: "Top-down ceiling plans with lighting and fixture locations, beam and soffit layouts, and ceiling heights throughout.",
-        },
-        {
-          q: "Roof Plans — what's included?",
-          a: "Top-down view of the roof with pitches, ridges, valleys, chimneys, skylights, and any rooftop equipment.",
-        },
-        {
-          q: "Revit Models — what's included?",
-          a: "LOD 200–300 parametric BIM model with walls, floors, ceilings, and openings. MEP placeholders available on request.",
-        },
-        {
-          q: "Virtual Visits (Matterport) — what's included?",
-          a: "An interactive 3D walk-through of the home your clients or buyers can explore online, plus a dollhouse view and measurement tool.",
-        },
-        {
-          q: "What counts as an optional add-on?",
-          a: "Elements like bathroom fixtures, landscape plans, parking surfaces, sidewalks, and precise window sill heights or dimensions. Mention these when our scheduler calls — they may adjust the final quote slightly.",
-        },
+        { q: "Floor Plans — what's included?", a: "Dimensioned plans of every level showing walls, doors, windows, and permanent fixtures. Half walls, railings, and steps are included by default." },
+        { q: "Exterior Elevations — what's included?", a: "All four exterior faces with door and window locations, roof geometry, and major material callouts. Window sill heights and exact window dimensions available as add-ons." },
+        { q: "Interior Elevations — what's included?", a: "Wall-by-wall interior views showing cabinetry, millwork, outlets, and fixture heights. Ideal for kitchens, bathrooms, and built-ins." },
+        { q: "Reflected Ceiling Plans — what's included?", a: "Top-down ceiling plans with lighting and fixture locations, beam and soffit layouts, and ceiling heights throughout." },
+        { q: "Roof Plans — what's included?", a: "Top-down view of the roof with pitches, ridges, valleys, chimneys, skylights, and any rooftop equipment." },
+        { q: "Revit Models — what's included?", a: "LOD 200–300 parametric BIM model with walls, floors, ceilings, and openings. MEP placeholders available on request." },
+        { q: "Virtual Visits (Matterport) — what's included?", a: "An interactive 3D walk-through of the home your clients or buyers can explore online, plus a dollhouse view and measurement tool." },
+        { q: "What counts as an optional add-on?", a: "Elements like bathroom fixtures, landscape plans, parking surfaces, sidewalks, and precise window sill heights or dimensions. Mention these when our scheduler calls — they may adjust the final quote slightly." },
       ],
     },
   ];
@@ -1862,10 +1845,7 @@ function FAQ() {
               </h3>
               <div className="divide-y divide-slate-200">
                 {cat.items.map((item, j) => (
-                  <details
-                    key={j}
-                    className="group py-5"
-                  >
+                  <details key={j} className="group py-5">
                     <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-serif text-lg text-slate-900 transition-colors hover:text-blue-600">
                       <span>{item.q}</span>
                       <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full border border-slate-200 text-slate-400 transition-all group-open:rotate-45 group-open:border-blue-600 group-open:bg-blue-50 group-open:text-blue-600">
@@ -1902,9 +1882,7 @@ function FAQ() {
 
 /**
  * =====================================================================
- *  SERVICE AREAS — SEO block. Every US city with 250k+ population,
- *  alphabetical by state. Targets long-tail searches like
- *  "as builts san diego", "as built drawings houston", etc.
+ *  SERVICE AREAS
  * =====================================================================
  */
 const SERVICE_AREAS = [
@@ -1944,7 +1922,6 @@ const SERVICE_AREAS = [
 ];
 
 function ServiceAreas() {
-  // Flatten all cities for the marquee
   const allCities = SERVICE_AREAS.flatMap(([state, cities]) =>
     cities.map((city) => ({ city, state }))
   );
@@ -1988,46 +1965,33 @@ function ServiceAreas() {
         </div>
       </div>
 
-      {/* Opposing-direction marquee rows, edge-faded */}
       <div
         className="relative mt-14 space-y-3"
         style={{
-          WebkitMaskImage:
-            "linear-gradient(to right, transparent, black 6%, black 94%, transparent)",
-          maskImage:
-            "linear-gradient(to right, transparent, black 6%, black 94%, transparent)",
+          WebkitMaskImage: "linear-gradient(to right, transparent, black 6%, black 94%, transparent)",
+          maskImage: "linear-gradient(to right, transparent, black 6%, black 94%, transparent)",
         }}
       >
-        {/* Row 1 — scrolls left */}
         <div className="overflow-hidden">
           <div className="marquee-track marquee-left flex w-max gap-3">
-            {row1.map((c, i) => (
-              <Pill key={`r1a-${i}`} {...c} />
-            ))}
-            {row1.map((c, i) => (
-              <Pill key={`r1b-${i}`} {...c} />
-            ))}
+            {row1.map((c, i) => (<Pill key={`r1a-${i}`} {...c} />))}
+            {row1.map((c, i) => (<Pill key={`r1b-${i}`} {...c} />))}
           </div>
         </div>
 
-        {/* Row 2 — scrolls right */}
         <div className="overflow-hidden">
           <div className="marquee-track marquee-right flex w-max gap-3">
-            {row2.map((c, i) => (
-              <Pill key={`r2a-${i}`} {...c} />
-            ))}
-            {row2.map((c, i) => (
-              <Pill key={`r2b-${i}`} {...c} />
-            ))}
+            {row2.map((c, i) => (<Pill key={`r2a-${i}`} {...c} />))}
+            {row2.map((c, i) => (<Pill key={`r2b-${i}`} {...c} />))}
           </div>
         </div>
       </div>
 
       <p className="mx-auto mt-14 max-w-3xl px-6 text-center text-xs text-slate-500 lg:px-10">
         Residential As-Built Services delivers laser-scanned floor plans, exterior elevations, and reflected
-        ceiling plans to homeowners, contractors, and architects across the United States. Whether you're in
-        New York, Los Angeles, Chicago, Houston, Phoenix, or any major metro — we deliver precise as-built
-        drawings in 3–5 business days, at a fraction of what an architect would charge.
+        ceiling plans to homeowners, contractors, architects, and designers across the United States. Whether
+        you're in New York, Los Angeles, Chicago, Houston, Phoenix, or any major metro — we deliver precise
+        as-built drawings in 3–5 business days, at a flat, transparent per-square-foot rate.
       </p>
 
       <style>{`
@@ -2088,7 +2052,6 @@ function Footer() {
     { city: "Los Angeles", address: "6080 Center Dr, 6th Floor, Los Angeles, CA 90045" },
   ];
 
-  // SVG path data for brand marks (simplified single-path versions)
   const SOCIALS = [
     {
       label: "LinkedIn",
@@ -2105,16 +2068,9 @@ function Footer() {
   return (
     <footer className="border-t border-slate-200 bg-white pt-14 pb-10">
       <div className="mx-auto max-w-7xl px-6 lg:px-10">
-        {/* Top row — logo + CTA */}
         <div className="flex flex-col justify-between gap-8 md:flex-row md:items-center">
           <div className="flex items-center gap-3">
-            <img
-              src={BRAND.logoUrl}
-              alt={`${BRAND.legalName} logo`}
-              className="h-20 w-20 rounded-md object-cover"
-              width="80"
-              height="80"
-            />
+            <LogoMark className="h-20 w-20" />
             <div>
               <div className="font-serif text-lg text-slate-900">{BRAND.legalName}</div>
               <div className="font-mono txt-10 uppercase tracking-widest text-slate-500">{BRAND.tagline}</div>
@@ -2132,7 +2088,6 @@ function Footer() {
           </div>
         </div>
 
-        {/* Offices + socials row */}
         <div className="mt-12 grid gap-10 border-t border-slate-100 pt-10 md:grid-cols-12">
           <div className="md:col-span-8">
             <div className="font-mono txt-11 uppercase tracking-widest text-red-600">Offices</div>
@@ -2155,7 +2110,6 @@ function Footer() {
           </div>
         </div>
 
-        {/* Bottom row */}
         <div className="mt-10 flex flex-col justify-between gap-3 border-t border-slate-100 pt-6 text-xs text-slate-500 md:flex-row">
           <span>© {new Date().getFullYear()} {BRAND.legalName}. All rights reserved. A member of DCMS Network.</span>
           <span className="font-mono uppercase tracking-widest">Licensed · Insured · Nationwide</span>
@@ -2174,7 +2128,6 @@ export default function Rabs() {
   return (
     <div className="min-h-screen bg-white font-sans text-slate-900 antialiased">
       <style>{`
-        /* Custom CSS to replace Tailwind arbitrary values for artifact-sandbox compatibility */
         .txt-10 { font-size: 10px; line-height: 1.3; }
         .txt-11 { font-size: 11px; line-height: 1.35; }
         .lead-105 { line-height: 1.05; }
@@ -2185,7 +2138,6 @@ export default function Rabs() {
         .bg-fade-top {
           background-image: radial-gradient(ellipse at top, transparent 0%, #ffffff 75%);
         }
-        /* Hide default details/summary marker in FAQ accordion */
         details > summary { list-style: none; }
         details > summary::-webkit-details-marker { display: none; }
       `}</style>
@@ -2197,7 +2149,7 @@ export default function Rabs() {
         <PainPoints />
         <CTABanner
           headline="Stop paying for guesswork."
-          sub="Get laser-accurate plans of your home — in 3–5 business days, for 40–60% less than hiring an architect."
+          sub="Laser-accurate as-built plans. Flat pricing. Delivered in 3–5 business days."
           ctaLabel="Get your quote"
         />
         <Deliverables />

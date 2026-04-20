@@ -37,7 +37,7 @@ const BRAND = {
   projectsDelivered: "1,200+",
   coverage: "Nationwide",
   turnaround: "3–5 business days",
-  logoUrl: "/images/Rabs-logo.jpeg",
+  logoUrl: "/images/Rabs-logo.png",
 };
 
 /**

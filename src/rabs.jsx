@@ -16,11 +16,11 @@ import {
   Menu,
   Plus,
   Ruler,
-  ScanLine,
   Shield,
   Sparkles,
   Star,
   Triangle,
+  Wallpaper,
   X,
   Zap,
 } from "lucide-react";
@@ -884,25 +884,25 @@ function Deliverables() {
       highlight: true,
     },
     {
-      icon: ScanLine,
+      icon: Wallpaper,
       name: "Interior Elevations",
-      pitch: "Wall-by-wall interior views with cabinetry, millwork, outlets, and fixture heights.",
+      pitch: "Flat views of every interior wall — a clean foundation for design and renovation planning.",
       formats: ["PDF", "DWG"],
       bullets: [
-        "Kitchens, baths, and built-ins",
-        "Cabinetry and millwork heights",
-        "Outlet and fixture locations",
+        "Every wall, every room, drawn flat",
+        "Door and window openings in elevation",
+        "Ideal for interior designers",
       ],
     },
     {
       icon: Home,
       name: "Exterior Elevations",
-      pitch: "North, south, east, west — all four exterior faces, accurately drawn.",
+      pitch: "All four exterior faces — essential for permit applications and facade work.",
       formats: ["PDF", "DWG"],
       bullets: [
-        "All four exterior elevations",
-        "Window, door, and roof geometry",
-        "Material callouts where relevant",
+        "North, south, east, west elevations",
+        "Permit-ready documentation",
+        "Ideal for facade renovations",
       ],
     },
     {
@@ -960,10 +960,10 @@ function Deliverables() {
             return (
               <div
                 key={i}
-                className={`group relative flex flex-col rounded-2xl border p-7 transition-all ${
+                className={`group relative flex flex-col rounded-2xl border-2 p-7 transition-all ${
                   tier.highlight
                     ? "border-blue-600 bg-slate-900 text-white shadow-xl shadow-blue-900/20"
-                    : "border-slate-200 bg-white hover:border-slate-300 hover:shadow-lg"
+                    : "border-slate-300 bg-white hover:border-slate-400 hover:shadow-lg"
                 }`}
               >
                 {tier.highlight && (
@@ -1448,11 +1448,110 @@ function Testimonials() {
 
 /**
  * =====================================================================
+ *  SUBMIT CONFIRMATION MODAL — pops on successful quote submit
+ * =====================================================================
+ */
+function SubmitConfirmationModal({ open, name, email, onClose }) {
+  const firstName = name ? name.split(" ")[0] : "";
+
+  useEffect(() => {
+    if (!open) return;
+    const handleKey = (e) => {
+      if (e.key === "Escape") onClose();
+    };
+    document.addEventListener("keydown", handleKey);
+    // Lock body scroll while modal is open
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", handleKey);
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [open, onClose]);
+
+  if (!open) return null;
+
+  return (
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="submit-modal-title"
+      className="fixed inset-0 z-[100] flex items-center justify-center p-4"
+    >
+      {/* Backdrop */}
+      <div
+        className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
+        onClick={onClose}
+        aria-hidden="true"
+      />
+
+      {/* Content */}
+      <div className="modal-pop relative w-full max-w-md overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl">
+        <button
+          onClick={onClose}
+          aria-label="Close"
+          className="absolute right-4 top-4 z-10 grid h-8 w-8 place-items-center rounded-full text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-900"
+        >
+          <X size={18} />
+        </button>
+
+        {/* Blueprint-grid header with floating check */}
+        <div className="relative h-24 bg-gradient-to-br from-blue-600 to-blue-700">
+          <div className="pointer-events-none absolute inset-0 text-white/10">
+            <BlueprintGrid className="h-full w-full" />
+          </div>
+          <div className="absolute left-1/2 top-full grid h-16 w-16 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full border-4 border-white bg-blue-600 text-white shadow-lg">
+            <Check size={28} strokeWidth={2.5} />
+          </div>
+        </div>
+
+        {/* Body */}
+        <div className="px-6 pb-8 pt-12 text-center lg:px-10">
+          <h3
+            id="submit-modal-title"
+            className="font-serif text-2xl tracking-tight text-slate-900 lg:text-3xl"
+          >
+            {firstName ? (
+              <>
+                Thanks, <span className="italic text-blue-600">{firstName}</span>!
+              </>
+            ) : (
+              <>Thanks!</>
+            )}
+          </h3>
+          <p className="mt-3 leading-relaxed text-slate-600">
+            A confirmation email is on its way to{" "}
+            <span className="font-medium text-slate-900">{email}</span>. Our team will follow up within one
+            business day with your matched quote and to schedule your scan.
+          </p>
+          <button
+            onClick={onClose}
+            className="mt-7 inline-flex items-center gap-2 rounded-full bg-slate-900 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-blue-600"
+          >
+            Got it
+          </button>
+        </div>
+      </div>
+
+      <style>{`
+        @keyframes modal-pop-in {
+          from { opacity: 0; transform: scale(0.95) translateY(8px); }
+          to   { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        .modal-pop { animation: modal-pop-in 0.22s ease-out both; }
+      `}</style>
+    </div>
+  );
+}
+
+/**
+ * =====================================================================
  *  QUOTE FORM
  * =====================================================================
  */
 function QuoteForm() {
   const [status, setStatus] = useState("idle");
+  const [modalOpen, setModalOpen] = useState(false);
   const [form, setForm] = useState({
     name: "", email: "", phone: "", address: "", sqft: "", sqftExact: "",
     propertyType: "", timeline: "", purpose: "", notes: "",
@@ -1484,7 +1583,7 @@ function QuoteForm() {
         "Additional notes": form.notes || "(none)",
       };
 
-      const res = await fetch("https://formsubmit.co/ajax/info@dcmsnetwork.com", {
+      const res = await fetch("https://formsubmit.co/ajax/info@residentialasbuiltservices.com", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -1497,6 +1596,7 @@ function QuoteForm() {
       const json = await res.json();
       if (json.success === "false" || json.success === false) throw new Error("send failed");
       setStatus("sent");
+      setModalOpen(true);
       setTimeout(() => window.scrollTo({ top: 0, behavior: "smooth" }), 100);
     } catch {
       setStatus("error");
@@ -1506,7 +1606,8 @@ function QuoteForm() {
   if (status === "sent") {
     const quote = calculateQuote(form.sqft, form.sqftExact);
     return (
-      <section id="quote" className="relative overflow-hidden bg-gradient-to-b from-slate-50 via-white to-slate-50 py-20 lg:py-28">
+      <>
+        <section id="quote" className="relative overflow-hidden bg-gradient-to-b from-slate-50 via-white to-slate-50 py-20 lg:py-28">
         <div className="pointer-events-none absolute inset-0 text-blue-500/10">
           <BlueprintGrid className="h-full w-full" />
         </div>
@@ -1631,6 +1732,13 @@ function QuoteForm() {
           </p>
         </div>
       </section>
+      <SubmitConfirmationModal
+        open={modalOpen}
+        name={form.name}
+        email={form.email}
+        onClose={() => setModalOpen(false)}
+      />
+      </>
     );
   }
 
@@ -1781,7 +1889,7 @@ function FAQ() {
     {
       category: "Pricing & billing",
       items: [
-        { q: "How is my quote calculated?", a: "We charge a flat rate of $0.75 per square foot. Your estimate appears instantly after you submit the form, and final pricing is confirmed after the on-site scan." },
+        { q: "How is my quote calculated?", a: "Your quote is calculated based on three factors: the area of your home, your location, and which deliverables you select. After you submit the form, our team matches you to pricing and sends your quote by email — typically within one business day. Final pricing is confirmed after the on-site scan." },
         { q: "Are there any hidden fees?", a: "No — the quoted price covers the scan, the drawings, and delivery. No travel fees and no file-format upcharges." },
         { q: "When and how do I pay?", a: "Fifty percent is due to book your scan date, fifty percent on delivery of your drawings. We accept credit cards, ACH, and bank transfer." },
         { q: "What if I need revisions?", a: "Minor revisions to your drawings are included free. Larger scope changes are quoted separately before any extra work begins." },
@@ -1809,8 +1917,8 @@ function FAQ() {
       category: "What's included in each deliverable",
       items: [
         { q: "Floor Plans — what's included?", a: "Dimensioned plans of every level showing walls, doors, windows, and permanent fixtures. Half walls, railings, and steps are included by default." },
-        { q: "Exterior Elevations — what's included?", a: "All four exterior faces with door and window locations, roof geometry, and major material callouts. Window sill heights and exact window dimensions available as add-ons." },
-        { q: "Interior Elevations — what's included?", a: "Wall-by-wall interior views showing cabinetry, millwork, outlets, and fixture heights. Ideal for kitchens, bathrooms, and built-ins." },
+        { q: "Exterior Elevations — what's included?", a: "All four exterior faces of your home, drawn flat and to scale. Essential for permit submittals, facade renovations, and any curb-appeal work. Shows door and window locations and roof geometry. Precise window dimensions and sill heights available as add-ons." },
+        { q: "Interior Elevations — what's included?", a: "Flat views of every interior wall, drawn to scale, showing door and window openings in elevation. A clean foundation for interior design and renovation planning. Note: fine details like cabinetry, millwork, and fixtures are measured on-site as needed — they aren't part of the standard deliverable." },
         { q: "Reflected Ceiling Plans — what's included?", a: "Top-down ceiling plans with lighting and fixture locations, beam and soffit layouts, and ceiling heights throughout." },
         { q: "Roof Plans — what's included?", a: "Top-down view of the roof with pitches, ridges, valleys, chimneys, skylights, and any rooftop equipment." },
         { q: "Revit Models — what's included?", a: "LOD 200–300 parametric BIM model with walls, floors, ceilings, and openings. MEP placeholders available on request." },
@@ -2047,9 +2155,8 @@ function SocialIcon({ label, href, path }) {
 
 function Footer() {
   const offices = [
-    { city: "New York", address: "99 Hudson St, 5th Floor, NY 10013" },
-    { city: "Miami", address: "1110 Brickell Ave, Suite 400, Miami FL 33131" },
-    { city: "Los Angeles", address: "6080 Center Dr, 6th Floor, Los Angeles, CA 90045" },
+    { city: "New York Metro", address: "1300 Ave at Port Imperial, Suite 609, Weehawken Township, NJ 07086" },
+    { city: "Los Angeles", address: "9907 White Oak Ave #225, Northridge, CA 91325" },
   ];
 
   const SOCIALS = [

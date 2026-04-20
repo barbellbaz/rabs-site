@@ -304,7 +304,7 @@ function Nav() {
       }`}
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-2.5 lg:px-10">
-        <a href="#top" className="flex items-center gap-2.5">
+        <a href="#top" className="flex items-center">
           <img
             src={BRAND.logoUrl}
             alt={`${BRAND.legalName} logo`}
@@ -312,7 +312,6 @@ function Nav() {
             width="80"
             height="80"
           />
-          <span className="font-serif text-xl tracking-tight text-slate-900">{BRAND.name}</span>
         </a>
 
         <nav className="hidden items-center gap-7 lg:flex">
@@ -449,8 +448,7 @@ function Hero() {
             </h1>
 
             <p className="mt-6 max-w-xl text-lg leading-relaxed text-slate-600">
-              Accurate as-built drawings for residential renovations, insurance claims, and home sales — without architect retainers or weeks of waiting.{" "}
-              <span className="font-medium text-slate-900">Typically {BRAND.priceAdvantage}.</span>
+              <span className="font-medium text-slate-900">Fast, accurate, affordable, and dependable</span> as-built drawings for residential renovations. Delivered in days — for {BRAND.priceAdvantage}.
             </p>
 
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
@@ -502,35 +500,221 @@ function Hero() {
                     <BlueprintGrid className="h-full w-full" />
                   </div>
 
-                  <svg viewBox="0 0 400 500" className="absolute inset-0 h-full w-full p-8" fill="none" stroke="currentColor" strokeWidth="2">
-                    <g className="text-slate-800">
-                      <rect x="40" y="60" width="320" height="380" strokeWidth="3" />
-                      <line x1="40" y1="220" x2="220" y2="220" />
-                      <line x1="220" y1="60" x2="220" y2="300" />
-                      <line x1="220" y1="300" x2="360" y2="300" />
-                      <line x1="140" y1="300" x2="140" y2="440" />
-                      <path d="M 170 220 A 30 30 0 0 1 200 250" strokeWidth="1.5" />
-                      <path d="M 220 260 A 30 30 0 0 0 250 290" strokeWidth="1.5" />
-                      <text x="120" y="140" fontSize="10" fill="currentColor" stroke="none">KITCHEN</text>
-                      <text x="285" y="180" fontSize="10" fill="currentColor" stroke="none">LIVING</text>
-                      <text x="110" y="330" fontSize="10" fill="currentColor" stroke="none">BEDROOM</text>
-                      <text x="275" y="380" fontSize="10" fill="currentColor" stroke="none">BATH</text>
+                  <svg viewBox="0 0 400 500" className="absolute inset-0 h-full w-full p-6" fill="none" stroke="currentColor" strokeWidth="2">
+                    {/* === Dimension annotations (overall) === */}
+                    <g stroke="#2563eb" strokeWidth="1" fill="#2563eb">
+                      {/* Top overall width */}
+                      <line x1="30" y1="32" x2="370" y2="32" stroke="#2563eb" />
+                      <line x1="30" y1="26" x2="30" y2="38" stroke="#2563eb" />
+                      <line x1="370" y1="26" x2="370" y2="38" stroke="#2563eb" />
+                      <text x="200" y="24" fontSize="10" textAnchor="middle" stroke="none" className="font-mono">42' - 0"</text>
+                      {/* Right overall height */}
+                      <line x1="378" y1="50" x2="378" y2="470" stroke="#2563eb" />
+                      <line x1="372" y1="50" x2="384" y2="50" stroke="#2563eb" />
+                      <line x1="372" y1="470" x2="384" y2="470" stroke="#2563eb" />
+                      <text x="388" y="263" fontSize="10" stroke="none" className="font-mono">52' - 0"</text>
                     </g>
 
-                    <g stroke="#2563eb" strokeWidth="1">
-                      <line x1="40" y1="30" x2="220" y2="30" />
-                      <line x1="40" y1="25" x2="40" y2="35" />
-                      <line x1="220" y1="25" x2="220" y2="35" />
-                      <text x="130" y="22" fontSize="11" textAnchor="middle" fill="#2563eb" stroke="none">18' 0"</text>
+                    {/* === Floor fill === */}
+                    <rect x="30" y="50" width="340" height="420" fill="#fafbff" stroke="none" />
+
+                    {/* === Exterior walls (thick) === */}
+                    <rect x="30" y="50" width="340" height="420" stroke="#0f172a" strokeWidth="4" fill="none" />
+
+                    {/* === BALCONY (top-right, outside but connected) === */}
+                    <g stroke="#0f172a" strokeWidth="1" strokeDasharray="3 3">
+                      <rect x="270" y="50" width="100" height="60" fill="#eef2ff" />
                     </g>
-                    <g stroke="#2563eb" strokeWidth="1">
-                      <line x1="380" y1="60" x2="380" y2="440" />
-                      <line x1="375" y1="60" x2="385" y2="60" />
-                      <line x1="375" y1="440" x2="385" y2="440" />
-                      <text x="390" y="253" fontSize="11" fill="#2563eb" stroke="none">38' 0"</text>
+                    <g stroke="#0f172a" strokeWidth="3" fill="none">
+                      {/* Balcony railing suggestion */}
+                      <line x1="275" y1="55" x2="365" y2="55" strokeWidth="1.5" />
+                      <line x1="275" y1="60" x2="365" y2="60" strokeWidth="0.5" />
+                      <line x1="275" y1="55" x2="275" y2="105" strokeWidth="1.5" />
+                      <line x1="365" y1="55" x2="365" y2="105" strokeWidth="1.5" />
                     </g>
 
-                    <line x1="40" y1="60" x2="360" y2="60" stroke="#2563eb" strokeWidth="2" strokeDasharray="4 4" className="origin-top scan-sweep" />
+                    {/* === Interior walls === */}
+                    <g stroke="#0f172a" strokeWidth="2.5">
+                      {/* Horizontal divider between living zone and bedroom zone */}
+                      <line x1="30" y1="230" x2="170" y2="230" />
+                      <line x1="210" y1="230" x2="370" y2="230" />
+
+                      {/* Kitchen / Living divider (top half) */}
+                      <line x1="170" y1="110" x2="170" y2="230" />
+
+                      {/* Vestibule walls */}
+                      <line x1="30" y1="110" x2="170" y2="110" />
+                      <line x1="100" y1="110" x2="100" y2="160" />
+                      <line x1="100" y1="160" x2="170" y2="160" />
+
+                      {/* Balcony door wall */}
+                      <line x1="270" y1="110" x2="310" y2="110" />
+                      <line x1="335" y1="110" x2="370" y2="110" />
+
+                      {/* Bottom zone: vertical spine creating corridor */}
+                      <line x1="150" y1="260" x2="150" y2="310" />
+                      <line x1="150" y1="340" x2="150" y2="470" />
+                      <line x1="240" y1="260" x2="240" y2="310" />
+                      <line x1="240" y1="340" x2="240" y2="470" />
+
+                      {/* Bedroom 3 (far left) */}
+                      <line x1="30" y1="350" x2="150" y2="350" />
+
+                      {/* Master bath divider (right side) */}
+                      <line x1="240" y1="390" x2="370" y2="390" />
+                    </g>
+
+                    {/* === Door swings === */}
+                    <g stroke="#0f172a" strokeWidth="1" fill="none">
+                      {/* Entry door (vestibule) */}
+                      <path d="M 100 130 A 28 28 0 0 1 128 158" />
+                      <line x1="100" y1="130" x2="100" y2="158" strokeWidth="0.5" strokeDasharray="2 2" />
+                      {/* Kitchen → Living doorway is open (no swing) */}
+                      {/* Bed 1 → corridor */}
+                      <path d="M 150 290 A 25 25 0 0 1 125 315" />
+                      {/* Bed 2 → corridor */}
+                      <path d="M 240 290 A 25 25 0 0 0 265 315" />
+                      {/* Bed 3 → corridor */}
+                      <path d="M 150 330 A 25 25 0 0 1 175 355" />
+                      {/* Master bath */}
+                      <path d="M 240 405 A 22 22 0 0 1 262 427" />
+                      {/* Balcony sliding door (double arrows) */}
+                      <g strokeWidth="1">
+                        <line x1="310" y1="107" x2="335" y2="107" strokeWidth="3" />
+                        <path d="M 315 102 L 310 107 L 315 112" />
+                        <path d="M 330 102 L 335 107 L 330 112" />
+                      </g>
+                    </g>
+
+                    {/* === Kitchen fixtures === */}
+                    <g stroke="#0f172a" strokeWidth="1" fill="none">
+                      {/* Counter along left + top wall */}
+                      <rect x="35" y="115" width="60" height="18" />
+                      <rect x="35" y="115" width="18" height="50" />
+                      {/* Sink */}
+                      <rect x="42" y="118" width="14" height="12" />
+                      {/* Stove — 4 burners */}
+                      <rect x="60" y="117" width="28" height="14" />
+                      <circle cx="67" cy="122" r="2.5" fill="#0f172a" fillOpacity="0.4" />
+                      <circle cx="81" cy="122" r="2.5" fill="#0f172a" fillOpacity="0.4" />
+                      <circle cx="67" cy="128" r="2.5" fill="#0f172a" fillOpacity="0.4" />
+                      <circle cx="81" cy="128" r="2.5" fill="#0f172a" fillOpacity="0.4" />
+                      {/* Fridge */}
+                      <rect x="38" y="195" width="22" height="28" />
+                      <line x1="38" y1="203" x2="60" y2="203" strokeWidth="0.5" />
+                      {/* Island */}
+                      <rect x="75" y="175" width="60" height="25" rx="1" />
+                    </g>
+
+                    {/* === Living room furniture === */}
+                    <g stroke="#0f172a" strokeWidth="1" fill="none">
+                      {/* Sofa */}
+                      <rect x="185" y="195" width="70" height="22" rx="3" />
+                      <line x1="185" y1="202" x2="255" y2="202" strokeWidth="0.5" />
+                      {/* Coffee table */}
+                      <rect x="200" y="170" width="40" height="18" rx="1" />
+                      {/* Armchair */}
+                      <rect x="285" y="185" width="26" height="28" rx="2" />
+                      {/* Rug outline */}
+                      <rect x="180" y="155" width="140" height="70" strokeDasharray="2 3" strokeOpacity="0.4" />
+                    </g>
+
+                    {/* === Vestibule === */}
+                    <g stroke="#0f172a" strokeWidth="0.75" fill="none">
+                      {/* Floor tile hint */}
+                      <line x1="30" y1="135" x2="100" y2="135" strokeOpacity="0.3" />
+                      <line x1="65" y1="110" x2="65" y2="160" strokeOpacity="0.3" />
+                    </g>
+
+                    {/* === Master Bedroom (top of bottom zone, middle) === */}
+                    <g stroke="#0f172a" strokeWidth="1" fill="none">
+                      {/* Master bed */}
+                      <rect x="165" y="270" width="60" height="40" rx="2" />
+                      <line x1="165" y1="278" x2="225" y2="278" strokeWidth="0.5" />
+                      {/* Pillows */}
+                      <rect x="169" y="272" width="12" height="5" />
+                      <rect x="209" y="272" width="12" height="5" />
+                    </g>
+
+                    {/* === Bedroom 2 === */}
+                    <g stroke="#0f172a" strokeWidth="1" fill="none">
+                      <rect x="260" y="260" width="45" height="30" rx="2" />
+                      <line x1="260" y1="266" x2="305" y2="266" strokeWidth="0.5" />
+                    </g>
+
+                    {/* === Bedroom 3 === */}
+                    <g stroke="#0f172a" strokeWidth="1" fill="none">
+                      <rect x="50" y="380" width="45" height="30" rx="2" />
+                      <line x1="50" y1="386" x2="95" y2="386" strokeWidth="0.5" />
+                    </g>
+
+                    {/* === Master Bathroom === */}
+                    <g stroke="#0f172a" strokeWidth="1" fill="none">
+                      {/* Tub */}
+                      <rect x="250" y="405" width="45" height="24" rx="3" />
+                      <line x1="254" y1="409" x2="291" y2="409" strokeWidth="0.5" />
+                      {/* Vanity */}
+                      <rect x="310" y="405" width="55" height="18" />
+                      {/* Sink */}
+                      <rect x="325" y="408" width="14" height="10" />
+                      {/* Toilet */}
+                      <ellipse cx="318" cy="445" rx="7" ry="10" />
+                      <rect x="313" y="452" width="10" height="8" />
+                    </g>
+
+                    {/* === Room labels === */}
+                    <g fill="#0f172a" stroke="none" className="font-mono" fontSize="8">
+                      <text x="65" y="178" textAnchor="middle">KITCHEN</text>
+                      <text x="65" y="186" textAnchor="middle" fontSize="6" fill="#64748b">13' × 10'</text>
+
+                      <text x="250" y="143" textAnchor="middle">LIVING ROOM</text>
+                      <text x="250" y="151" textAnchor="middle" fontSize="6" fill="#64748b">18' × 15'</text>
+
+                      <text x="320" y="82" textAnchor="middle" fontSize="7">BALCONY</text>
+
+                      <text x="65" y="145" textAnchor="middle" fontSize="7">VESTIBULE</text>
+
+                      <text x="195" y="335" textAnchor="middle">MASTER BED</text>
+                      <text x="195" y="343" textAnchor="middle" fontSize="6" fill="#64748b">14' × 12'</text>
+
+                      <text x="282" y="335" textAnchor="middle">BEDROOM 2</text>
+                      <text x="282" y="343" textAnchor="middle" fontSize="6" fill="#64748b">11' × 10'</text>
+
+                      <text x="72" y="438" textAnchor="middle">BEDROOM 3</text>
+                      <text x="72" y="446" textAnchor="middle" fontSize="6" fill="#64748b">11' × 10'</text>
+
+                      <text x="305" y="440" textAnchor="middle">MASTER BATH</text>
+                      <text x="305" y="448" textAnchor="middle" fontSize="6" fill="#64748b">9' × 7'</text>
+                    </g>
+
+                    {/* === Window indicators (thin double lines on exterior walls) === */}
+                    <g stroke="#2563eb" strokeWidth="1">
+                      {/* Top-left (kitchen) */}
+                      <line x1="50" y1="50" x2="90" y2="50" />
+                      <line x1="50" y1="53" x2="90" y2="53" />
+                      {/* Left wall (bed 3) */}
+                      <line x1="30" y1="400" x2="30" y2="440" />
+                      <line x1="33" y1="400" x2="33" y2="440" />
+                      {/* Bottom (master bed) */}
+                      <line x1="175" y1="467" x2="225" y2="467" />
+                      <line x1="175" y1="470" x2="225" y2="470" />
+                      {/* Bottom-right (bed 2 / master bath) */}
+                      <line x1="260" y1="467" x2="305" y2="467" />
+                      <line x1="260" y1="470" x2="305" y2="470" />
+                      {/* Right wall (bed 2) */}
+                      <line x1="367" y1="260" x2="367" y2="300" />
+                      <line x1="370" y1="260" x2="370" y2="300" />
+                    </g>
+
+                    {/* === Compass rose (subtle, top-left corner) === */}
+                    <g transform="translate(55, 478)" stroke="#2563eb" strokeWidth="0.8" fill="none">
+                      <circle r="10" />
+                      <path d="M 0 -10 L 2 0 L 0 10 L -2 0 Z" fill="#2563eb" fillOpacity="0.6" stroke="none" />
+                      <text x="0" y="-12" fontSize="6" textAnchor="middle" fill="#2563eb" stroke="none" className="font-mono">N</text>
+                    </g>
+
+                    {/* === Scan sweep animation === */}
+                    <line x1="30" y1="50" x2="370" y2="50" stroke="#2563eb" strokeWidth="2" strokeDasharray="4 4" className="origin-top scan-sweep" />
                   </svg>
                 </div>
 
@@ -556,7 +740,7 @@ function Hero() {
           0%   { transform: translateY(0); opacity: 0; }
           10%  { opacity: 1; }
           90%  { opacity: 1; }
-          100% { transform: translateY(380px); opacity: 0; }
+          100% { transform: translateY(420px); opacity: 0; }
         }
         .scan-sweep {
           animation: scan-sweep 4s ease-in-out infinite;
@@ -618,6 +802,7 @@ function PainPoints() {
       statCaption: "of home renovations go over budget.",
       body: "Inaccurate plans mean change orders, rework, and costs you didn't plan for. Laser-accurate as-builts upfront eliminate the guesswork — and the surprise invoices.",
       source: "RenoFi industry analysis via Nasdaq, 2024",
+      sourceUrl: "https://realmhome.com/blog/avoiding-the-renovation-budget-trap-a-data-backed-guide",
     },
     {
       icon: HardHat,
@@ -627,6 +812,7 @@ function PainPoints() {
       statCaption: "of rework is caused by inaccurate or inaccessible information.",
       body: "Every wrong measurement you inherit costs you labor, materials, and schedule. Start with laser-accurate plans and bid, order, and build off reality — not a tape measure.",
       source: "FMI × Autodesk Construction Data Report, 2021",
+      sourceUrl: "https://www.msuite.com/bad-construction-data-costs-industry-1-8-trillion-worldwide/",
     },
     {
       icon: Ruler,
@@ -636,6 +822,7 @@ function PainPoints() {
       statCaption: "of construction projects miss their original deadline.",
       body: "Weeks spent measuring existing conditions is design time you don't get back. Hand us the address — we deliver clean, accurate plans and elevations ready to design against.",
       source: "McKinsey Global Institute, construction productivity study",
+      sourceUrl: "https://www.propelleraero.com/blog/10-construction-project-cost-overrun-statistics-you-need-to-hear/",
     },
   ];
 
@@ -680,7 +867,15 @@ function PainPoints() {
                 <p className="mt-5 text-sm leading-relaxed text-slate-600">{s.body}</p>
 
                 <p className="mt-5 border-t border-slate-100 pt-4 font-mono txt-10 uppercase tracking-wider text-slate-400">
-                  Source: {s.source}
+                  Source:{" "}
+                  <a
+                    href={s.sourceUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="underline decoration-slate-300 underline-offset-2 transition-colors hover:text-blue-600 hover:decoration-blue-400"
+                  >
+                    {s.source}
+                  </a>
                 </p>
               </article>
             );
@@ -927,7 +1122,25 @@ function PricingAnchor() {
               <ArrowRight size={16} />
             </a>
             <p className="mt-4 font-mono txt-10 uppercase tracking-wider text-slate-400">
-              Architect fee sources: HomeGuide 2026; HomeAdvisor 2025.
+              Architect fee sources:{" "}
+              <a
+                href="https://homeguide.com/costs/architect-cost"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline decoration-slate-300 underline-offset-2 transition-colors hover:text-blue-600 hover:decoration-blue-400"
+              >
+                HomeGuide 2026
+              </a>
+              ;{" "}
+              <a
+                href="https://www.homeadvisor.com/cost/architects-and-engineers/hire-an-architect/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline decoration-slate-300 underline-offset-2 transition-colors hover:text-blue-600 hover:decoration-blue-400"
+              >
+                HomeAdvisor 2025
+              </a>
+              .
             </p>
           </div>
 
@@ -992,7 +1205,16 @@ function PricingAnchor() {
             </div>
 
             <p className="mt-4 text-center text-xs italic text-slate-500">
-              Architect fees for residential renovations typically range from 10–20% of construction cost (HomeGuide, 2026).
+              Architect fees for residential renovations typically range from 10–20% of construction cost (
+              <a
+                href="https://homeguide.com/costs/architect-cost"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline decoration-slate-300 underline-offset-2 transition-colors hover:text-blue-600 hover:decoration-blue-400"
+              >
+                HomeGuide, 2026
+              </a>
+              ).
             </p>
           </div>
         </div>
@@ -1842,10 +2064,48 @@ function ServiceAreas() {
  *  FOOTER
  * =====================================================================
  */
-function Footer() {
+function SocialIcon({ label, href, path }) {
   return (
-    <footer className="border-t border-slate-200 bg-white py-12">
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label={label}
+      title={label}
+      className="grid h-9 w-9 place-items-center rounded-full bg-slate-900 text-white transition-colors hover:bg-blue-600"
+    >
+      <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor" aria-hidden="true">
+        <path d={path} />
+      </svg>
+    </a>
+  );
+}
+
+function Footer() {
+  const offices = [
+    { city: "New York", address: "99 Hudson St, 5th Floor, NY 10013" },
+    { city: "Miami", address: "1110 Brickell Ave, Suite 400, Miami FL 33131" },
+    { city: "Los Angeles", address: "6080 Center Dr, 6th Floor, Los Angeles, CA 90045" },
+  ];
+
+  // SVG path data for brand marks (simplified single-path versions)
+  const SOCIALS = [
+    {
+      label: "LinkedIn",
+      href: "https://www.linkedin.com/company/dcms-network",
+      path: "M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.852 3.37-1.852 3.601 0 4.268 2.37 4.268 5.455v6.288zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.063 2.063 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z",
+    },
+    {
+      label: "YouTube",
+      href: "https://www.youtube.com/@dcmsnetworkmedia",
+      path: "M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z",
+    },
+  ];
+
+  return (
+    <footer className="border-t border-slate-200 bg-white pt-14 pb-10">
       <div className="mx-auto max-w-7xl px-6 lg:px-10">
+        {/* Top row — logo + CTA */}
         <div className="flex flex-col justify-between gap-8 md:flex-row md:items-center">
           <div className="flex items-center gap-3">
             <img
@@ -1872,8 +2132,32 @@ function Footer() {
           </div>
         </div>
 
-        <div className="mt-8 flex flex-col justify-between gap-2 border-t border-slate-100 pt-6 text-xs text-slate-500 md:flex-row">
-          <span>© {new Date().getFullYear()} {BRAND.legalName}. All rights reserved.</span>
+        {/* Offices + socials row */}
+        <div className="mt-12 grid gap-10 border-t border-slate-100 pt-10 md:grid-cols-12">
+          <div className="md:col-span-8">
+            <div className="font-mono txt-11 uppercase tracking-widest text-red-600">Offices</div>
+            <ul className="mt-4 space-y-2 text-sm text-slate-700">
+              {offices.map((o) => (
+                <li key={o.city}>
+                  <span className="font-medium text-slate-900">{o.city}:</span> {o.address}
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="md:col-span-4">
+            <div className="font-mono txt-11 uppercase tracking-widest text-slate-500">Follow</div>
+            <div className="mt-4 flex items-center gap-2.5">
+              {SOCIALS.map((s) => (
+                <SocialIcon key={s.label} {...s} />
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom row */}
+        <div className="mt-10 flex flex-col justify-between gap-3 border-t border-slate-100 pt-6 text-xs text-slate-500 md:flex-row">
+          <span>© {new Date().getFullYear()} {BRAND.legalName}. All rights reserved. A member of DCMS Network.</span>
           <span className="font-mono uppercase tracking-widest">Licensed · Insured · Nationwide</span>
         </div>
       </div>
@@ -1910,26 +2194,26 @@ export default function Rabs() {
       <main>
         <Hero />
         <Stats />
-        <div className="cv-auto"><PainPoints /></div>
+        <PainPoints />
         <CTABanner
           headline="Stop paying for guesswork."
           sub="Get laser-accurate plans of your home — in 3–5 business days, for 40–60% less than hiring an architect."
           ctaLabel="Get your quote"
         />
-        <div className="cv-auto"><Deliverables /></div>
-        <div className="cv-auto"><Process /></div>
-        <div className="cv-auto"><PricingAnchor /></div>
-        <div className="cv-auto"><WhyUs /></div>
-        <div className="cv-auto"><Samples /></div>
+        <Deliverables />
+        <Process />
+        <PricingAnchor />
+        <WhyUs />
+        <Samples />
         <CTABanner
           headline="Your home deserves precise plans."
           sub="Flat pricing. Fast delivery. Real people who do this all day."
           ctaLabel="Start your request"
         />
-        <div className="cv-auto"><Testimonials /></div>
-        <div className="cv-auto"><FAQ /></div>
+        <Testimonials />
+        <FAQ />
         <QuoteForm />
-        <div className="cv-auto"><ServiceAreas /></div>
+        <ServiceAreas />
       </main>
       <Footer />
     </div>

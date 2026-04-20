@@ -9,7 +9,6 @@ import {
   DollarSign,
   Eye,
   HardHat,
-  Handshake,
   Home,
   Layers,
   MapPin,
@@ -32,22 +31,18 @@ import {
  * =====================================================================
  */
 const BRAND = {
-  name: "RABS",
   legalName: "Residential As-Built Services",
   tagline: "Precision as-builts of your home, delivered in days.",
-  email: "hello@placeholder.com",
-  phone: "(555) 000-0000",
   yearsExperience: "15+",
   projectsDelivered: "1,200+",
   coverage: "Nationwide",
   turnaround: "3–5 business days",
-  priceAdvantage: "a flat rate, matched to your home",
   logoUrl: "/images/Rabs-logo.jpeg",
 };
 
 /**
- * Small inline logo mark used as a sandbox-safe placeholder for BRAND.logoUrl.
- * In production, swap <LogoMark /> back for <img src={BRAND.logoUrl} ... />.
+ * LogoMark — inline text mark. Used as the fallback when the real logo image
+ * fails to load (sandbox previews, offline, broken paths, etc).
  */
 function LogoMark({ className = "h-20 w-20" }) {
   return (
@@ -66,90 +61,33 @@ function LogoMark({ className = "h-20 w-20" }) {
 }
 
 /**
- * =====================================================================
- *  PRICING
- * =====================================================================
+ * Logo — primary logo component. Renders the real image from BRAND.logoUrl.
+ * If the image fails to load (e.g. in preview sandbox), falls back to LogoMark.
  */
-const RATE_PER_SQFT = 0.75;
+function Logo({ className = "h-20 w-20" }) {
+  const [errored, setErrored] = useState(false);
+  if (errored) return <LogoMark className={className} />;
+  return (
+    <img
+      src={BRAND.logoUrl}
+      alt={`${BRAND.legalName} logo`}
+      className={`${className} rounded-md object-cover`}
+      width="80"
+      height="80"
+      onError={() => setErrored(true)}
+    />
+  );
+}
 
+/**
+ * =====================================================================
+ *  FORM CONSTANTS
+ * =====================================================================
+ *  Pricing is calculated internally by the RABS team based on area,
+ *  location, and selected deliverables. The site itself does not
+ *  compute or display a dollar amount.
+ */
 const EXACT_SQFT_KEY = "I know the exact sq ft";
-
-// Services included in the base scan price
-const DELIVERABLE_SERVICES = [
-  "Floor Plans",
-  "Exterior Elevations",
-  "Interior Elevations",
-  "Reflected Ceiling Plans",
-  "Roof Plans",
-  "Revit Models",
-  "Virtual Visits (Matterport)",
-];
-
-// Optional detail elements that may require scope clarification
-const DETAIL_OPTIONS = [
-  "Walls",
-  "Half walls",
-  "Doors",
-  "Railings",
-  "Steps",
-  "Window dimensions",
-  "Window sill heights",
-  "Bathroom fixtures",
-  "Sidewalks",
-  "Parking surfaces",
-  "Landscape plans",
-];
-
-const SQFT_RANGES = {
-  "0 – 1,500 sq ft": { min: 0, max: 1500 },
-  "1,500 – 3,000 sq ft": { min: 1500, max: 3000 },
-  "3,000 – 6,000 sq ft": { min: 3000, max: 6000 },
-  "6,000 – 10,000 sq ft": { min: 6000, max: 10000 },
-  "10,000+ sq ft": { min: 10000, max: null },
-};
-
-function formatUSD(n) {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-    maximumFractionDigits: 0,
-  }).format(n);
-}
-
-function calculateQuote(sqftRange, sqftExact) {
-  if (sqftRange === EXACT_SQFT_KEY) {
-    const n = parseInt(sqftExact, 10);
-    if (!isNaN(n) && n > 0) {
-      const total = n * RATE_PER_SQFT;
-      return {
-        rangeLabel: `${n.toLocaleString()} sq ft`,
-        rate: RATE_PER_SQFT,
-        lowTotal: total,
-        highTotal: total,
-        display: formatUSD(total),
-        exact: true,
-      };
-    }
-    return null;
-  }
-  const r = SQFT_RANGES[sqftRange];
-  if (!r) return null;
-  const lowTotal = r.min * RATE_PER_SQFT;
-  const highTotal = r.max ? r.max * RATE_PER_SQFT : null;
-  return {
-    rangeLabel: sqftRange,
-    rate: RATE_PER_SQFT,
-    lowTotal,
-    highTotal,
-    display:
-      r.max === null
-        ? `Starting at ${formatUSD(lowTotal)}`
-        : r.min === 0
-          ? `Up to ${formatUSD(highTotal)}`
-          : `${formatUSD(lowTotal)} – ${formatUSD(highTotal)}`,
-    exact: false,
-  };
-}
 
 /**
  * =====================================================================
@@ -312,7 +250,6 @@ function Nav() {
     { href: "#pain", label: "Why it matters" },
     { href: "#deliverables", label: "Deliverables" },
     { href: "#process", label: "Process" },
-    { href: "#pricing", label: "Pricing" },
     { href: "#faq", label: "FAQ" },
   ];
 
@@ -324,7 +261,7 @@ function Nav() {
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-2.5 lg:px-10">
         <a href="#top" className="flex items-center">
-          <LogoMark className="h-20 w-20" />
+          <Logo className="h-20 w-20" />
         </a>
 
         <nav className="hidden items-center gap-7 lg:flex">
@@ -421,7 +358,7 @@ function StickyCTA() {
         className="group flex items-center gap-2.5 rounded-full bg-blue-600 px-5 py-3.5 text-sm font-semibold text-white shadow-xl shadow-blue-900/30 ring-1 ring-blue-500 transition-all hover:bg-blue-700 hover:shadow-2xl hover:shadow-blue-900/40 md:px-6 md:py-4 md:text-base"
       >
         <Zap size={18} className="animate-pulse" />
-        <span>Get your quote in 90 sec</span>
+        <span>Get your quote in 60 sec</span>
         <ArrowRight size={18} className="transition-transform group-hover:translate-x-0.5" />
       </a>
     </div>
@@ -466,7 +403,7 @@ function Hero() {
                 href="#quote"
                 className="group inline-flex items-center justify-center gap-2 rounded-full bg-slate-900 px-6 py-3.5 text-sm font-semibold text-white transition-all hover:bg-blue-600"
               >
-                Get your quote in 90 sec
+                Get your quote in 60 sec
                 <ArrowRight size={16} className="transition-transform group-hover:translate-x-0.5" />
               </a>
               <a
@@ -660,7 +597,7 @@ function Hero() {
                 </div>
 
                 <div className="flex items-center justify-between border-t border-slate-200 bg-white px-5 py-3 text-xs">
-                  <span className="font-mono uppercase tracking-wider text-slate-500">Scan complete · 1/2″ @ 30 ft</span>
+                  <span className="font-mono uppercase tracking-wider text-slate-500">Laser scan complete</span>
                   <span className="inline-flex items-center gap-1 font-medium text-green-600">
                     <span className="h-1.5 w-1.5 rounded-full bg-green-500" /> Ready
                   </span>
@@ -723,6 +660,30 @@ function Stats() {
             );
           })}
         </div>
+      </div>
+    </section>
+  );
+}
+
+/**
+ * =====================================================================
+ *  APPROACH — positioning statement. Sits just before PainPoints.
+ * =====================================================================
+ */
+function Approach() {
+  return (
+    <section className="relative overflow-hidden bg-white py-20 lg:py-28">
+      <div className="mx-auto max-w-4xl px-6 text-center lg:px-10">
+        <DimensionLine label="How we work" className="justify-center" />
+        <p className="mt-8 font-serif text-2xl leading-relaxed text-slate-800 lg:text-3xl lg:leading-snug">
+          We work alongside architects, designers, and contractors every day. They design and build.
+          We handle the measurement and documentation — the on-site grind, the exacting CAD drafting
+          of existing conditions — so they can focus on what they do best.
+        </p>
+        <p className="mt-8 text-base leading-relaxed text-slate-600 lg:text-lg lg:leading-relaxed">
+          Local field-surveying crews capture your home on-site. A centralized drafting team produces
+          the deliverables. The combination brings you both speed and economy on every project.
+        </p>
       </div>
     </section>
   );
@@ -1101,17 +1062,17 @@ function Process() {
     {
       n: "01",
       title: "Request & get matched pricing",
-      body: "Tell us the address, square footage, and what you need. Within minutes we email back pricing and matched package options. Total effort on your end: under 90 seconds.",
+      body: "Tell us the address, square footage, and what you need. Within minutes we email back pricing and matched package options. Total effort on your end: 60 seconds.",
     },
     {
       n: "02",
       title: "On-site scan",
-      body: "A technician captures every surface with laser precision (1/2 inch at 30 feet, or better). Most homes wrap in a single day.",
+      body: "A technician captures every surface of your home with laser precision. Most homes wrap in a single day or less.",
     },
     {
       n: "03",
       title: "Drawings delivered",
-      body: "Your drawings — floor plans, elevations, ceiling plans, Revit, or whatever you ordered — land in your inbox within 3–5 business days, ready for your architect, designer, contractor, or records.",
+      body: "Your drawings — floor plans, elevations, ceiling plans, Revit, and everything else in your package — land in your inbox within 3–5 business days, ready for your architect, designer, contractor, or records.",
     },
   ];
 
@@ -1158,130 +1119,6 @@ function Process() {
 
 /**
  * =====================================================================
- *  PRICING ANCHOR — flat-rate positioning. Architect-friendly framing.
- * =====================================================================
- */
-function PricingAnchor() {
-  const examples = [
-    { label: "1,500 sq ft", price: 1500 * RATE_PER_SQFT },
-    { label: "2,500 sq ft", price: 2500 * RATE_PER_SQFT },
-    { label: "4,000 sq ft", price: 4000 * RATE_PER_SQFT },
-  ];
-
-  return (
-    <section id="pricing" className="relative overflow-hidden bg-white py-24 lg:py-32">
-      <div className="mx-auto max-w-7xl px-6 lg:px-10">
-        <div className="grid gap-12 lg:grid-cols-12 lg:items-center">
-          <div className="lg:col-span-5">
-            <DimensionLine label="04 · Pricing" />
-            <h2 className="mt-4 font-serif text-4xl tracking-tight text-slate-900 lg:text-5xl">
-              Priced by the square foot.{" "}
-              <span className="italic text-blue-600">Matched to your home.</span>
-            </h2>
-            <p className="mt-5 text-lg leading-relaxed text-slate-600">
-              We work alongside architects, designers, and contractors every day. They design and build.
-              We handle the measurement and documentation — the on-site grind, the exacting CAD drafting
-              of existing conditions — so they can focus on what they do best.
-            </p>
-            <p className="mt-4 text-lg leading-relaxed text-slate-600">
-              One flat rate, matched to your home. No hidden fees, no revision surprises.
-            </p>
-
-            <div className="mt-8 inline-flex items-start gap-3 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3">
-              <Handshake size={18} className="mt-0.5 shrink-0 text-blue-600" />
-              <span className="text-sm text-slate-700">
-                <span className="font-medium text-slate-900">Architects & designers:</span> we invoice you
-                direct, or invoice your client — your call.
-              </span>
-            </div>
-
-            <div className="mt-8">
-              <a
-                href="#quote"
-                className="group inline-flex items-center gap-2 rounded-full bg-slate-900 px-6 py-3.5 text-sm font-semibold text-white transition-all hover:bg-blue-600"
-              >
-                Get your matched price
-                <ArrowRight size={16} className="transition-transform group-hover:translate-x-0.5" />
-              </a>
-            </div>
-          </div>
-
-          <div className="lg:col-span-7">
-            {/* Headline rate card */}
-            <div className="relative overflow-hidden rounded-2xl border-2 border-blue-600 bg-gradient-to-br from-blue-600 to-blue-700 p-8 text-white shadow-xl shadow-blue-900/20 lg:p-10">
-              <div className="pointer-events-none absolute inset-0 text-white/10">
-                <BlueprintGrid className="h-full w-full" />
-              </div>
-              <div className="relative">
-                <div className="flex items-center gap-2">
-                  <DollarSign size={18} />
-                  <span className="font-mono txt-11 uppercase tracking-widest">
-                    Flat rate · all deliverables
-                  </span>
-                </div>
-                <div className="mt-6 flex items-baseline gap-3">
-                  <span className="font-serif text-6xl tracking-tight lg:text-7xl">
-                    {formatUSD(RATE_PER_SQFT)}
-                  </span>
-                  <span className="font-mono txt-11 uppercase tracking-widest text-blue-100">
-                    per sq ft
-                  </span>
-                </div>
-                <p className="mt-4 max-w-md leading-relaxed text-blue-50">
-                  One flat rate for laser scanning, drafting, and delivery. No revision fees. Final price
-                  confirmed after the on-site scan.
-                </p>
-
-                <ul className="mt-6 grid gap-2 text-sm text-blue-50 sm:grid-cols-2">
-                  <li className="flex items-center gap-2">
-                    <Check size={14} className="shrink-0 text-blue-200" />
-                    <span>1/2" accuracy at 30 ft</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Check size={14} className="shrink-0 text-blue-200" />
-                    <span>PDF + DWG included</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Check size={14} className="shrink-0 text-blue-200" />
-                    <span>3–5 business day delivery</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Check size={14} className="shrink-0 text-blue-200" />
-                    <span>Minor revisions free</span>
-                  </li>
-                </ul>
-              </div>
-            </div>
-
-            {/* Example sizes */}
-            <div className="mt-4 grid grid-cols-3 gap-3">
-              {examples.map((ex, i) => (
-                <div
-                  key={i}
-                  className="rounded-xl border border-slate-200 bg-white p-4 text-center transition-all hover:border-blue-300 hover:shadow-sm"
-                >
-                  <div className="font-mono txt-10 uppercase tracking-widest text-slate-500">
-                    {ex.label}
-                  </div>
-                  <div className="mt-2 font-serif text-2xl tracking-tight text-slate-900 lg:text-3xl">
-                    {formatUSD(ex.price)}
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <p className="mt-3 text-center text-xs text-slate-500">
-              Example estimates at {formatUSD(RATE_PER_SQFT)}/sq ft. Final pricing confirmed after on-site scan.
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/**
- * =====================================================================
  *  WHY US
  * =====================================================================
  */
@@ -1300,7 +1137,7 @@ function WhyUs() {
 
       <div className="relative mx-auto max-w-7xl px-6 lg:px-10">
         <div className="mx-auto max-w-2xl text-center">
-          <DimensionLine label="05 · Why us" className="justify-center text-blue-400/80" />
+          <DimensionLine label="04 · Why us" className="justify-center text-blue-400/80" />
           <h2 className="mt-4 font-serif text-4xl tracking-tight lg:text-5xl">
             Fast, fair, and <span className="italic text-blue-400">obsessively accurate.</span>
           </h2>
@@ -1353,7 +1190,7 @@ function Samples() {
       <div className="mx-auto max-w-7xl px-6 lg:px-10">
         <div className="flex flex-col justify-between gap-4 md:flex-row md:items-end">
           <div>
-            <DimensionLine label="06 · Samples" />
+            <DimensionLine label="05 · Samples" />
             <h2 className="mt-4 font-serif text-4xl tracking-tight text-slate-900 lg:text-5xl">Recent homes.</h2>
           </div>
           <p className="max-w-md text-slate-600">
@@ -1417,7 +1254,7 @@ function Testimonials() {
     <section id="testimonials" className="bg-white py-24 lg:py-32">
       <div className="mx-auto max-w-7xl px-6 lg:px-10">
         <div className="mx-auto max-w-2xl text-center">
-          <DimensionLine label="07 · Reviews" className="justify-center" />
+          <DimensionLine label="06 · Reviews" className="justify-center" />
           <h2 className="mt-4 font-serif text-4xl tracking-tight text-slate-900 lg:text-5xl">
             Trusted by homeowners, contractors, and architects.
           </h2>
@@ -1573,12 +1410,11 @@ function QuoteForm() {
     e.preventDefault();
     setStatus("sending");
     try {
-      const quote = calculateQuote(form.sqft, form.sqftExact);
       const sqftDisplay = form.sqft === EXACT_SQFT_KEY && form.sqftExact
         ? `${parseInt(form.sqftExact, 10).toLocaleString()} sq ft (exact)`
         : form.sqft;
       const payload = {
-        _subject: `New RABS quote request — ${form.name || "unnamed"} (${quote?.display || "size TBD"})`,
+        _subject: `New RABS quote request — ${form.name || "unnamed"}`,
         _template: "table",
         _captcha: "false",
         "Full name": form.name,
@@ -1586,7 +1422,6 @@ function QuoteForm() {
         Phone: form.phone || "(not provided)",
         "Home address": form.address,
         "Square footage": sqftDisplay,
-        "Estimated quote": quote ? `${quote.display} (at $${RATE_PER_SQFT}/sq ft)` : "TBD",
         "Property type": form.propertyType,
         Timeline: form.timeline || "(not specified)",
         Purpose: form.purpose || "(not specified)",
@@ -1614,7 +1449,6 @@ function QuoteForm() {
   };
 
   if (status === "sent") {
-    const quote = calculateQuote(form.sqft, form.sqftExact);
     return (
       <>
         <section id="quote" className="relative overflow-hidden bg-gradient-to-b from-slate-50 via-white to-slate-50 py-20 lg:py-28">
@@ -1628,96 +1462,61 @@ function QuoteForm() {
             <div className="mx-auto grid h-16 w-16 place-items-center rounded-full bg-blue-600 text-white shadow-xl shadow-blue-900/20">
               <Check size={32} strokeWidth={2.5} />
             </div>
-            <DimensionLine label="Your estimate" className="mt-8 justify-center" />
+            <DimensionLine label="Request received" className="mt-8 justify-center" />
             <h1 className="mt-4 font-serif text-4xl tracking-tight text-slate-900 lg:text-6xl">
-              Your quote is ready
+              Thanks
               {form.name ? <>, <span className="italic text-blue-600">{form.name.split(" ")[0]}</span></> : null}.
             </h1>
             <p className="mt-4 text-lg text-slate-600">
-              We've also emailed a copy to <span className="font-medium text-slate-900">{form.email}</span>. Our scheduling team will reach out within one business day to book your scan.
+              We've received your request and emailed a confirmation to{" "}
+              <span className="font-medium text-slate-900">{form.email}</span>. Our team will review the details
+              and follow up within one business day with your matched quote.
             </p>
           </div>
 
+          {/* Summary of what they submitted */}
           <div className="relative mt-12 overflow-hidden rounded-2xl border-2 border-blue-600 bg-white shadow-2xl shadow-blue-900/10">
             <div className="border-b border-slate-200 bg-slate-50 px-6 py-4 lg:px-10">
-              <div className="flex flex-wrap items-center justify-between gap-3">
-                <span className="font-mono txt-11 uppercase tracking-widest text-slate-500">
-                  Quote · Estimate #{Date.now().toString().slice(-6)}
-                </span>
-                <span className="font-mono txt-11 uppercase tracking-widest text-slate-500">
-                  {new Date().toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })}
-                </span>
-              </div>
+              <span className="font-mono txt-11 uppercase tracking-widest text-slate-500">
+                Summary of your request
+              </span>
             </div>
 
             <div className="px-6 py-8 lg:px-10 lg:py-10">
-              <div className="grid gap-8 md:grid-cols-5">
-                <div className="md:col-span-3">
-                  <div className="font-mono txt-10 uppercase tracking-widest text-slate-500">Your home</div>
-                  <div className="mt-1 font-serif text-xl text-slate-900">{form.address}</div>
+              <div className="font-mono txt-10 uppercase tracking-widest text-slate-500">Your home</div>
+              <div className="mt-1 font-serif text-xl text-slate-900">{form.address}</div>
 
-                  <div className="mt-8 space-y-4 border-t border-slate-100 pt-6">
-                    <div className="flex items-start justify-between gap-4">
-                      <div>
-                        <div className="font-mono txt-10 uppercase tracking-widest text-slate-500">Size</div>
-                        <div className="mt-1 text-slate-900">
-                          {form.sqft === EXACT_SQFT_KEY && form.sqftExact
-                            ? `${parseInt(form.sqftExact, 10).toLocaleString()} sq ft`
-                            : form.sqft || "—"}
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <div className="font-mono txt-10 uppercase tracking-widest text-slate-500">Rate</div>
-                        <div className="mt-1 text-slate-900">{formatUSD(RATE_PER_SQFT)} / sq ft</div>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center justify-between gap-4 border-t border-slate-100 pt-4">
-                      <div>
-                        <div className="font-mono txt-10 uppercase tracking-widest text-slate-500">Timeline</div>
-                        <div className="mt-1 text-slate-900">{form.timeline || "—"}</div>
-                      </div>
-                      <div className="text-right">
-                        <div className="font-mono txt-10 uppercase tracking-widest text-slate-500">Purpose</div>
-                        <div className="mt-1 text-slate-900">{form.purpose || "—"}</div>
-                      </div>
-                    </div>
+              <div className="mt-8 grid gap-6 border-t border-slate-100 pt-6 sm:grid-cols-2">
+                <div>
+                  <div className="font-mono txt-10 uppercase tracking-widest text-slate-500">Size</div>
+                  <div className="mt-1 text-slate-900">
+                    {form.sqft === EXACT_SQFT_KEY && form.sqftExact
+                      ? `${parseInt(form.sqftExact, 10).toLocaleString()} sq ft`
+                      : form.sqft || "—"}
                   </div>
                 </div>
-
-                <div className="md:col-span-2">
-                  <div className="rounded-xl border border-slate-200 bg-gradient-to-br from-blue-50 to-white p-6 lg:p-8">
-                    <div className="font-mono txt-10 uppercase tracking-widest text-blue-700">
-                      Estimated total
-                    </div>
-                    <div className="mt-3 font-serif text-4xl leading-none tracking-tight text-slate-900 lg:text-5xl">
-                      {quote ? quote.display : "Custom quote"}
-                    </div>
-                    <p className="mt-4 text-sm leading-relaxed text-slate-600">
-                      Based on {formatUSD(RATE_PER_SQFT)}/sq ft for your home size. Final price is confirmed after our technician's on-site scan.
-                    </p>
-                    <div className="mt-6 flex flex-col gap-2 border-t border-slate-200 pt-5 text-xs text-slate-500">
-                      <div className="flex items-center gap-2">
-                        <Check size={13} className="text-blue-600" /> All drawings included
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Check size={13} className="text-blue-600" /> Delivered in {BRAND.turnaround}
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Check size={13} className="text-blue-600" /> No hidden fees
-                      </div>
-                    </div>
-                  </div>
+                <div>
+                  <div className="font-mono txt-10 uppercase tracking-widest text-slate-500">Property type</div>
+                  <div className="mt-1 text-slate-900">{form.propertyType || "—"}</div>
+                </div>
+                <div>
+                  <div className="font-mono txt-10 uppercase tracking-widest text-slate-500">Timeline</div>
+                  <div className="mt-1 text-slate-900">{form.timeline || "—"}</div>
+                </div>
+                <div>
+                  <div className="font-mono txt-10 uppercase tracking-widest text-slate-500">Purpose</div>
+                  <div className="mt-1 text-slate-900">{form.purpose || "—"}</div>
                 </div>
               </div>
             </div>
           </div>
 
+          {/* What happens next */}
           <div className="mt-12 grid gap-6 md:grid-cols-4">
             {[
-              { n: "01", t: "Confirmation", b: "Check your inbox — your quote is on its way." },
-              { n: "02", t: "We call you", b: "Our scheduler books your scan within 1 business day." },
-              { n: "03", t: "On-site survey", b: "A discreet, friendly technician wraps your home in under a day." },
+              { n: "01", t: "Confirmation", b: "Check your inbox — we've received your request." },
+              { n: "02", t: "Matched quote", b: "Our team follows up within 1 business day with your quote." },
+              { n: "03", t: "On-site scan", b: "A discreet, friendly technician wraps your home in a single day or less." },
               { n: "04", t: "Drawings delivered", b: `In your inbox within ${BRAND.turnaround}.` },
             ].map((s, i) => (
               <div key={i} className="rounded-xl border border-slate-200 bg-white p-5">
@@ -1728,17 +1527,8 @@ function QuoteForm() {
             ))}
           </div>
 
-          <div className="mt-10 flex justify-center text-center">
-            <button
-              onClick={() => window.print()}
-              className="inline-flex items-center gap-2 rounded-full bg-slate-900 px-5 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-600"
-            >
-              Print or save quote
-            </button>
-          </div>
-
-          <p className="mt-8 text-center text-xs text-slate-500">
-            This is a preliminary estimate based on the info you provided. Final pricing is confirmed after the on-site scan. Our team will be in touch within one business day.
+          <p className="mt-10 text-center text-xs text-slate-500">
+            Didn't get the confirmation email? Check your spam folder, or reach out and we'll help.
           </p>
         </div>
       </section>
@@ -1763,12 +1553,12 @@ function QuoteForm() {
 
       <div className="relative mx-auto max-w-5xl px-6 lg:px-10">
         <div className="mx-auto max-w-2xl text-center">
-          <DimensionLine label="09 · Request quote" className="justify-center" />
+          <DimensionLine label="08 · Request quote" className="justify-center" />
           <h2 className="mt-4 font-serif text-4xl tracking-tight text-slate-900 lg:text-5xl">
             Get your matched packages.
           </h2>
           <p className="mt-4 text-lg text-slate-600">
-            Takes 90 seconds. We'll email pricing and package options within minutes — no call required.
+            Takes 60 seconds. We'll email pricing and package options within minutes — no call required.
           </p>
         </div>
 
@@ -1908,7 +1698,7 @@ function FAQ() {
     {
       category: "Scan day",
       items: [
-        { q: "How long does the scan take?", a: "Most homes wrap in under a single day. Our technicians are discreet, friendly, and swift." },
+        { q: "How long does the scan take?", a: "Most homes wrap in a single day or less. Our technicians are discreet, friendly, and swift." },
         { q: "Do I need to be home?", a: "Someone over 18 needs to let the technician in. You don't have to shadow them — they work independently and respect your space." },
         { q: "Does every room need to be accessible?", a: "Yes — closets, basements, and attics should be unlocked so the scanner has clear line-of-sight to capture every surface accurately." },
         { q: "What should I do to prepare?", a: "Move pets to a contained area and clear main walkways. Make sure every space has good lighting — either sunlight or artificial — so the scanner can properly capture each room. You don't need to clean or tidy; the scanner sees through clutter." },
@@ -1917,7 +1707,7 @@ function FAQ() {
     {
       category: "Accuracy & deliverables",
       items: [
-        { q: "How accurate are your scans?", a: "Our laser scanners achieve 1/2 inch accuracy at 30 feet — or better. Plenty precise for renovation, insurance, and permitting work." },
+        { q: "How accurate are your scans?", a: "Our laser scans are highly accurate — more than precise enough for renovation, insurance, and permitting work. We use professional-grade equipment calibrated for architectural documentation." },
         { q: "What file formats do I get?", a: "Every drawing is delivered as both PDF (for viewing and printing) and DWG (for AutoCAD, Revit, and other CAD software)." },
         { q: "What deliverables can you produce?", a: "Floor plans, exterior elevations, interior elevations, reflected ceiling plans, roof plans, Revit models, and virtual Matterport walk-throughs. You pick what you need — see the 'What's included' section below for details on each." },
         { q: "How fast is delivery?", a: "3–5 business days from the scan date. Rush delivery (48–72 hours) is available for an added fee." },
@@ -1943,7 +1733,7 @@ function FAQ() {
     <section id="faq" className="bg-slate-50 py-24 lg:py-32">
       <div className="mx-auto max-w-4xl px-6 lg:px-10">
         <div className="text-center">
-          <DimensionLine label="08 · FAQ" className="justify-center" />
+          <DimensionLine label="07 · FAQ" className="justify-center" />
           <h2 className="mt-4 font-serif text-4xl tracking-tight text-slate-900 lg:text-5xl">
             Questions, answered.
           </h2>
@@ -2188,7 +1978,7 @@ function Footer() {
       <div className="mx-auto max-w-7xl px-6 lg:px-10">
         <div className="flex flex-col justify-between gap-8 md:flex-row md:items-center">
           <div className="flex items-center gap-3">
-            <LogoMark className="h-20 w-20" />
+            <Logo className="h-20 w-20" />
             <div>
               <div className="font-serif text-lg text-slate-900">{BRAND.legalName}</div>
               <div className="font-mono txt-10 uppercase tracking-widest text-slate-500">{BRAND.tagline}</div>
@@ -2264,6 +2054,7 @@ export default function Rabs() {
       <main>
         <Hero />
         <Stats />
+        <Approach />
         <PainPoints />
         <CTABanner
           headline="Stop paying for guesswork."
@@ -2272,7 +2063,6 @@ export default function Rabs() {
         />
         <Deliverables />
         <Process />
-        <PricingAnchor />
         <WhyUs />
         <Samples />
         <CTABanner

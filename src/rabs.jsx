@@ -390,12 +390,12 @@ function Hero() {
             </div>
 
             <h1 className="font-serif text-5xl lead-105 tracking-tight text-slate-900 lg:text-7xl">
-              Your home. Delivered in days.{" "}
-              <span className="italic text-blue-600">At half the cost.</span>
+              Your home. Measured precisely.{" "}
+              <span className="text-blue-600">Delivered quickly.</span>
             </h1>
 
             <p className="mt-6 max-w-xl text-lg leading-relaxed text-slate-600">
-              <span className="font-medium text-slate-900">Fast, accurate, affordable, and dependable</span> as-built drawings for residential renovations. Flat pricing. Delivered in days.
+              <span className="font-medium text-slate-900">Fast, accurate, affordable, and dependable</span> as-built drawings for residential renovations.
             </p>
 
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
@@ -916,7 +916,7 @@ function Deliverables() {
           </h2>
           <p className="mt-4 text-lg text-slate-600">
             We capture your entire home in a single scan, then draft the drawings your project requires.
-            Pick what you need — priced to your home.
+            Pick the drawings you need — we'll send you a quote.
           </p>
         </div>
 
@@ -1083,7 +1083,7 @@ function Process() {
           <div className="lg:col-span-4">
             <DimensionLine label="03 · Process" />
             <h2 className="mt-4 font-serif text-4xl tracking-tight text-slate-900 lg:text-5xl">
-              Easy as <span className="italic text-blue-600">1, 2, 3.</span>
+              Easy as <span className="text-blue-600">1, 2, 3.</span>
             </h2>
             <p className="mt-4 text-lg text-slate-600">
               From first click to delivered drawings, every step is designed to keep you moving — not stuck in back-and-forth.
@@ -1125,7 +1125,7 @@ function Process() {
 function WhyUs() {
   const reasons = [
     { icon: Zap, title: "Delivered in days", body: `Drawings in your inbox within ${BRAND.turnaround} — not weeks. Every scan is prioritized.` },
-    { icon: DollarSign, title: "Priced to your home", body: "No surprise fees. Flat pricing matched to your square footage and scope." },
+    { icon: DollarSign, title: "Honest quoting", body: "Every quote is tailored to your home, location, and scope. You'll know the full price before we pick up the scanner." },
     { icon: Sparkles, title: "Built by specialists", body: `${BRAND.yearsExperience} years of residential scanning. ${BRAND.projectsDelivered} homes measured, drawn, and delivered.` },
   ];
 
@@ -1139,7 +1139,7 @@ function WhyUs() {
         <div className="mx-auto max-w-2xl text-center">
           <DimensionLine label="04 · Why us" className="justify-center text-blue-400/80" />
           <h2 className="mt-4 font-serif text-4xl tracking-tight lg:text-5xl">
-            Fast, fair, and <span className="italic text-blue-400">obsessively accurate.</span>
+            Fast, fair, and <span className="text-blue-400">obsessively accurate.</span>
           </h2>
         </div>
 
@@ -2058,7 +2058,7 @@ export default function Rabs() {
         <PainPoints />
         <CTABanner
           headline="Stop paying for guesswork."
-          sub="Laser-accurate as-built plans. Flat pricing. Delivered in 3–5 business days."
+          sub="Laser-accurate as-built plans. Delivered in 3–5 business days."
           ctaLabel="Get your quote"
         />
         <Deliverables />
@@ -2067,7 +2067,7 @@ export default function Rabs() {
         <Samples />
         <CTABanner
           headline="Your home deserves precise plans."
-          sub="Flat pricing. Fast delivery. Real people who do this all day."
+          sub="Tailored pricing. Fast delivery. Real people who do this all day."
           ctaLabel="Start your request"
         />
         <Testimonials />

@@ -41,40 +41,17 @@ const BRAND = {
 };
 
 /**
- * LogoMark — inline text mark. Used as the fallback when the real logo image
- * fails to load (sandbox previews, offline, broken paths, etc).
+ * Logo — renders the brand logo from BRAND.logoUrl.
+ * Native dimensions (991×623) preserve aspect ratio in flex containers.
  */
-function LogoMark({ className = "h-20 w-20" }) {
-  return (
-    <div
-      className={`grid place-items-center rounded-md bg-slate-900 text-white shadow-sm ${className}`}
-      aria-label={`${BRAND.legalName} logo`}
-    >
-      <div className="text-center leading-none">
-        <div className="font-serif text-2xl tracking-tight">RABS</div>
-        <div className="mt-0.5 font-mono text-[7px] uppercase tracking-[0.2em] text-blue-300">
-          as-builts
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/**
- * Logo — primary logo component. Renders the real image from BRAND.logoUrl.
- * If the image fails to load (e.g. in preview sandbox), falls back to LogoMark.
- */
-function Logo({ className = "h-20 w-20" }) {
-  const [errored, setErrored] = useState(false);
-  if (errored) return <LogoMark className={className} />;
+function Logo({ className = "h-14 w-auto" }) {
   return (
     <img
       src={BRAND.logoUrl}
       alt={`${BRAND.legalName} logo`}
-      className={`${className} rounded-md object-cover`}
-      width="80"
-      height="80"
-      onError={() => setErrored(true)}
+      width={991}
+      height={623}
+      className={`${className} object-contain`}
     />
   );
 }
@@ -260,8 +237,8 @@ function Nav() {
       }`}
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-2.5 lg:px-10">
-        <a href="#top" className="flex items-center">
-          <Logo className="h-20 w-20" />
+        <a href="#top" className="flex shrink-0 items-center">
+          <Logo className="h-14 w-auto" />
         </a>
 
         <nav className="hidden items-center gap-7 lg:flex">
@@ -1419,7 +1396,7 @@ function QuoteForm() {
         _captcha: "false",
         "Full name": form.name,
         Email: form.email,
-        Phone: form.phone || "(not provided)",
+        Phone: form.phone,
         "Home address": form.address,
         "Square footage": sqftDisplay,
         "Property type": form.propertyType,
@@ -1570,8 +1547,8 @@ function QuoteForm() {
             <Field label="Email" required>
               <input required type="email" value={form.email} onChange={(e) => update("email", e.target.value)} className={inputCls} placeholder="you@email.com" />
             </Field>
-            <Field label="Phone (optional)">
-              <input type="tel" value={form.phone} onChange={(e) => update("phone", e.target.value)} className={inputCls} placeholder="(555) 000-0000" />
+            <Field label="Phone" required>
+              <input required type="tel" value={form.phone} onChange={(e) => update("phone", e.target.value)} className={inputCls} placeholder="(555) 000-0000" />
             </Field>
             <Field label="Home address" required>
               <AddressAutocomplete required value={form.address} onChange={(v) => update("address", v)} className={inputCls} />
@@ -1978,7 +1955,7 @@ function Footer() {
       <div className="mx-auto max-w-7xl px-6 lg:px-10">
         <div className="flex flex-col justify-between gap-8 md:flex-row md:items-center">
           <div className="flex items-center gap-3">
-            <Logo className="h-20 w-20" />
+            <Logo className="h-14 w-auto" />
             <div>
               <div className="font-serif text-lg text-slate-900">{BRAND.legalName}</div>
               <div className="font-mono txt-10 uppercase tracking-widest text-slate-500">{BRAND.tagline}</div>

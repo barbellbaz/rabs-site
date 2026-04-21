@@ -372,7 +372,10 @@ function Hero() {
             </h1>
 
             <p className="mt-6 max-w-xl text-lg leading-relaxed text-slate-600">
-              <span className="font-medium text-slate-900">Fast, accurate, affordable, and dependable</span> as-built drawings for residential renovations.
+              <span className="font-medium text-slate-900">Fast, accurate, economical, and dependable</span> as-built drawings for residential renovations.
+            </p>
+            <p className="mt-3 max-w-xl text-lg leading-relaxed text-slate-600">
+              So you can renovate, permit, and design with confidence.
             </p>
 
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
@@ -399,7 +402,7 @@ function Hero() {
                 <Check size={16} className="text-blue-600" /> Licensed & insured
               </span>
               <span className="inline-flex items-center gap-2">
-                <Check size={16} className="text-blue-600" /> Homeowners, contractors & architects
+                <Check size={16} className="text-blue-600" /> Homeowners, contractors, architects, designers &amp; developers
               </span>
             </div>
           </div>
@@ -653,12 +656,13 @@ function Approach() {
       <div className="mx-auto max-w-4xl px-6 text-center lg:px-10">
         <DimensionLine label="How we work" className="justify-center" />
         <p className="mt-8 font-serif text-2xl leading-relaxed text-slate-800 lg:text-3xl lg:leading-snug">
-          We work alongside architects, designers, and contractors every day. They design and build.
-          We handle the measurement and documentation — the on-site grind, the exacting CAD drafting
-          of existing conditions — so they can focus on what they do best.
+          We do one thing really well: measure existing homes precisely and draw them up.
+          Floor plans, elevations, ceiling plans, Revit models &mdash; every surface captured with a
+          laser scanner, every drawing true to what's actually there. Design against them. Bid against
+          them. Permit with them. Hand them to anyone who needs to know the house.
         </p>
         <p className="mt-8 text-base leading-relaxed text-slate-600 lg:text-lg lg:leading-relaxed">
-          Local field-surveying crews capture your home on-site. A centralized drafting team produces
+          Our nationwide technician network captures your home on-site. A centralized drafting team produces
           the deliverables. The combination brings you both speed and economy on every project.
         </p>
       </div>
@@ -1039,7 +1043,7 @@ function Process() {
     {
       n: "01",
       title: "Request & get matched pricing",
-      body: "Tell us the address, square footage, and what you need. Within minutes we email back pricing and matched package options. Total effort on your end: 60 seconds.",
+      body: "Tell us the address, square footage, and what you need. Within minutes you'll get an initial estimate by email; our team follows up with your confirmed quote within one business day. Total effort on your end: 60 seconds.",
     },
     {
       n: "02",
@@ -1211,7 +1215,7 @@ function Samples() {
 function Testimonials() {
   const quotes = [
     {
-      quote: "Turnaround was faster than our architect promised a redline. The plans were clean and accurate to the quarter inch.",
+      quote: "Turnaround was faster than our architect promised a redline. The plans were clean and matched the house.",
       name: "Placeholder Name",
       role: "General Contractor, Brooklyn",
     },
@@ -1535,7 +1539,7 @@ function QuoteForm() {
             Get your matched packages.
           </h2>
           <p className="mt-4 text-lg text-slate-600">
-            Takes 60 seconds. We'll email pricing and package options within minutes — no call required.
+            Takes 60 seconds. Initial estimate in minutes, confirmed quote within one business day &mdash; no call required.
           </p>
         </div>
 
@@ -1592,7 +1596,7 @@ function QuoteForm() {
               <Select value={form.timeline} onChange={(v) => update("timeline", v)} options={["ASAP", "1–2 weeks", "Within a month", "Flexible"]} />
             </Field>
             <Field label="Purpose (optional)">
-              <Select value={form.purpose} onChange={(v) => update("purpose", v)} options={["Renovation / remodel", "Insurance", "Sale / listing", "Permit / zoning", "Historical / records", "Other"]} />
+              <Select value={form.purpose} onChange={(v) => update("purpose", v)} options={["Renovation / remodel", "Permit / zoning", "Historical / records", "Other"]} />
             </Field>
 
             <Field label="Anything else?" className="md:col-span-2">
@@ -1666,7 +1670,7 @@ function FAQ() {
     {
       category: "Pricing & billing",
       items: [
-        { q: "How is my quote calculated?", a: "Your quote is calculated based on three factors: the area of your home, your location, and which deliverables you select. After you submit the form, our team matches you to pricing and sends your quote by email — typically within one business day. Final pricing is confirmed after the on-site scan." },
+        { q: "How is my quote calculated?", a: "Your quote is calculated based on three factors: the area of your home, your location, and which deliverables you select. When you submit the form you'll receive an initial estimate by email within minutes; our team follows up with your confirmed quote within one business day, fine-tuned to your specific scope. Final pricing is confirmed after the on-site scan." },
         { q: "Are there any hidden fees?", a: "No — the quoted price covers the scan, the drawings, and delivery. No travel fees and no file-format upcharges." },
         { q: "When and how do I pay?", a: "Fifty percent is due to book your scan date, fifty percent on delivery of your drawings. We accept credit cards, ACH, and bank transfer." },
         { q: "What if I need revisions?", a: "Minor revisions to your drawings are included free. Larger scope changes are quoted separately before any extra work begins." },
@@ -1706,6 +1710,41 @@ function FAQ() {
     },
   ];
 
+  const audienceFaqs = [
+    {
+      audience: "For contractors",
+      blurb: "Commissioning scans on client properties, files, and bids.",
+      items: [
+        {
+          q: "Can I commission a scan on a client's property?",
+          a: "Yes — this is one of our most common arrangements. You book the scan, we coordinate access directly with the homeowner or your site team, and you receive the deliverables. Invoicing can go to you, your client, or split on request. Note how you'd like it set up in the quote form notes and we'll confirm during scheduling.",
+        },
+        {
+          q: "How are DWG files delivered, and can I reuse them across bids?",
+          a: "DWG files are emailed directly to you (and any additional recipient you specify) alongside the PDFs. You're free to reuse them for bidding, change orders, and ongoing work on the property they were commissioned for. Reselling or redistributing drawings to unrelated third parties isn't included.",
+        },
+      ],
+    },
+    {
+      audience: "For architects & designers",
+      blurb: "Revit models, CAD standards, and ongoing relationships.",
+      items: [
+        {
+          q: "What's the Revit LOD, and how is the model set up?",
+          a: "Our standard Revit deliverable is LOD 200–300 — walls, floors, ceilings, openings, and structural elements modeled parametrically. Project origin can be set to true north, project north, or a coordinate you specify. Send your template and we'll deliver in it; otherwise we use our standard template with generic families.",
+        },
+        {
+          q: "Can you match our drawing conventions and CAD standards?",
+          a: "Yes. Send your layer naming, line weights, title blocks, and dimension styles with your request and we'll produce deliverables that match. For firms we work with repeatedly we keep your template on file so every set comes back formatted the way your office expects.",
+        },
+        {
+          q: "Do you work with repeat clients on volume arrangements?",
+          a: "Yes — we work with design firms on ongoing retainers and volume pricing tiers. If you expect three or more scans a year, mention it in the quote form and we'll propose terms. Dedicated project coordinators and faster turnaround windows are available on repeat arrangements.",
+        },
+      ],
+    },
+  ];
+
   return (
     <section id="faq" className="bg-slate-50 py-24 lg:py-32">
       <div className="mx-auto max-w-4xl px-6 lg:px-10">
@@ -1715,7 +1754,8 @@ function FAQ() {
             Questions, answered.
           </h2>
           <p className="mt-4 text-lg text-slate-600">
-            Quick answers to what homeowners ask most. Don't see yours?{" "}
+            Answers to the questions that come up most &mdash; by topic below, with audience-specific
+            sections for contractors, architects, and designers further down. Don't see yours?{" "}
             <a href="#quote" className="text-blue-600 underline hover:text-blue-700">
               Drop it in the quote form
             </a>{" "}
@@ -1744,6 +1784,40 @@ function FAQ() {
               </div>
             </div>
           ))}
+        </div>
+
+        {/* Audience-specific FAQ sections: each section collapses/expands as a whole.
+            Clicking the header reveals every Q&A inside, fully expanded. */}
+        <div className="mt-20">
+          <h3 className="border-b border-slate-200 pb-3 font-mono txt-11 uppercase tracking-widest text-slate-500">
+            By audience
+          </h3>
+          <div className="mt-6 space-y-4">
+            {audienceFaqs.map((aud, i) => (
+              <details
+                key={i}
+                className="group rounded-2xl border border-slate-200 bg-white transition-colors open:border-blue-300"
+              >
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-6 py-5 transition-colors hover:text-blue-600 lg:px-8">
+                  <div>
+                    <div className="font-serif text-xl text-slate-900 lg:text-2xl">{aud.audience}</div>
+                    <div className="mt-1 text-sm text-slate-500">{aud.blurb}</div>
+                  </div>
+                  <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-slate-200 text-slate-400 transition-all group-open:rotate-45 group-open:border-blue-600 group-open:bg-blue-50 group-open:text-blue-600">
+                    <Plus size={16} />
+                  </span>
+                </summary>
+                <div className="divide-y divide-slate-100 border-t border-slate-100 px-6 lg:px-8">
+                  {aud.items.map((item, j) => (
+                    <div key={j} className="py-5">
+                      <h4 className="font-serif text-lg leading-snug text-slate-900">{item.q}</h4>
+                      <p className="mt-2 leading-relaxed text-slate-600">{item.a}</p>
+                    </div>
+                  ))}
+                </div>
+              </details>
+            ))}
+          </div>
         </div>
 
         <div className="mt-16 flex flex-col items-center gap-3 rounded-2xl border border-slate-200 bg-white p-8 text-center sm:flex-row sm:justify-between sm:text-left">
@@ -2034,8 +2108,8 @@ export default function Rabs() {
         <Approach />
         <PainPoints />
         <CTABanner
-          headline="Stop paying for guesswork."
-          sub="Laser-accurate as-built plans. Delivered in 3–5 business days."
+          headline="Every day on bad plans costs you."
+          sub="Change orders, delays, and surprise invoices all start with bad measurements. Laser-accurate plans, delivered in 3–5 business days."
           ctaLabel="Get your quote"
         />
         <Deliverables />

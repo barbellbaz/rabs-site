@@ -360,7 +360,7 @@ function Hero() {
 
       <div className="relative mx-auto max-w-7xl px-6 lg:px-10">
         <div className="grid items-center gap-12 lg:grid-cols-12">
-          <div className="lg:col-span-7">
+          <div className="order-1 lg:col-span-7">
             <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-xs font-medium text-blue-700">
               <Home size={14} />
               Residential specialists · Nationwide
@@ -393,21 +393,9 @@ function Hero() {
                 See why it matters
               </a>
             </div>
-
-            <div className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-3 text-sm text-slate-500">
-              <span className="inline-flex items-center gap-2">
-                <Check size={16} className="text-blue-600" /> {BRAND.turnaround} turnaround
-              </span>
-              <span className="inline-flex items-center gap-2">
-                <Check size={16} className="text-blue-600" /> Licensed & insured
-              </span>
-              <span className="inline-flex items-center gap-2">
-                <Check size={16} className="text-blue-600" /> Homeowners, contractors, architects, designers &amp; developers
-              </span>
-            </div>
           </div>
 
-          <div className="relative lg:col-span-5">
+          <div className="order-2 relative lg:col-span-5">
             <div className="relative">
               <DimensionLine label="24' 6&quot;" className="absolute -top-6 left-8 z-20" />
               <DimensionLine label="32' 0&quot;" className="absolute -bottom-6 right-8 z-20" />
@@ -419,10 +407,10 @@ function Hero() {
                     <span className="h-2.5 w-2.5 rounded-full bg-yellow-400/70" />
                     <span className="h-2.5 w-2.5 rounded-full bg-green-400/70" />
                   </div>
-                  <span className="font-mono text-xs uppercase tracking-widest text-slate-500">your_home.dwg</span>
+                  <span className="font-mono text-xs uppercase tracking-widest text-slate-500">your_project.dwg</span>
                 </div>
 
-                <div className="relative bg-gradient-to-br from-blue-50 via-white to-blue-50" style={{ aspectRatio: '4 / 5' }}>
+                <div className="relative bg-gradient-to-br from-blue-50 via-white to-blue-50" style={{ aspectRatio: '4 / 3' }}>
                   <div className="pointer-events-none absolute inset-0 text-blue-500/40">
                     <BlueprintGrid className="h-full w-full" />
                   </div>
@@ -434,17 +422,18 @@ function Hero() {
                   />
 
                   <svg
-                    viewBox="0 0 400 500"
+                    viewBox="0 0 400 300"
+                    preserveAspectRatio="none"
                     className="pointer-events-none absolute inset-0 h-full w-full p-6"
                     fill="none"
                     stroke="currentColor"
                   >
-                    <line x1="30" y1="50" x2="370" y2="50" stroke="#2563eb" strokeWidth="2" strokeDasharray="4 4" className="origin-top scan-sweep" />
+                    <line x1="30" y1="0" x2="370" y2="0" stroke="#2563eb" strokeWidth="2" strokeDasharray="4 4" className="origin-top scan-sweep" />
                   </svg>
                 </div>
 
                 <div className="flex items-center justify-between border-t border-slate-200 bg-white px-5 py-3 text-xs">
-                  <span className="font-mono uppercase tracking-wider text-slate-500">Laser scan complete</span>
+                  <span className="font-mono uppercase tracking-wider text-slate-500">Captured · drafted · delivered</span>
                   <span className="inline-flex items-center gap-1 font-medium text-green-600">
                     <span className="h-1.5 w-1.5 rounded-full bg-green-500" /> Ready
                   </span>
@@ -457,6 +446,18 @@ function Hero() {
               </div>
             </div>
           </div>
+
+          <div className="order-3 lg:col-span-12 flex flex-wrap items-center gap-x-8 gap-y-3 text-sm text-slate-500">
+            <span className="inline-flex items-center gap-2">
+              <Check size={16} className="text-blue-600" /> {BRAND.turnaround} turnaround
+            </span>
+            <span className="inline-flex items-center gap-2">
+              <Check size={16} className="text-blue-600" /> Licensed & insured
+            </span>
+            <span className="inline-flex items-center gap-2">
+              <Check size={16} className="text-blue-600" /> Homeowners, contractors, architects, designers &amp; developers
+            </span>
+          </div>
         </div>
       </div>
 
@@ -465,7 +466,7 @@ function Hero() {
           0%   { transform: translateY(0); opacity: 0; }
           10%  { opacity: 1; }
           90%  { opacity: 1; }
-          100% { transform: translateY(420px); opacity: 0; }
+          100% { transform: translateY(300px); opacity: 0; }
         }
         .scan-sweep {
           animation: scan-sweep 10s ease-in-out infinite;

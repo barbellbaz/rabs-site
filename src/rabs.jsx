@@ -5,6 +5,8 @@ import {
   Box,
   Check,
   ChevronDown,
+  ChevronLeft,
+  ChevronRight,
   Clock,
   DollarSign,
   Eye,
@@ -684,23 +686,29 @@ function CTABanner({ headline, sub, ctaLabel = "Request a quote" }) {
 function DeliverablesCarousel({ items }) {
   const [active, setActive] = useState(0);
   const [paused, setPaused] = useState(false);
+  const [manuallyPaused, setManuallyPaused] = useState(false);
 
   useEffect(() => {
-    if (paused) return;
+    if (paused || manuallyPaused) return;
     if (typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) return;
     const id = setInterval(() => {
       setActive((a) => (a + 1) % items.length);
     }, 3000);
     return () => clearInterval(id);
-  }, [paused, items.length]);
+  }, [paused, manuallyPaused, items.length]);
+
+  const go = (delta) => {
+    setManuallyPaused(true);
+    setActive((a) => (a + delta + items.length) % items.length);
+  };
 
   return (
     <div
-      className="mt-16"
+      className="relative mt-16"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >
-      <div className="relative overflow-hidden rounded-2xl border-2 border-slate-300 bg-white shadow-lg">
+      <div className="relative -mx-4 overflow-hidden rounded-xl border-2 border-slate-300 bg-white shadow-lg sm:mx-0 sm:rounded-2xl">
         <div className="grid lg:grid-cols-2">
           {/* Image panel */}
           <div className="relative h-72 overflow-hidden border-b border-slate-200 bg-slate-50 lg:h-[460px] lg:border-b-0 lg:border-r">
@@ -717,12 +725,18 @@ function DeliverablesCarousel({ items }) {
                 }`}
               />
             ))}
+            {/* Scan-sweep line — remounts on each slide change via key={active} so the animation restarts */}
+            {!paused && !manuallyPaused && (
+              <div
+                key={active}
+                className="pointer-events-none absolute inset-x-0 top-0 h-0.5 bg-blue-500/70 carousel-scan-sweep"
+              />
+            )}
           </div>
 
           {/* Text panel */}
           <div className="relative flex flex-col p-8 lg:p-10">
             {items.map((item, i) => {
-              const Icon = item.icon;
               return (
                 <div
                   key={i}
@@ -738,31 +752,17 @@ function DeliverablesCarousel({ items }) {
                       Most requested
                     </div>
                   )}
-                  <div className="grid h-11 w-11 place-items-center rounded-lg bg-blue-50 text-blue-600">
-                    <Icon size={20} />
-                  </div>
-                  <h3 className="mt-5 font-serif text-2xl leading-tight text-slate-900 lg:text-3xl">
+                  <h3 className="font-serif text-2xl leading-tight text-slate-900 lg:text-3xl">
                     {item.name}
                   </h3>
                   <p className="mt-3 text-base leading-relaxed text-slate-600">
                     {item.pitch}
                   </p>
 
-                  <div className="mt-5 flex flex-wrap gap-1.5">
-                    {item.formats.map((f) => (
-                      <span
-                        key={f}
-                        className="rounded-md border border-slate-200 px-2 py-0.5 font-mono txt-10 uppercase tracking-wider text-slate-500"
-                      >
-                        {f}
-                      </span>
-                    ))}
-                  </div>
-
                   <ul className="mt-6 space-y-2.5 text-sm text-slate-700">
                     {item.bullets.map((b, j) => (
-                      <li key={j} className="flex gap-2">
-                        <Check size={15} className="mt-0.5 shrink-0 text-blue-600" />
+                      <li key={j} className="flex gap-2.5">
+                        <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-blue-600" />
                         <span>{b}</span>
                       </li>
                     ))}
@@ -782,12 +782,28 @@ function DeliverablesCarousel({ items }) {
         </div>
       </div>
 
+      {/* Prev/Next arrows — absolute on desktop at card midline, tucked on mobile */}
+      <button
+        onClick={() => go(-1)}
+        aria-label="Previous deliverable"
+        className="absolute left-2 top-36 z-10 grid h-10 w-10 -translate-y-1/2 place-items-center rounded-full border border-slate-200 bg-white/90 text-slate-700 shadow-md backdrop-blur-sm transition-all hover:border-blue-400 hover:bg-white hover:text-blue-600 lg:left-3 lg:top-1/2"
+      >
+        <ChevronLeft size={20} />
+      </button>
+      <button
+        onClick={() => go(1)}
+        aria-label="Next deliverable"
+        className="absolute right-2 top-36 z-10 grid h-10 w-10 -translate-y-1/2 place-items-center rounded-full border border-slate-200 bg-white/90 text-slate-700 shadow-md backdrop-blur-sm transition-all hover:border-blue-400 hover:bg-white hover:text-blue-600 lg:right-3 lg:top-1/2"
+      >
+        <ChevronRight size={20} />
+      </button>
+
       {/* Dot navigation */}
       <div className="mt-6 flex items-center justify-center gap-3">
         {items.map((item, i) => (
           <button
             key={i}
-            onClick={() => setActive(i)}
+            onClick={() => { setManuallyPaused(true); setActive(i); }}
             aria-label={`Show ${item.name}`}
             className={`h-2 rounded-full transition-all ${
               i === active ? "w-8 bg-blue-600" : "w-2 bg-slate-300 hover:bg-slate-400"
@@ -795,6 +811,18 @@ function DeliverablesCarousel({ items }) {
           />
         ))}
       </div>
+
+      <style>{`
+        @keyframes carousel-scan-sweep {
+          0%   { transform: translateY(0); opacity: 0; }
+          5%   { opacity: 1; }
+          95%  { opacity: 1; }
+          100% { transform: translateY(460px); opacity: 0; }
+        }
+        .carousel-scan-sweep {
+          animation: carousel-scan-sweep 3s linear 1;
+        }
+      `}</style>
     </div>
   );
 }

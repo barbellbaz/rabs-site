@@ -691,17 +691,19 @@ function DeliverablesCarousel({ items }) {
   const rootRef = useRef(null);
 
   // Only start ticking once the carousel is actually scrolled into view.
-  // This avoids the case where browsers throttle/stall setInterval before
-  // the user scrolls to the section, causing the carousel to "sometimes
-  // not start" on initial load.
+  // rootMargin expands the intersection box so we don't flicker on/off
+  // when the user stops scrolling right near the threshold.
   useEffect(() => {
     if (!rootRef.current || typeof IntersectionObserver === "undefined") {
       setVisible(true);
       return;
     }
     const observer = new IntersectionObserver(
-      ([entry]) => setVisible(entry.isIntersecting),
-      { threshold: 0.25 }
+      ([entry]) => {
+        if (entry.isIntersecting) setVisible(true);
+        // Don't flip back to false — once visible, keep ticking.
+      },
+      { threshold: 0.1, rootMargin: "0px 0px -10% 0px" }
     );
     observer.observe(rootRef.current);
     return () => observer.disconnect();
@@ -721,12 +723,22 @@ function DeliverablesCarousel({ items }) {
     setActive((a) => (a + delta + items.length) % items.length);
   };
 
+  // Hover-pause is only meaningful on devices with a real pointer (desktops
+  // with mice). On touch devices, scroll-induced "mouseenter" events cause
+  // spurious pauses — skip hover entirely there.
+  const hoverProps =
+    typeof window !== "undefined" && window.matchMedia?.("(hover: hover)").matches
+      ? {
+          onMouseEnter: () => setPaused(true),
+          onMouseLeave: () => setPaused(false),
+        }
+      : {};
+
   return (
     <div
       ref={rootRef}
       className="relative mt-16"
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
+      {...hoverProps}
     >
       <div className="relative -mx-4 overflow-hidden rounded-xl border-2 border-slate-300 bg-white shadow-lg sm:mx-0 sm:rounded-2xl">
         <div className="grid lg:grid-cols-2">

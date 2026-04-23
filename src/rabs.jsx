@@ -710,6 +710,7 @@ function Deliverables() {
       name: "Exterior Elevations",
       pitch: "All four exterior faces — essential for permit applications and facade work.",
       formats: ["PDF", "DWG"],
+      image: "/images/02-deliverables-exterior-elvations.png",
       bullets: [
         "North, south, east, west elevations",
         "Permit-ready documentation",
@@ -776,7 +777,7 @@ function Deliverables() {
             return (
               <div
                 key={i}
-                className={`group relative flex flex-col rounded-2xl border-2 p-7 transition-all ${
+                className={`group relative flex flex-col overflow-hidden rounded-2xl border-2 p-7 transition-all ${
                   tier.highlight
                     ? "border-blue-600 bg-slate-900 text-white shadow-xl shadow-blue-900/20"
                     : "border-slate-300 bg-white hover:border-slate-400 hover:shadow-lg"
@@ -785,6 +786,15 @@ function Deliverables() {
                 {tier.highlight && (
                   <div className="absolute -top-3 left-6 rounded-full bg-blue-600 px-3 py-1 txt-10 font-semibold uppercase tracking-widest text-white">
                     Most requested
+                  </div>
+                )}
+                {tier.image && (
+                  <div className="-mx-7 -mt-7 mb-5 h-28 overflow-hidden border-b border-slate-200 bg-white">
+                    <img
+                      src={tier.image}
+                      alt={`${tier.name} sample`}
+                      className="h-full w-full object-cover object-center"
+                    />
                   </div>
                 )}
                 <div

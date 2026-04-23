@@ -2,12 +2,14 @@ import { useState, useEffect, useRef } from "react";
 import {
   ArrowRight,
   ArrowUpRight,
+  Box,
   Check,
   ChevronDown,
   ChevronLeft,
   ChevronRight,
   Clock,
   DollarSign,
+  Eye,
   HardHat,
   Home,
   Layers,
@@ -18,6 +20,8 @@ import {
   Shield,
   Sparkles,
   Star,
+  Triangle,
+  Trees,
   Wallpaper,
   X,
   Zap,
@@ -358,7 +362,7 @@ function Hero() {
 
       <div className="relative mx-auto max-w-7xl px-6 lg:px-10">
         <div className="grid items-center gap-12 lg:grid-cols-12">
-          <div className="lg:col-span-7">
+          <div className="order-1 lg:col-span-7">
             <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-xs font-medium text-blue-700">
               <Home size={14} />
               Residential specialists · Nationwide
@@ -391,21 +395,9 @@ function Hero() {
                 See why it matters
               </a>
             </div>
-
-            <div className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-3 text-sm text-slate-500">
-              <span className="inline-flex items-center gap-2">
-                <Check size={16} className="text-blue-600" /> {BRAND.turnaround} turnaround
-              </span>
-              <span className="inline-flex items-center gap-2">
-                <Check size={16} className="text-blue-600" /> Licensed & insured
-              </span>
-              <span className="inline-flex items-center gap-2">
-                <Check size={16} className="text-blue-600" /> Homeowners, contractors, architects, designers &amp; developers
-              </span>
-            </div>
           </div>
 
-          <div className="relative lg:col-span-5">
+          <div className="order-2 relative lg:col-span-5">
             <div className="relative">
               <DimensionLine label="24' 6&quot;" className="absolute -top-6 left-8 z-20" />
               <DimensionLine label="32' 0&quot;" className="absolute -bottom-6 right-8 z-20" />
@@ -417,165 +409,33 @@ function Hero() {
                     <span className="h-2.5 w-2.5 rounded-full bg-yellow-400/70" />
                     <span className="h-2.5 w-2.5 rounded-full bg-green-400/70" />
                   </div>
-                  <span className="font-mono text-xs uppercase tracking-widest text-slate-500">your_home.dwg</span>
+                  <span className="font-mono text-xs uppercase tracking-widest text-slate-500">your_project.dwg</span>
                 </div>
 
-                <div className="relative bg-gradient-to-br from-blue-50 via-white to-blue-50" style={{ aspectRatio: '4 / 5' }}>
+                <div className="relative bg-gradient-to-br from-blue-50 via-white to-blue-50" style={{ aspectRatio: '4 / 3' }}>
                   <div className="pointer-events-none absolute inset-0 text-blue-500/40">
                     <BlueprintGrid className="h-full w-full" />
                   </div>
 
-                  <svg viewBox="0 0 400 500" className="absolute inset-0 h-full w-full p-6" fill="none" stroke="currentColor" strokeWidth="2">
-                    <g stroke="#2563eb" strokeWidth="1" fill="#2563eb">
-                      <line x1="30" y1="32" x2="370" y2="32" stroke="#2563eb" />
-                      <line x1="30" y1="26" x2="30" y2="38" stroke="#2563eb" />
-                      <line x1="370" y1="26" x2="370" y2="38" stroke="#2563eb" />
-                      <text x="200" y="24" fontSize="10" textAnchor="middle" stroke="none" className="font-mono">42' - 0"</text>
-                      <line x1="378" y1="50" x2="378" y2="470" stroke="#2563eb" />
-                      <line x1="372" y1="50" x2="384" y2="50" stroke="#2563eb" />
-                      <line x1="372" y1="470" x2="384" y2="470" stroke="#2563eb" />
-                      <text x="388" y="263" fontSize="10" stroke="none" className="font-mono">52' - 0"</text>
-                    </g>
+                  <img
+                    src="/images/example1.gif"
+                    alt="Sample RABS deliverables: floor plans, elevations, ceiling plans, site plans, and Revit model"
+                    className="absolute inset-0 h-full w-full object-contain p-6"
+                  />
 
-                    <rect x="30" y="50" width="340" height="420" fill="#fafbff" stroke="none" />
-                    <rect x="30" y="50" width="340" height="420" stroke="#0f172a" strokeWidth="4" fill="none" />
-
-                    <g stroke="#0f172a" strokeWidth="1" strokeDasharray="3 3">
-                      <rect x="270" y="50" width="100" height="60" fill="#eef2ff" />
-                    </g>
-                    <g stroke="#0f172a" strokeWidth="3" fill="none">
-                      <line x1="275" y1="55" x2="365" y2="55" strokeWidth="1.5" />
-                      <line x1="275" y1="60" x2="365" y2="60" strokeWidth="0.5" />
-                      <line x1="275" y1="55" x2="275" y2="105" strokeWidth="1.5" />
-                      <line x1="365" y1="55" x2="365" y2="105" strokeWidth="1.5" />
-                    </g>
-
-                    <g stroke="#0f172a" strokeWidth="2.5">
-                      <line x1="30" y1="230" x2="170" y2="230" />
-                      <line x1="210" y1="230" x2="370" y2="230" />
-                      <line x1="170" y1="110" x2="170" y2="230" />
-                      <line x1="30" y1="110" x2="170" y2="110" />
-                      <line x1="100" y1="110" x2="100" y2="160" />
-                      <line x1="100" y1="160" x2="170" y2="160" />
-                      <line x1="270" y1="110" x2="310" y2="110" />
-                      <line x1="335" y1="110" x2="370" y2="110" />
-                      <line x1="150" y1="260" x2="150" y2="310" />
-                      <line x1="150" y1="340" x2="150" y2="470" />
-                      <line x1="240" y1="260" x2="240" y2="310" />
-                      <line x1="240" y1="340" x2="240" y2="470" />
-                      <line x1="30" y1="350" x2="150" y2="350" />
-                      <line x1="240" y1="390" x2="370" y2="390" />
-                    </g>
-
-                    <g stroke="#0f172a" strokeWidth="1" fill="none">
-                      <path d="M 100 130 A 28 28 0 0 1 128 158" />
-                      <line x1="100" y1="130" x2="100" y2="158" strokeWidth="0.5" strokeDasharray="2 2" />
-                      <path d="M 150 290 A 25 25 0 0 1 125 315" />
-                      <path d="M 240 290 A 25 25 0 0 0 265 315" />
-                      <path d="M 150 330 A 25 25 0 0 1 175 355" />
-                      <path d="M 240 405 A 22 22 0 0 1 262 427" />
-                      <g strokeWidth="1">
-                        <line x1="310" y1="107" x2="335" y2="107" strokeWidth="3" />
-                        <path d="M 315 102 L 310 107 L 315 112" />
-                        <path d="M 330 102 L 335 107 L 330 112" />
-                      </g>
-                    </g>
-
-                    <g stroke="#0f172a" strokeWidth="1" fill="none">
-                      <rect x="35" y="115" width="60" height="18" />
-                      <rect x="35" y="115" width="18" height="50" />
-                      <rect x="42" y="118" width="14" height="12" />
-                      <rect x="60" y="117" width="28" height="14" />
-                      <circle cx="67" cy="122" r="2.5" fill="#0f172a" fillOpacity="0.4" />
-                      <circle cx="81" cy="122" r="2.5" fill="#0f172a" fillOpacity="0.4" />
-                      <circle cx="67" cy="128" r="2.5" fill="#0f172a" fillOpacity="0.4" />
-                      <circle cx="81" cy="128" r="2.5" fill="#0f172a" fillOpacity="0.4" />
-                      <rect x="38" y="195" width="22" height="28" />
-                      <line x1="38" y1="203" x2="60" y2="203" strokeWidth="0.5" />
-                      <rect x="75" y="175" width="60" height="25" rx="1" />
-                    </g>
-
-                    <g stroke="#0f172a" strokeWidth="1" fill="none">
-                      <rect x="185" y="195" width="70" height="22" rx="3" />
-                      <line x1="185" y1="202" x2="255" y2="202" strokeWidth="0.5" />
-                      <rect x="200" y="170" width="40" height="18" rx="1" />
-                      <rect x="285" y="185" width="26" height="28" rx="2" />
-                      <rect x="180" y="155" width="140" height="70" strokeDasharray="2 3" strokeOpacity="0.4" />
-                    </g>
-
-                    <g stroke="#0f172a" strokeWidth="0.75" fill="none">
-                      <line x1="30" y1="135" x2="100" y2="135" strokeOpacity="0.3" />
-                      <line x1="65" y1="110" x2="65" y2="160" strokeOpacity="0.3" />
-                    </g>
-
-                    <g stroke="#0f172a" strokeWidth="1" fill="none">
-                      <rect x="165" y="270" width="60" height="40" rx="2" />
-                      <line x1="165" y1="278" x2="225" y2="278" strokeWidth="0.5" />
-                      <rect x="169" y="272" width="12" height="5" />
-                      <rect x="209" y="272" width="12" height="5" />
-                    </g>
-
-                    <g stroke="#0f172a" strokeWidth="1" fill="none">
-                      <rect x="260" y="260" width="45" height="30" rx="2" />
-                      <line x1="260" y1="266" x2="305" y2="266" strokeWidth="0.5" />
-                    </g>
-
-                    <g stroke="#0f172a" strokeWidth="1" fill="none">
-                      <rect x="50" y="380" width="45" height="30" rx="2" />
-                      <line x1="50" y1="386" x2="95" y2="386" strokeWidth="0.5" />
-                    </g>
-
-                    <g stroke="#0f172a" strokeWidth="1" fill="none">
-                      <rect x="250" y="405" width="45" height="24" rx="3" />
-                      <line x1="254" y1="409" x2="291" y2="409" strokeWidth="0.5" />
-                      <rect x="310" y="405" width="55" height="18" />
-                      <rect x="325" y="408" width="14" height="10" />
-                      <ellipse cx="318" cy="445" rx="7" ry="10" />
-                      <rect x="313" y="452" width="10" height="8" />
-                    </g>
-
-                    <g fill="#0f172a" stroke="none" className="font-mono" fontSize="8">
-                      <text x="65" y="178" textAnchor="middle">KITCHEN</text>
-                      <text x="65" y="186" textAnchor="middle" fontSize="6" fill="#64748b">13' × 10'</text>
-                      <text x="250" y="143" textAnchor="middle">LIVING ROOM</text>
-                      <text x="250" y="151" textAnchor="middle" fontSize="6" fill="#64748b">18' × 15'</text>
-                      <text x="320" y="82" textAnchor="middle" fontSize="7">BALCONY</text>
-                      <text x="65" y="145" textAnchor="middle" fontSize="7">VESTIBULE</text>
-                      <text x="195" y="335" textAnchor="middle">MASTER BED</text>
-                      <text x="195" y="343" textAnchor="middle" fontSize="6" fill="#64748b">14' × 12'</text>
-                      <text x="282" y="335" textAnchor="middle">BEDROOM 2</text>
-                      <text x="282" y="343" textAnchor="middle" fontSize="6" fill="#64748b">11' × 10'</text>
-                      <text x="72" y="438" textAnchor="middle">BEDROOM 3</text>
-                      <text x="72" y="446" textAnchor="middle" fontSize="6" fill="#64748b">11' × 10'</text>
-                      <text x="305" y="440" textAnchor="middle">MASTER BATH</text>
-                      <text x="305" y="448" textAnchor="middle" fontSize="6" fill="#64748b">9' × 7'</text>
-                    </g>
-
-                    <g stroke="#2563eb" strokeWidth="1">
-                      <line x1="50" y1="50" x2="90" y2="50" />
-                      <line x1="50" y1="53" x2="90" y2="53" />
-                      <line x1="30" y1="400" x2="30" y2="440" />
-                      <line x1="33" y1="400" x2="33" y2="440" />
-                      <line x1="175" y1="467" x2="225" y2="467" />
-                      <line x1="175" y1="470" x2="225" y2="470" />
-                      <line x1="260" y1="467" x2="305" y2="467" />
-                      <line x1="260" y1="470" x2="305" y2="470" />
-                      <line x1="367" y1="260" x2="367" y2="300" />
-                      <line x1="370" y1="260" x2="370" y2="300" />
-                    </g>
-
-                    <g transform="translate(55, 478)" stroke="#2563eb" strokeWidth="0.8" fill="none">
-                      <circle r="10" />
-                      <path d="M 0 -10 L 2 0 L 0 10 L -2 0 Z" fill="#2563eb" fillOpacity="0.6" stroke="none" />
-                      <text x="0" y="-12" fontSize="6" textAnchor="middle" fill="#2563eb" stroke="none" className="font-mono">N</text>
-                    </g>
-
-                    <line x1="30" y1="50" x2="370" y2="50" stroke="#2563eb" strokeWidth="2" strokeDasharray="4 4" className="origin-top scan-sweep" />
+                  <svg
+                    viewBox="0 0 400 300"
+                    preserveAspectRatio="none"
+                    className="pointer-events-none absolute inset-0 h-full w-full p-6"
+                    fill="none"
+                    stroke="currentColor"
+                  >
+                    <line x1="30" y1="0" x2="370" y2="0" stroke="#2563eb" strokeWidth="2" strokeDasharray="4 4" className="origin-top scan-sweep" />
                   </svg>
                 </div>
 
                 <div className="flex items-center justify-between border-t border-slate-200 bg-white px-5 py-3 text-xs">
-                  <span className="font-mono uppercase tracking-wider text-slate-500">Laser scan complete</span>
+                  <span className="font-mono uppercase tracking-wider text-slate-500">Captured · drafted · delivered</span>
                   <span className="inline-flex items-center gap-1 font-medium text-green-600">
                     <span className="h-1.5 w-1.5 rounded-full bg-green-500" /> Ready
                   </span>
@@ -588,6 +448,18 @@ function Hero() {
               </div>
             </div>
           </div>
+
+          <div className="order-3 lg:col-span-12 flex flex-wrap items-center gap-x-8 gap-y-3 text-sm text-slate-500">
+            <span className="inline-flex items-center gap-2">
+              <Check size={16} className="text-blue-600" /> {BRAND.turnaround} turnaround
+            </span>
+            <span className="inline-flex items-center gap-2">
+              <Check size={16} className="text-blue-600" /> Licensed & insured
+            </span>
+            <span className="inline-flex items-center gap-2">
+              <Check size={16} className="text-blue-600" /> Homeowners, contractors, architects, designers &amp; developers
+            </span>
+          </div>
         </div>
       </div>
 
@@ -596,10 +468,10 @@ function Hero() {
           0%   { transform: translateY(0); opacity: 0; }
           10%  { opacity: 1; }
           90%  { opacity: 1; }
-          100% { transform: translateY(420px); opacity: 0; }
+          100% { transform: translateY(300px); opacity: 0; }
         }
         .scan-sweep {
-          animation: scan-sweep 4s ease-in-out infinite;
+          animation: scan-sweep 10s ease-in-out infinite;
         }
       `}</style>
     </section>
@@ -807,10 +679,8 @@ function CTABanner({ headline, sub, ctaLabel = "Request a quote" }) {
 
 /**
  * =====================================================================
- *  DELIVERABLES CAROUSEL
- *  Auto-advances every 3s; pauses on hover (pointer devices only);
- *  permanently pauses when the user touches arrows/dots; respects
- *  prefers-reduced-motion; only ticks when in viewport.
+ *  DELIVERABLES CAROUSEL — auto-advancing showcase of the 4 core drawings.
+ *  Pauses on hover, respects prefers-reduced-motion.
  * =====================================================================
  */
 function DeliverablesCarousel({ items }) {
@@ -820,6 +690,9 @@ function DeliverablesCarousel({ items }) {
   const [visible, setVisible] = useState(false);
   const rootRef = useRef(null);
 
+  // Only start ticking once the carousel is actually scrolled into view.
+  // rootMargin expands the intersection box so we don't flicker on/off
+  // when the user stops scrolling right near the threshold.
   useEffect(() => {
     if (!rootRef.current || typeof IntersectionObserver === "undefined") {
       setVisible(true);
@@ -828,6 +701,7 @@ function DeliverablesCarousel({ items }) {
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) setVisible(true);
+        // Don't flip back to false — once visible, keep ticking.
       },
       { threshold: 0.1, rootMargin: "0px 0px -10% 0px" }
     );
@@ -849,6 +723,9 @@ function DeliverablesCarousel({ items }) {
     setActive((a) => (a + delta + items.length) % items.length);
   };
 
+  // Hover-pause is only meaningful on devices with a real pointer (desktops
+  // with mice). On touch devices, scroll-induced "mouseenter" events cause
+  // spurious pauses — skip hover entirely there.
   const hoverProps =
     typeof window !== "undefined" && window.matchMedia?.("(hover: hover)").matches
       ? {
@@ -880,6 +757,7 @@ function DeliverablesCarousel({ items }) {
                 }`}
               />
             ))}
+            {/* Scan-sweep line — remounts on each slide change via key={active} so the animation restarts */}
             {!paused && !manuallyPaused && visible && (
               <div
                 key={active}
@@ -912,6 +790,7 @@ function DeliverablesCarousel({ items }) {
                   <p className="mt-3 text-base leading-relaxed text-slate-600">
                     {item.pitch}
                   </p>
+
                   <ul className="mt-6 space-y-2.5 text-sm text-slate-700">
                     {item.bullets.map((b, j) => (
                       <li key={j} className="flex gap-2.5">
@@ -920,6 +799,7 @@ function DeliverablesCarousel({ items }) {
                       </li>
                     ))}
                   </ul>
+
                   <a
                     href="#quote"
                     className="mt-8 inline-flex items-center gap-2 rounded-full bg-slate-900 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-blue-600"
@@ -934,7 +814,7 @@ function DeliverablesCarousel({ items }) {
         </div>
       </div>
 
-      {/* Prev/Next arrows */}
+      {/* Prev/Next arrows — absolute on desktop at card midline, tucked on mobile */}
       <button
         onClick={() => go(-1)}
         aria-label="Previous deliverable"
@@ -991,12 +871,12 @@ function Deliverables() {
       name: "Floor Plans",
       pitch: "Dimensioned plans of every level, ready for renovation, insurance, or sale.",
       formats: ["PDF", "DWG"],
+      image: "/images/02-deliverables-floor plans.png",
       bullets: [
         "Fully dimensioned floor plans",
         "Walls, doors, windows, and fixtures",
         "Every level of your home",
       ],
-      image: "/images/02-deliverables-floor-plans.png",
       highlight: true,
     },
     {
@@ -1004,58 +884,62 @@ function Deliverables() {
       name: "Interior Elevations",
       pitch: "Flat views of every interior wall — a clean foundation for design and renovation planning.",
       formats: ["PDF", "DWG"],
+      image: "/images/02-deliverables-interior-elvations.png",
       bullets: [
         "Every wall, every room, drawn flat",
         "Door and window openings in elevation",
         "Ideal for interior designers",
       ],
-      image: "/images/02-deliverables-interior-elevations.png",
     },
     {
       icon: Home,
       name: "Exterior Elevations",
       pitch: "All four exterior faces — essential for permit applications and facade work.",
       formats: ["PDF", "DWG"],
+      image: "/images/02-deliverables-exterior-elvations.png",
       bullets: [
         "North, south, east, west elevations",
         "Permit-ready documentation",
         "Ideal for facade renovations",
       ],
-      image: "/images/02-deliverables-exterior-elevations.png",
     },
     {
       icon: Layers,
       name: "Reflected Ceiling Plans",
       pitch: "Top-down ceiling plans showing fixtures, beams, and heights.",
       formats: ["PDF", "DWG"],
+      image: "/images/02-deliverables-reflected-ceiling-plans.png",
       bullets: [
         "Lighting and fixture locations",
         "Ceiling heights throughout",
       ],
-      image: "/images/02-deliverables-reflected-ceiling-plans.png",
     },
   ];
 
   const advanced = [
     {
+      icon: Triangle,
       name: "Roof Plans*",
       pitch: "Top-down roof plans with pitches, ridges, valleys, skylights, and chimneys.",
-      image: "/images/02-alsoavailable-roofplans.png",
+      formats: ["PDF", "DWG"],
     },
     {
+      icon: Trees,
       name: "Site & Landscape Plans",
       pitch: "Top-down site plans with property, landscape, and outdoor features — for redesigns, additions, and pools.",
-      image: "/images/02-alsoavailable-Site-LandscapePlans.png",
+      formats: ["PDF", "DWG"],
     },
     {
+      icon: Box,
       name: "Revit Models",
       pitch: "LOD 200–300 parametric BIM model ready to design against.",
-      image: "/images/02-alsoavailable-revitcali.png",
+      formats: ["RVT"],
     },
     {
+      icon: Eye,
       name: "Virtual Visits",
-      pitch: "Interactive 3D walk-through with dollhouse view and built-in measurement tool.",
-      image: "/images/02-alsoavailable-3dvirtualvisit.png",
+      pitch: "Matterport 3D walk-through with dollhouse view and built-in measurement tool.",
+      formats: ["Web"],
     },
   ];
 
@@ -1086,25 +970,35 @@ function Deliverables() {
         </div>
 
         <div className="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-          {advanced.map((item, i) => (
-            <div
-              key={i}
-              className="group overflow-hidden rounded-xl border border-slate-200 bg-white transition-all hover:border-slate-300 hover:shadow-md"
-            >
-              <div className="relative overflow-hidden bg-slate-50" style={{ aspectRatio: '4 / 3' }}>
-                <img
-                  src={item.image}
-                  alt={item.name}
-                  loading="lazy"
-                  className="absolute inset-0 h-full w-full object-cover"
-                />
+          {advanced.map((item, i) => {
+            const Icon = item.icon;
+            return (
+              <div
+                key={i}
+                className="group flex items-start gap-4 rounded-xl border border-slate-200 bg-slate-50/50 p-6 transition-all hover:border-slate-300 hover:bg-white hover:shadow-md"
+              >
+                <div className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-blue-50 text-blue-600">
+                  <Icon size={18} />
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-baseline justify-between gap-3">
+                    <h3 className="font-serif text-lg text-slate-900">{item.name}</h3>
+                    <div className="flex gap-1">
+                      {item.formats.map((f) => (
+                        <span
+                          key={f}
+                          className="rounded border border-slate-200 bg-white px-1.5 py-0.5 font-mono txt-10 uppercase tracking-wider text-slate-500"
+                        >
+                          {f}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                  <p className="mt-1.5 text-sm leading-relaxed text-slate-600">{item.pitch}</p>
+                </div>
               </div>
-              <div className="p-5">
-                <h3 className="font-serif text-lg text-slate-900">{item.name}</h3>
-                <p className="mt-1.5 text-sm leading-relaxed text-slate-600">{item.pitch}</p>
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         <p className="mt-6 text-center font-mono txt-10 uppercase tracking-wider text-slate-400">
@@ -1618,7 +1512,7 @@ function QuoteForm() {
         <div className="mx-auto max-w-2xl text-center">
           <DimensionLine label="08 · Request quote" className="justify-center" />
           <h2 className="mt-4 font-serif text-4xl tracking-tight text-slate-900 lg:text-5xl">
-            Get your matched packages.
+            Fast quote. Fair price. Easy call.
           </h2>
           <p className="mt-4 text-lg text-slate-600">
             Takes 60 seconds. Initial estimate in minutes, confirmed quote within one business day &mdash; no call required.
@@ -1772,7 +1666,7 @@ function FAQ() {
       items: [
         { q: "How accurate are your scans?", a: "Our laser scans are highly accurate — more than precise enough for renovation, insurance, and permitting work. We use professional-grade equipment calibrated for architectural documentation." },
         { q: "What file formats do I get?", a: "Every drawing is delivered as both PDF (for viewing and printing) and DWG (for AutoCAD, Revit, and other CAD software)." },
-        { q: "What deliverables can you produce?", a: "Floor plans, exterior elevations, interior elevations, reflected ceiling plans, roof plans, Revit models, and virtual 3D walk-throughs. You pick what you need — see the 'What's included' section below for details on each." },
+        { q: "What deliverables can you produce?", a: "Floor plans, exterior elevations, interior elevations, reflected ceiling plans, roof plans, Revit models, and virtual Matterport walk-throughs. You pick what you need — see the 'What's included' section below for details on each." },
         { q: "How fast is delivery?", a: "3–5 business days from the scan date. Rush delivery (48–72 hours) is available for an added fee." },
       ],
     },
@@ -1786,7 +1680,7 @@ function FAQ() {
         { q: "Roof Plans — what's included?", a: "Top-down view of the roof with pitches, ridges, valleys, chimneys, skylights, and any rooftop equipment. Note: availability varies by property — access, roof pitch, height, and drone-flight permissions can all affect what we can capture. Ask us about your specific property when you request a quote." },
         { q: "Site & Landscape Plans — what's included?", a: "Top-down plans of your property showing the building footprint, landscape features, hardscape, driveways, pools, and outbuildings. Useful for landscape redesigns, additions, new developments, pool planning, and general site upkeep." },
         { q: "Revit Models — what's included?", a: "LOD 200–300 parametric BIM model with walls, floors, ceilings, and openings. MEP placeholders available on request." },
-        { q: "Virtual Visits — what's included?", a: "An interactive 3D walk-through of the home your clients or buyers can explore online, plus a dollhouse view and measurement tool." },
+        { q: "Virtual Visits (Matterport) — what's included?", a: "An interactive 3D walk-through of the home your clients or buyers can explore online, plus a dollhouse view and measurement tool." },
         { q: "What counts as an optional add-on?", a: "Elements like bathroom fixtures, landscape plans, parking surfaces, sidewalks, and precise window sill heights or dimensions. Mention these when our scheduler calls — they may adjust the final quote slightly." },
       ],
     },

@@ -2,14 +2,12 @@ import { useState, useEffect, useRef } from "react";
 import {
   ArrowRight,
   ArrowUpRight,
-  Box,
   Check,
   ChevronDown,
   ChevronLeft,
   ChevronRight,
   Clock,
   DollarSign,
-  Eye,
   HardHat,
   Home,
   Layers,
@@ -20,8 +18,6 @@ import {
   Shield,
   Sparkles,
   Star,
-  Triangle,
-  Trees,
   Wallpaper,
   X,
   Zap,
@@ -918,28 +914,24 @@ function Deliverables() {
 
   const advanced = [
     {
-      icon: Triangle,
+      img: "/images/02-alsoavailable-roofplans.png",
       name: "Roof Plans*",
       pitch: "Top-down roof plans with pitches, ridges, valleys, skylights, and chimneys.",
-      formats: ["PDF", "DWG"],
     },
     {
-      icon: Trees,
+      img: "/images/02-alsoavailable-Site&LandscapePlans.png",
       name: "Site & Landscape Plans",
       pitch: "Top-down site plans with property, landscape, and outdoor features — for redesigns, additions, and pools.",
-      formats: ["PDF", "DWG"],
     },
     {
-      icon: Box,
+      img: "/images/02-alsoavailable-revitcali.png",
       name: "Revit Models",
       pitch: "LOD 200–300 parametric BIM model ready to design against.",
-      formats: ["RVT"],
     },
     {
-      icon: Eye,
+      img: "/images/02-alsoavailable-3dvirtualvisit.png",
       name: "Virtual Visits",
       pitch: "Matterport 3D walk-through with dollhouse view and built-in measurement tool.",
-      formats: ["Web"],
     },
   ];
 
@@ -970,35 +962,24 @@ function Deliverables() {
         </div>
 
         <div className="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-          {advanced.map((item, i) => {
-            const Icon = item.icon;
-            return (
-              <div
-                key={i}
-                className="group flex items-start gap-4 rounded-xl border border-slate-200 bg-slate-50/50 p-6 transition-all hover:border-slate-300 hover:bg-white hover:shadow-md"
-              >
-                <div className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-blue-50 text-blue-600">
-                  <Icon size={18} />
-                </div>
-                <div className="flex-1">
-                  <div className="flex items-baseline justify-between gap-3">
-                    <h3 className="font-serif text-lg text-slate-900">{item.name}</h3>
-                    <div className="flex gap-1">
-                      {item.formats.map((f) => (
-                        <span
-                          key={f}
-                          className="rounded border border-slate-200 bg-white px-1.5 py-0.5 font-mono txt-10 uppercase tracking-wider text-slate-500"
-                        >
-                          {f}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                  <p className="mt-1.5 text-sm leading-relaxed text-slate-600">{item.pitch}</p>
-                </div>
+          {advanced.map((item, i) => (
+            <div
+              key={i}
+              className="group overflow-hidden rounded-xl border border-slate-200 bg-slate-50/50 transition-all hover:border-slate-300 hover:bg-white hover:shadow-md"
+            >
+              <div className="aspect-[4/3] overflow-hidden bg-white">
+                <img
+                  src={item.img}
+                  alt={item.name}
+                  className="h-full w-full object-cover"
+                />
               </div>
-            );
-          })}
+              <div className="p-6">
+                <h3 className="font-serif text-lg text-slate-900">{item.name}</h3>
+                <p className="mt-1.5 text-sm leading-relaxed text-slate-600">{item.pitch}</p>
+              </div>
+            </div>
+          ))}
         </div>
 
         <p className="mt-6 text-center font-mono txt-10 uppercase tracking-wider text-slate-400">

@@ -687,6 +687,7 @@ function Deliverables() {
       name: "Floor Plans",
       pitch: "Dimensioned plans of every level, ready for renovation, insurance, or sale.",
       formats: ["PDF", "DWG"],
+      image: "/images/02-deliverables-floor plans.png",
       bullets: [
         "Fully dimensioned floor plans",
         "Walls, doors, windows, and fixtures",
@@ -699,6 +700,7 @@ function Deliverables() {
       name: "Interior Elevations",
       pitch: "Flat views of every interior wall — a clean foundation for design and renovation planning.",
       formats: ["PDF", "DWG"],
+      image: "/images/02-deliverables-interior-elvations.png",
       bullets: [
         "Every wall, every room, drawn flat",
         "Door and window openings in elevation",
@@ -722,6 +724,7 @@ function Deliverables() {
       name: "Reflected Ceiling Plans",
       pitch: "Top-down ceiling plans showing fixtures, beams, and heights.",
       formats: ["PDF", "DWG"],
+      image: "/images/02-deliverables-reflected-ceiling-plans.png",
       bullets: [
         "Lighting and fixture locations",
         "Ceiling heights throughout",
@@ -777,7 +780,7 @@ function Deliverables() {
             return (
               <div
                 key={i}
-                className={`group relative flex flex-col overflow-hidden rounded-2xl border-2 p-7 transition-all ${
+                className={`group relative flex flex-col rounded-2xl border-2 p-7 transition-all ${
                   tier.highlight
                     ? "border-blue-600 bg-slate-900 text-white shadow-xl shadow-blue-900/20"
                     : "border-slate-300 bg-white hover:border-slate-400 hover:shadow-lg"
@@ -789,7 +792,7 @@ function Deliverables() {
                   </div>
                 )}
                 {tier.image && (
-                  <div className="-mx-7 -mt-7 mb-5 h-28 overflow-hidden border-b border-slate-200 bg-white">
+                  <div className="-mx-7 -mt-7 mb-5 h-32 overflow-hidden rounded-t-[14px] border-b border-slate-200 bg-white">
                     <img
                       src={tier.image}
                       alt={`${tier.name} sample`}

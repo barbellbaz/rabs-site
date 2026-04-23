@@ -427,151 +427,18 @@ function Hero() {
                     <BlueprintGrid className="h-full w-full" />
                   </div>
 
-                  <svg viewBox="0 0 400 500" className="absolute inset-0 h-full w-full p-6" fill="none" stroke="currentColor" strokeWidth="2">
-                    <g stroke="#2563eb" strokeWidth="1" fill="#2563eb">
-                      <line x1="30" y1="32" x2="370" y2="32" stroke="#2563eb" />
-                      <line x1="30" y1="26" x2="30" y2="38" stroke="#2563eb" />
-                      <line x1="370" y1="26" x2="370" y2="38" stroke="#2563eb" />
-                      <text x="200" y="24" fontSize="10" textAnchor="middle" stroke="none" className="font-mono">42' - 0"</text>
-                      <line x1="378" y1="50" x2="378" y2="470" stroke="#2563eb" />
-                      <line x1="372" y1="50" x2="384" y2="50" stroke="#2563eb" />
-                      <line x1="372" y1="470" x2="384" y2="470" stroke="#2563eb" />
-                      <text x="388" y="263" fontSize="10" stroke="none" className="font-mono">52' - 0"</text>
-                    </g>
+                  <img
+                    src="/images/example1.gif"
+                    alt="Sample RABS deliverables: floor plans, elevations, ceiling plans, site plans, and Revit model"
+                    className="absolute inset-0 h-full w-full object-contain p-6"
+                  />
 
-                    <rect x="30" y="50" width="340" height="420" fill="#fafbff" stroke="none" />
-                    <rect x="30" y="50" width="340" height="420" stroke="#0f172a" strokeWidth="4" fill="none" />
-
-                    <g stroke="#0f172a" strokeWidth="1" strokeDasharray="3 3">
-                      <rect x="270" y="50" width="100" height="60" fill="#eef2ff" />
-                    </g>
-                    <g stroke="#0f172a" strokeWidth="3" fill="none">
-                      <line x1="275" y1="55" x2="365" y2="55" strokeWidth="1.5" />
-                      <line x1="275" y1="60" x2="365" y2="60" strokeWidth="0.5" />
-                      <line x1="275" y1="55" x2="275" y2="105" strokeWidth="1.5" />
-                      <line x1="365" y1="55" x2="365" y2="105" strokeWidth="1.5" />
-                    </g>
-
-                    <g stroke="#0f172a" strokeWidth="2.5">
-                      <line x1="30" y1="230" x2="170" y2="230" />
-                      <line x1="210" y1="230" x2="370" y2="230" />
-                      <line x1="170" y1="110" x2="170" y2="230" />
-                      <line x1="30" y1="110" x2="170" y2="110" />
-                      <line x1="100" y1="110" x2="100" y2="160" />
-                      <line x1="100" y1="160" x2="170" y2="160" />
-                      <line x1="270" y1="110" x2="310" y2="110" />
-                      <line x1="335" y1="110" x2="370" y2="110" />
-                      <line x1="150" y1="260" x2="150" y2="310" />
-                      <line x1="150" y1="340" x2="150" y2="470" />
-                      <line x1="240" y1="260" x2="240" y2="310" />
-                      <line x1="240" y1="340" x2="240" y2="470" />
-                      <line x1="30" y1="350" x2="150" y2="350" />
-                      <line x1="240" y1="390" x2="370" y2="390" />
-                    </g>
-
-                    <g stroke="#0f172a" strokeWidth="1" fill="none">
-                      <path d="M 100 130 A 28 28 0 0 1 128 158" />
-                      <line x1="100" y1="130" x2="100" y2="158" strokeWidth="0.5" strokeDasharray="2 2" />
-                      <path d="M 150 290 A 25 25 0 0 1 125 315" />
-                      <path d="M 240 290 A 25 25 0 0 0 265 315" />
-                      <path d="M 150 330 A 25 25 0 0 1 175 355" />
-                      <path d="M 240 405 A 22 22 0 0 1 262 427" />
-                      <g strokeWidth="1">
-                        <line x1="310" y1="107" x2="335" y2="107" strokeWidth="3" />
-                        <path d="M 315 102 L 310 107 L 315 112" />
-                        <path d="M 330 102 L 335 107 L 330 112" />
-                      </g>
-                    </g>
-
-                    <g stroke="#0f172a" strokeWidth="1" fill="none">
-                      <rect x="35" y="115" width="60" height="18" />
-                      <rect x="35" y="115" width="18" height="50" />
-                      <rect x="42" y="118" width="14" height="12" />
-                      <rect x="60" y="117" width="28" height="14" />
-                      <circle cx="67" cy="122" r="2.5" fill="#0f172a" fillOpacity="0.4" />
-                      <circle cx="81" cy="122" r="2.5" fill="#0f172a" fillOpacity="0.4" />
-                      <circle cx="67" cy="128" r="2.5" fill="#0f172a" fillOpacity="0.4" />
-                      <circle cx="81" cy="128" r="2.5" fill="#0f172a" fillOpacity="0.4" />
-                      <rect x="38" y="195" width="22" height="28" />
-                      <line x1="38" y1="203" x2="60" y2="203" strokeWidth="0.5" />
-                      <rect x="75" y="175" width="60" height="25" rx="1" />
-                    </g>
-
-                    <g stroke="#0f172a" strokeWidth="1" fill="none">
-                      <rect x="185" y="195" width="70" height="22" rx="3" />
-                      <line x1="185" y1="202" x2="255" y2="202" strokeWidth="0.5" />
-                      <rect x="200" y="170" width="40" height="18" rx="1" />
-                      <rect x="285" y="185" width="26" height="28" rx="2" />
-                      <rect x="180" y="155" width="140" height="70" strokeDasharray="2 3" strokeOpacity="0.4" />
-                    </g>
-
-                    <g stroke="#0f172a" strokeWidth="0.75" fill="none">
-                      <line x1="30" y1="135" x2="100" y2="135" strokeOpacity="0.3" />
-                      <line x1="65" y1="110" x2="65" y2="160" strokeOpacity="0.3" />
-                    </g>
-
-                    <g stroke="#0f172a" strokeWidth="1" fill="none">
-                      <rect x="165" y="270" width="60" height="40" rx="2" />
-                      <line x1="165" y1="278" x2="225" y2="278" strokeWidth="0.5" />
-                      <rect x="169" y="272" width="12" height="5" />
-                      <rect x="209" y="272" width="12" height="5" />
-                    </g>
-
-                    <g stroke="#0f172a" strokeWidth="1" fill="none">
-                      <rect x="260" y="260" width="45" height="30" rx="2" />
-                      <line x1="260" y1="266" x2="305" y2="266" strokeWidth="0.5" />
-                    </g>
-
-                    <g stroke="#0f172a" strokeWidth="1" fill="none">
-                      <rect x="50" y="380" width="45" height="30" rx="2" />
-                      <line x1="50" y1="386" x2="95" y2="386" strokeWidth="0.5" />
-                    </g>
-
-                    <g stroke="#0f172a" strokeWidth="1" fill="none">
-                      <rect x="250" y="405" width="45" height="24" rx="3" />
-                      <line x1="254" y1="409" x2="291" y2="409" strokeWidth="0.5" />
-                      <rect x="310" y="405" width="55" height="18" />
-                      <rect x="325" y="408" width="14" height="10" />
-                      <ellipse cx="318" cy="445" rx="7" ry="10" />
-                      <rect x="313" y="452" width="10" height="8" />
-                    </g>
-
-                    <g fill="#0f172a" stroke="none" className="font-mono" fontSize="8">
-                      <text x="65" y="178" textAnchor="middle">KITCHEN</text>
-                      <text x="65" y="186" textAnchor="middle" fontSize="6" fill="#64748b">13' × 10'</text>
-                      <text x="250" y="143" textAnchor="middle">LIVING ROOM</text>
-                      <text x="250" y="151" textAnchor="middle" fontSize="6" fill="#64748b">18' × 15'</text>
-                      <text x="320" y="82" textAnchor="middle" fontSize="7">BALCONY</text>
-                      <text x="65" y="145" textAnchor="middle" fontSize="7">VESTIBULE</text>
-                      <text x="195" y="335" textAnchor="middle">MASTER BED</text>
-                      <text x="195" y="343" textAnchor="middle" fontSize="6" fill="#64748b">14' × 12'</text>
-                      <text x="282" y="335" textAnchor="middle">BEDROOM 2</text>
-                      <text x="282" y="343" textAnchor="middle" fontSize="6" fill="#64748b">11' × 10'</text>
-                      <text x="72" y="438" textAnchor="middle">BEDROOM 3</text>
-                      <text x="72" y="446" textAnchor="middle" fontSize="6" fill="#64748b">11' × 10'</text>
-                      <text x="305" y="440" textAnchor="middle">MASTER BATH</text>
-                      <text x="305" y="448" textAnchor="middle" fontSize="6" fill="#64748b">9' × 7'</text>
-                    </g>
-
-                    <g stroke="#2563eb" strokeWidth="1">
-                      <line x1="50" y1="50" x2="90" y2="50" />
-                      <line x1="50" y1="53" x2="90" y2="53" />
-                      <line x1="30" y1="400" x2="30" y2="440" />
-                      <line x1="33" y1="400" x2="33" y2="440" />
-                      <line x1="175" y1="467" x2="225" y2="467" />
-                      <line x1="175" y1="470" x2="225" y2="470" />
-                      <line x1="260" y1="467" x2="305" y2="467" />
-                      <line x1="260" y1="470" x2="305" y2="470" />
-                      <line x1="367" y1="260" x2="367" y2="300" />
-                      <line x1="370" y1="260" x2="370" y2="300" />
-                    </g>
-
-                    <g transform="translate(55, 478)" stroke="#2563eb" strokeWidth="0.8" fill="none">
-                      <circle r="10" />
-                      <path d="M 0 -10 L 2 0 L 0 10 L -2 0 Z" fill="#2563eb" fillOpacity="0.6" stroke="none" />
-                      <text x="0" y="-12" fontSize="6" textAnchor="middle" fill="#2563eb" stroke="none" className="font-mono">N</text>
-                    </g>
-
+                  <svg
+                    viewBox="0 0 400 500"
+                    className="pointer-events-none absolute inset-0 h-full w-full p-6"
+                    fill="none"
+                    stroke="currentColor"
+                  >
                     <line x1="30" y1="50" x2="370" y2="50" stroke="#2563eb" strokeWidth="2" strokeDasharray="4 4" className="origin-top scan-sweep" />
                   </svg>
                 </div>

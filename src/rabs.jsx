@@ -976,7 +976,7 @@ function Deliverables() {
                       : "border-slate-100 text-blue-600 hover:text-blue-700"
                   }`}
                 >
-                  Request matched pricing
+                  Request pricing
                   <ArrowUpRight size={14} />
                 </a>
               </div>
@@ -1042,7 +1042,7 @@ function Process() {
   const steps = [
     {
       n: "01",
-      title: "Request & get matched pricing",
+      title: "Request & get pricing",
       body: "Tell us the address, square footage, and what you need. Within minutes you'll get an initial estimate by email; our team follows up with your confirmed quote within one business day. Total effort on your end: 60 seconds.",
     },
     {
@@ -1350,7 +1350,7 @@ function SubmitConfirmationModal({ open, name, email, onClose }) {
           <p className="mt-3 leading-relaxed text-slate-600">
             A confirmation email is on its way to{" "}
             <span className="font-medium text-slate-900">{email}</span>. Our team will follow up within one
-            business day with your matched quote and to schedule your scan.
+            business day with your quote and to schedule your scan.
           </p>
           <button
             onClick={onClose}
@@ -1451,7 +1451,7 @@ function QuoteForm() {
             <p className="mt-4 text-lg text-slate-600">
               We've received your request and emailed a confirmation to{" "}
               <span className="font-medium text-slate-900">{form.email}</span>. Our team will review the details
-              and follow up within one business day with your matched quote.
+              and follow up within one business day with your quote.
             </p>
           </div>
 
@@ -1536,7 +1536,7 @@ function QuoteForm() {
         <div className="mx-auto max-w-2xl text-center">
           <DimensionLine label="08 · Request quote" className="justify-center" />
           <h2 className="mt-4 font-serif text-4xl tracking-tight text-slate-900 lg:text-5xl">
-            Get your matched packages.
+            Fast quote. Fair price. Easy call.
           </h2>
           <p className="mt-4 text-lg text-slate-600">
             Takes 60 seconds. Initial estimate in minutes, confirmed quote within one business day &mdash; no call required.

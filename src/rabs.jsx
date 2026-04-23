@@ -687,15 +687,34 @@ function DeliverablesCarousel({ items }) {
   const [active, setActive] = useState(0);
   const [paused, setPaused] = useState(false);
   const [manuallyPaused, setManuallyPaused] = useState(false);
+  const [visible, setVisible] = useState(false);
+  const rootRef = useRef(null);
+
+  // Only start ticking once the carousel is actually scrolled into view.
+  // This avoids the case where browsers throttle/stall setInterval before
+  // the user scrolls to the section, causing the carousel to "sometimes
+  // not start" on initial load.
+  useEffect(() => {
+    if (!rootRef.current || typeof IntersectionObserver === "undefined") {
+      setVisible(true);
+      return;
+    }
+    const observer = new IntersectionObserver(
+      ([entry]) => setVisible(entry.isIntersecting),
+      { threshold: 0.25 }
+    );
+    observer.observe(rootRef.current);
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
-    if (paused || manuallyPaused) return;
+    if (paused || manuallyPaused || !visible) return;
     if (typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) return;
     const id = setInterval(() => {
       setActive((a) => (a + 1) % items.length);
     }, 3000);
     return () => clearInterval(id);
-  }, [paused, manuallyPaused, items.length]);
+  }, [paused, manuallyPaused, visible, items.length]);
 
   const go = (delta) => {
     setManuallyPaused(true);
@@ -704,6 +723,7 @@ function DeliverablesCarousel({ items }) {
 
   return (
     <div
+      ref={rootRef}
       className="relative mt-16"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
@@ -726,7 +746,7 @@ function DeliverablesCarousel({ items }) {
               />
             ))}
             {/* Scan-sweep line — remounts on each slide change via key={active} so the animation restarts */}
-            {!paused && !manuallyPaused && (
+            {!paused && !manuallyPaused && visible && (
               <div
                 key={active}
                 className="pointer-events-none absolute inset-x-0 top-0 h-0.5 bg-blue-500/70 carousel-scan-sweep"

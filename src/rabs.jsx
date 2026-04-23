@@ -676,12 +676,11 @@ function CTABanner({ headline, sub, ctaLabel = "Request a quote" }) {
 /**
  * =====================================================================
  *  DELIVERABLES CAROUSEL — auto-advancing showcase of the 4 core drawings.
- *  Pauses on hover, respects prefers-reduced-motion.
+ *  Respects prefers-reduced-motion.
  * =====================================================================
  */
 function DeliverablesCarousel({ items }) {
   const [active, setActive] = useState(0);
-  const [paused, setPaused] = useState(false);
   const [manuallyPaused, setManuallyPaused] = useState(false);
   const [visible, setVisible] = useState(false);
   const rootRef = useRef(null);
@@ -706,35 +705,23 @@ function DeliverablesCarousel({ items }) {
   }, []);
 
   useEffect(() => {
-    if (paused || manuallyPaused || !visible) return;
+    if (manuallyPaused || !visible) return;
     if (typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) return;
     const id = setInterval(() => {
       setActive((a) => (a + 1) % items.length);
     }, 3000);
     return () => clearInterval(id);
-  }, [paused, manuallyPaused, visible, items.length]);
+  }, [manuallyPaused, visible, items.length]);
 
   const go = (delta) => {
     setManuallyPaused(true);
     setActive((a) => (a + delta + items.length) % items.length);
   };
 
-  // Hover-pause is only meaningful on devices with a real pointer (desktops
-  // with mice). On touch devices, scroll-induced "mouseenter" events cause
-  // spurious pauses — skip hover entirely there.
-  const hoverProps =
-    typeof window !== "undefined" && window.matchMedia?.("(hover: hover)").matches
-      ? {
-          onMouseEnter: () => setPaused(true),
-          onMouseLeave: () => setPaused(false),
-        }
-      : {};
-
   return (
     <div
       ref={rootRef}
       className="relative mt-16"
-      {...hoverProps}
     >
       <div className="relative -mx-4 overflow-hidden rounded-xl border-2 border-slate-300 bg-white shadow-lg sm:mx-0 sm:rounded-2xl">
         <div className="grid lg:grid-cols-2">
@@ -754,7 +741,7 @@ function DeliverablesCarousel({ items }) {
               />
             ))}
             {/* Scan-sweep line — remounts on each slide change via key={active} so the animation restarts */}
-            {!paused && !manuallyPaused && visible && (
+            {!manuallyPaused && visible && (
               <div
                 key={active}
                 className="pointer-events-none absolute inset-x-0 top-0 h-0.5 bg-blue-500/70 carousel-scan-sweep"
@@ -919,7 +906,7 @@ function Deliverables() {
       pitch: "Top-down roof plans with pitches, ridges, valleys, skylights, and chimneys.",
     },
     {
-      img: "/images/02-alsoavailable-Site&LandscapePlans.png",
+      img: "/images/02-alsoavailable-Site-LandscapePlans.png",
       name: "Site & Landscape Plans",
       pitch: "Top-down site plans with property, landscape, and outdoor features — for redesigns, additions, and pools.",
     },
@@ -931,7 +918,7 @@ function Deliverables() {
     {
       img: "/images/02-alsoavailable-3dvirtualvisit.png",
       name: "Virtual Visits",
-      pitch: "Matterport 3D walk-through with dollhouse view and built-in measurement tool.",
+      pitch: "Interactive 3D walk-through with dollhouse view and built-in measurement tool.",
     },
   ];
 
@@ -1647,7 +1634,7 @@ function FAQ() {
       items: [
         { q: "How accurate are your scans?", a: "Our laser scans are highly accurate — more than precise enough for renovation, insurance, and permitting work. We use professional-grade equipment calibrated for architectural documentation." },
         { q: "What file formats do I get?", a: "Every drawing is delivered as both PDF (for viewing and printing) and DWG (for AutoCAD, Revit, and other CAD software)." },
-        { q: "What deliverables can you produce?", a: "Floor plans, exterior elevations, interior elevations, reflected ceiling plans, roof plans, Revit models, and virtual Matterport walk-throughs. You pick what you need — see the 'What's included' section below for details on each." },
+        { q: "What deliverables can you produce?", a: "Floor plans, exterior elevations, interior elevations, reflected ceiling plans, roof plans, Revit models, and virtual 3D walk-throughs. You pick what you need — see the 'What's included' section below for details on each." },
         { q: "How fast is delivery?", a: "3–5 business days from the scan date. Rush delivery (48–72 hours) is available for an added fee." },
       ],
     },
@@ -1661,7 +1648,7 @@ function FAQ() {
         { q: "Roof Plans — what's included?", a: "Top-down view of the roof with pitches, ridges, valleys, chimneys, skylights, and any rooftop equipment. Note: availability varies by property — access, roof pitch, height, and drone-flight permissions can all affect what we can capture. Ask us about your specific property when you request a quote." },
         { q: "Site & Landscape Plans — what's included?", a: "Top-down plans of your property showing the building footprint, landscape features, hardscape, driveways, pools, and outbuildings. Useful for landscape redesigns, additions, new developments, pool planning, and general site upkeep." },
         { q: "Revit Models — what's included?", a: "LOD 200–300 parametric BIM model with walls, floors, ceilings, and openings. MEP placeholders available on request." },
-        { q: "Virtual Visits (Matterport) — what's included?", a: "An interactive 3D walk-through of the home your clients or buyers can explore online, plus a dollhouse view and measurement tool." },
+        { q: "Virtual Visits — what's included?", a: "An interactive 3D walk-through of the home your clients or buyers can explore online, plus a dollhouse view and measurement tool." },
         { q: "What counts as an optional add-on?", a: "Elements like bathroom fixtures, landscape plans, parking surfaces, sidewalks, and precise window sill heights or dimensions. Mention these when our scheduler calls — they may adjust the final quote slightly." },
       ],
     },

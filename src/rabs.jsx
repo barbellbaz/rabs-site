@@ -4,6 +4,8 @@ import {
   ArrowUpRight,
   Check,
   ChevronDown,
+  ChevronLeft,
+  ChevronRight,
   Clock,
   DollarSign,
   HardHat,
@@ -805,6 +807,180 @@ function CTABanner({ headline, sub, ctaLabel = "Request a quote" }) {
 
 /**
  * =====================================================================
+ *  DELIVERABLES CAROUSEL
+ *  Auto-advances every 3s; pauses on hover (pointer devices only);
+ *  permanently pauses when the user touches arrows/dots; respects
+ *  prefers-reduced-motion; only ticks when in viewport.
+ * =====================================================================
+ */
+function DeliverablesCarousel({ items }) {
+  const [active, setActive] = useState(0);
+  const [paused, setPaused] = useState(false);
+  const [manuallyPaused, setManuallyPaused] = useState(false);
+  const [visible, setVisible] = useState(false);
+  const rootRef = useRef(null);
+
+  useEffect(() => {
+    if (!rootRef.current || typeof IntersectionObserver === "undefined") {
+      setVisible(true);
+      return;
+    }
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) setVisible(true);
+      },
+      { threshold: 0.1, rootMargin: "0px 0px -10% 0px" }
+    );
+    observer.observe(rootRef.current);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (paused || manuallyPaused || !visible) return;
+    if (typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) return;
+    const id = setInterval(() => {
+      setActive((a) => (a + 1) % items.length);
+    }, 3000);
+    return () => clearInterval(id);
+  }, [paused, manuallyPaused, visible, items.length]);
+
+  const go = (delta) => {
+    setManuallyPaused(true);
+    setActive((a) => (a + delta + items.length) % items.length);
+  };
+
+  const hoverProps =
+    typeof window !== "undefined" && window.matchMedia?.("(hover: hover)").matches
+      ? {
+          onMouseEnter: () => setPaused(true),
+          onMouseLeave: () => setPaused(false),
+        }
+      : {};
+
+  return (
+    <div
+      ref={rootRef}
+      className="relative mt-16"
+      {...hoverProps}
+    >
+      <div className="relative -mx-4 overflow-hidden rounded-xl border-2 border-slate-300 bg-white shadow-lg sm:mx-0 sm:rounded-2xl">
+        <div className="grid lg:grid-cols-2">
+          {/* Image panel */}
+          <div className="relative h-72 overflow-hidden border-b border-slate-200 bg-slate-50 lg:h-[460px] lg:border-b-0 lg:border-r">
+            <div className="pointer-events-none absolute inset-0 text-blue-500/20">
+              <BlueprintGrid className="h-full w-full" />
+            </div>
+            {items.map((item, i) => (
+              <img
+                key={i}
+                src={item.image}
+                alt={`${item.name} sample`}
+                className={`absolute inset-0 h-full w-full object-contain p-6 transition-opacity duration-700 ${
+                  i === active ? "opacity-100" : "opacity-0"
+                }`}
+              />
+            ))}
+            {!paused && !manuallyPaused && visible && (
+              <div
+                key={active}
+                className="pointer-events-none absolute inset-x-0 top-0 h-0.5 bg-blue-500/70 carousel-scan-sweep"
+              />
+            )}
+          </div>
+
+          {/* Text panel */}
+          <div className="relative flex flex-col p-8 lg:p-10">
+            {items.map((item, i) => {
+              return (
+                <div
+                  key={i}
+                  className={`transition-opacity duration-500 ${
+                    i === active
+                      ? "opacity-100"
+                      : "pointer-events-none absolute inset-0 p-8 opacity-0 lg:p-10"
+                  }`}
+                  aria-hidden={i !== active}
+                >
+                  {item.highlight && (
+                    <div className="mb-4 inline-flex items-center rounded-full bg-blue-600 px-3 py-1 txt-10 font-semibold uppercase tracking-widest text-white">
+                      Most requested
+                    </div>
+                  )}
+                  <h3 className="font-serif text-2xl leading-tight text-slate-900 lg:text-3xl">
+                    {item.name}
+                  </h3>
+                  <p className="mt-3 text-base leading-relaxed text-slate-600">
+                    {item.pitch}
+                  </p>
+                  <ul className="mt-6 space-y-2.5 text-sm text-slate-700">
+                    {item.bullets.map((b, j) => (
+                      <li key={j} className="flex gap-2.5">
+                        <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-blue-600" />
+                        <span>{b}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <a
+                    href="#quote"
+                    className="mt-8 inline-flex items-center gap-2 rounded-full bg-slate-900 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-blue-600"
+                  >
+                    Request pricing
+                    <ArrowUpRight size={14} />
+                  </a>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+
+      {/* Prev/Next arrows */}
+      <button
+        onClick={() => go(-1)}
+        aria-label="Previous deliverable"
+        className="absolute left-2 top-36 z-10 grid h-10 w-10 -translate-y-1/2 place-items-center rounded-full border border-slate-200 bg-white/90 text-slate-700 shadow-md backdrop-blur-sm transition-all hover:border-blue-400 hover:bg-white hover:text-blue-600 lg:left-3 lg:top-1/2"
+      >
+        <ChevronLeft size={20} />
+      </button>
+      <button
+        onClick={() => go(1)}
+        aria-label="Next deliverable"
+        className="absolute right-2 top-36 z-10 grid h-10 w-10 -translate-y-1/2 place-items-center rounded-full border border-slate-200 bg-white/90 text-slate-700 shadow-md backdrop-blur-sm transition-all hover:border-blue-400 hover:bg-white hover:text-blue-600 lg:right-3 lg:top-1/2"
+      >
+        <ChevronRight size={20} />
+      </button>
+
+      {/* Dot navigation */}
+      <div className="mt-6 flex items-center justify-center gap-3">
+        {items.map((item, i) => (
+          <button
+            key={i}
+            onClick={() => { setManuallyPaused(true); setActive(i); }}
+            aria-label={`Show ${item.name}`}
+            className={`h-2 rounded-full transition-all ${
+              i === active ? "w-8 bg-blue-600" : "w-2 bg-slate-300 hover:bg-slate-400"
+            }`}
+          />
+        ))}
+      </div>
+
+      <style>{`
+        @keyframes carousel-scan-sweep {
+          0%   { transform: translateY(0); opacity: 0; }
+          5%   { opacity: 1; }
+          95%  { opacity: 1; }
+          100% { transform: translateY(460px); opacity: 0; }
+        }
+        .carousel-scan-sweep {
+          animation: carousel-scan-sweep 3s linear 1;
+        }
+      `}</style>
+    </div>
+  );
+}
+
+/**
+ * =====================================================================
  *  DELIVERABLES
  * =====================================================================
  */
@@ -820,6 +996,7 @@ function Deliverables() {
         "Walls, doors, windows, and fixtures",
         "Every level of your home",
       ],
+      image: "/images/02-deliverables-floor-plans.png",
       highlight: true,
     },
     {
@@ -832,6 +1009,7 @@ function Deliverables() {
         "Door and window openings in elevation",
         "Ideal for interior designers",
       ],
+      image: "/images/02-deliverables-interior-elevations.png",
     },
     {
       icon: Home,
@@ -843,6 +1021,7 @@ function Deliverables() {
         "Permit-ready documentation",
         "Ideal for facade renovations",
       ],
+      image: "/images/02-deliverables-exterior-elevations.png",
     },
     {
       icon: Layers,
@@ -853,6 +1032,7 @@ function Deliverables() {
         "Lighting and fixture locations",
         "Ceiling heights throughout",
       ],
+      image: "/images/02-deliverables-reflected-ceiling-plans.png",
     },
   ];
 
@@ -874,7 +1054,7 @@ function Deliverables() {
     },
     {
       name: "Virtual Visits",
-      pitch: "Matterport 3D walk-through with dollhouse view and built-in measurement tool.",
+      pitch: "Interactive 3D walk-through with dollhouse view and built-in measurement tool.",
       image: "/images/02-alsoavailable-3dvirtualvisit.png",
     },
   ];
@@ -893,88 +1073,8 @@ function Deliverables() {
           </p>
         </div>
 
-        {/* Primary drawings — the core 4 */}
-        <div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {primary.map((tier, i) => {
-            const Icon = tier.icon;
-            return (
-              <div
-                key={i}
-                className={`group relative flex flex-col rounded-2xl border-2 p-7 transition-all ${
-                  tier.highlight
-                    ? "border-blue-600 bg-slate-900 text-white shadow-xl shadow-blue-900/20"
-                    : "border-slate-300 bg-white hover:border-slate-400 hover:shadow-lg"
-                }`}
-              >
-                {tier.highlight && (
-                  <div className="absolute -top-3 left-6 rounded-full bg-blue-600 px-3 py-1 txt-10 font-semibold uppercase tracking-widest text-white">
-                    Most requested
-                  </div>
-                )}
-                <div
-                  className={`grid h-11 w-11 place-items-center rounded-lg ${
-                    tier.highlight ? "bg-blue-500/20 text-blue-300" : "bg-blue-50 text-blue-600"
-                  }`}
-                >
-                  <Icon size={20} />
-                </div>
-                <h3 className="mt-5 font-serif text-xl leading-tight lg:text-2xl">{tier.name}</h3>
-                <p
-                  className={`mt-2 text-sm leading-relaxed ${
-                    tier.highlight ? "text-slate-300" : "text-slate-600"
-                  }`}
-                >
-                  {tier.pitch}
-                </p>
-
-                <div className="mt-4 flex flex-wrap gap-1.5">
-                  {tier.formats.map((f) => (
-                    <span
-                      key={f}
-                      className={`rounded-md border px-2 py-0.5 font-mono txt-10 uppercase tracking-wider ${
-                        tier.highlight
-                          ? "border-slate-700 text-slate-300"
-                          : "border-slate-200 text-slate-500"
-                      }`}
-                    >
-                      {f}
-                    </span>
-                  ))}
-                </div>
-
-                <ul
-                  className={`mt-5 space-y-2.5 text-sm ${
-                    tier.highlight ? "text-slate-200" : "text-slate-700"
-                  }`}
-                >
-                  {tier.bullets.map((b, j) => (
-                    <li key={j} className="flex gap-2">
-                      <Check
-                        size={15}
-                        className={`mt-0.5 shrink-0 ${
-                          tier.highlight ? "text-blue-300" : "text-blue-600"
-                        }`}
-                      />
-                      <span>{b}</span>
-                    </li>
-                  ))}
-                </ul>
-
-                <a
-                  href="#quote"
-                  className={`mt-6 inline-flex items-center gap-2 border-t pt-4 text-sm font-medium transition-colors ${
-                    tier.highlight
-                      ? "border-slate-800 text-blue-300 hover:text-blue-200"
-                      : "border-slate-100 text-blue-600 hover:text-blue-700"
-                  }`}
-                >
-                  Request matched pricing
-                  <ArrowUpRight size={14} />
-                </a>
-              </div>
-            );
-          })}
-        </div>
+        {/* Carousel — cycles through the 4 core deliverables */}
+        <DeliverablesCarousel items={primary} />
 
         {/* Advanced offerings — the 3 extras */}
         <div className="mt-12 flex items-center gap-4">
@@ -1024,7 +1124,7 @@ function Process() {
   const steps = [
     {
       n: "01",
-      title: "Request & get matched pricing",
+      title: "Request & get pricing",
       body: "Tell us the address, square footage, and what you need. Within minutes you'll get an initial estimate by email; our team follows up with your confirmed quote within one business day. Total effort on your end: 60 seconds.",
     },
     {
@@ -1332,7 +1432,7 @@ function SubmitConfirmationModal({ open, name, email, onClose }) {
           <p className="mt-3 leading-relaxed text-slate-600">
             A confirmation email is on its way to{" "}
             <span className="font-medium text-slate-900">{email}</span>. Our team will follow up within one
-            business day with your matched quote and to schedule your scan.
+            business day with your quote and to schedule your scan.
           </p>
           <button
             onClick={onClose}
@@ -1433,7 +1533,7 @@ function QuoteForm() {
             <p className="mt-4 text-lg text-slate-600">
               We've received your request and emailed a confirmation to{" "}
               <span className="font-medium text-slate-900">{form.email}</span>. Our team will review the details
-              and follow up within one business day with your matched quote.
+              and follow up within one business day with your quote.
             </p>
           </div>
 
@@ -1672,7 +1772,7 @@ function FAQ() {
       items: [
         { q: "How accurate are your scans?", a: "Our laser scans are highly accurate — more than precise enough for renovation, insurance, and permitting work. We use professional-grade equipment calibrated for architectural documentation." },
         { q: "What file formats do I get?", a: "Every drawing is delivered as both PDF (for viewing and printing) and DWG (for AutoCAD, Revit, and other CAD software)." },
-        { q: "What deliverables can you produce?", a: "Floor plans, exterior elevations, interior elevations, reflected ceiling plans, roof plans, Revit models, and virtual Matterport walk-throughs. You pick what you need — see the 'What's included' section below for details on each." },
+        { q: "What deliverables can you produce?", a: "Floor plans, exterior elevations, interior elevations, reflected ceiling plans, roof plans, Revit models, and virtual 3D walk-throughs. You pick what you need — see the 'What's included' section below for details on each." },
         { q: "How fast is delivery?", a: "3–5 business days from the scan date. Rush delivery (48–72 hours) is available for an added fee." },
       ],
     },
@@ -1686,7 +1786,7 @@ function FAQ() {
         { q: "Roof Plans — what's included?", a: "Top-down view of the roof with pitches, ridges, valleys, chimneys, skylights, and any rooftop equipment. Note: availability varies by property — access, roof pitch, height, and drone-flight permissions can all affect what we can capture. Ask us about your specific property when you request a quote." },
         { q: "Site & Landscape Plans — what's included?", a: "Top-down plans of your property showing the building footprint, landscape features, hardscape, driveways, pools, and outbuildings. Useful for landscape redesigns, additions, new developments, pool planning, and general site upkeep." },
         { q: "Revit Models — what's included?", a: "LOD 200–300 parametric BIM model with walls, floors, ceilings, and openings. MEP placeholders available on request." },
-        { q: "Virtual Visits (Matterport) — what's included?", a: "An interactive 3D walk-through of the home your clients or buyers can explore online, plus a dollhouse view and measurement tool." },
+        { q: "Virtual Visits — what's included?", a: "An interactive 3D walk-through of the home your clients or buyers can explore online, plus a dollhouse view and measurement tool." },
         { q: "What counts as an optional add-on?", a: "Elements like bathroom fixtures, landscape plans, parking surfaces, sidewalks, and precise window sill heights or dimensions. Mention these when our scheduler calls — they may adjust the final quote slightly." },
       ],
     },

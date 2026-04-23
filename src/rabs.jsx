@@ -468,7 +468,7 @@ function Hero() {
           100% { transform: translateY(420px); opacity: 0; }
         }
         .scan-sweep {
-          animation: scan-sweep 4s ease-in-out infinite;
+          animation: scan-sweep 10s ease-in-out infinite;
         }
       `}</style>
     </section>

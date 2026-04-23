@@ -677,6 +677,130 @@ function CTABanner({ headline, sub, ctaLabel = "Request a quote" }) {
 
 /**
  * =====================================================================
+ *  DELIVERABLES CAROUSEL — auto-advancing showcase of the 4 core drawings.
+ *  Pauses on hover, respects prefers-reduced-motion.
+ * =====================================================================
+ */
+function DeliverablesCarousel({ items }) {
+  const [active, setActive] = useState(0);
+  const [paused, setPaused] = useState(false);
+
+  useEffect(() => {
+    if (paused) return;
+    if (typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) return;
+    const id = setInterval(() => {
+      setActive((a) => (a + 1) % items.length);
+    }, 3000);
+    return () => clearInterval(id);
+  }, [paused, items.length]);
+
+  return (
+    <div
+      className="mt-16"
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+    >
+      <div className="relative overflow-hidden rounded-2xl border-2 border-slate-300 bg-white shadow-lg">
+        <div className="grid lg:grid-cols-2">
+          {/* Image panel */}
+          <div className="relative h-72 overflow-hidden border-b border-slate-200 bg-slate-50 lg:h-[460px] lg:border-b-0 lg:border-r">
+            <div className="pointer-events-none absolute inset-0 text-blue-500/20">
+              <BlueprintGrid className="h-full w-full" />
+            </div>
+            {items.map((item, i) => (
+              <img
+                key={i}
+                src={item.image}
+                alt={`${item.name} sample`}
+                className={`absolute inset-0 h-full w-full object-contain p-6 transition-opacity duration-700 ${
+                  i === active ? "opacity-100" : "opacity-0"
+                }`}
+              />
+            ))}
+          </div>
+
+          {/* Text panel */}
+          <div className="relative flex flex-col p-8 lg:p-10">
+            {items.map((item, i) => {
+              const Icon = item.icon;
+              return (
+                <div
+                  key={i}
+                  className={`transition-opacity duration-500 ${
+                    i === active
+                      ? "opacity-100"
+                      : "pointer-events-none absolute inset-0 p-8 opacity-0 lg:p-10"
+                  }`}
+                  aria-hidden={i !== active}
+                >
+                  {item.highlight && (
+                    <div className="mb-4 inline-flex items-center rounded-full bg-blue-600 px-3 py-1 txt-10 font-semibold uppercase tracking-widest text-white">
+                      Most requested
+                    </div>
+                  )}
+                  <div className="grid h-11 w-11 place-items-center rounded-lg bg-blue-50 text-blue-600">
+                    <Icon size={20} />
+                  </div>
+                  <h3 className="mt-5 font-serif text-2xl leading-tight text-slate-900 lg:text-3xl">
+                    {item.name}
+                  </h3>
+                  <p className="mt-3 text-base leading-relaxed text-slate-600">
+                    {item.pitch}
+                  </p>
+
+                  <div className="mt-5 flex flex-wrap gap-1.5">
+                    {item.formats.map((f) => (
+                      <span
+                        key={f}
+                        className="rounded-md border border-slate-200 px-2 py-0.5 font-mono txt-10 uppercase tracking-wider text-slate-500"
+                      >
+                        {f}
+                      </span>
+                    ))}
+                  </div>
+
+                  <ul className="mt-6 space-y-2.5 text-sm text-slate-700">
+                    {item.bullets.map((b, j) => (
+                      <li key={j} className="flex gap-2">
+                        <Check size={15} className="mt-0.5 shrink-0 text-blue-600" />
+                        <span>{b}</span>
+                      </li>
+                    ))}
+                  </ul>
+
+                  <a
+                    href="#quote"
+                    className="mt-8 inline-flex items-center gap-2 rounded-full bg-slate-900 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-blue-600"
+                  >
+                    Request pricing
+                    <ArrowUpRight size={14} />
+                  </a>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+
+      {/* Dot navigation */}
+      <div className="mt-6 flex items-center justify-center gap-3">
+        {items.map((item, i) => (
+          <button
+            key={i}
+            onClick={() => setActive(i)}
+            aria-label={`Show ${item.name}`}
+            className={`h-2 rounded-full transition-all ${
+              i === active ? "w-8 bg-blue-600" : "w-2 bg-slate-300 hover:bg-slate-400"
+            }`}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/**
+ * =====================================================================
  *  DELIVERABLES
  * =====================================================================
  */
@@ -773,97 +897,8 @@ function Deliverables() {
           </p>
         </div>
 
-        {/* Primary drawings — the core 4 */}
-        <div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {primary.map((tier, i) => {
-            const Icon = tier.icon;
-            return (
-              <div
-                key={i}
-                className={`group relative flex flex-col rounded-2xl border-2 p-7 transition-all ${
-                  tier.highlight
-                    ? "border-blue-600 bg-slate-900 text-white shadow-xl shadow-blue-900/20"
-                    : "border-slate-300 bg-white hover:border-slate-400 hover:shadow-lg"
-                }`}
-              >
-                {tier.highlight && (
-                  <div className="absolute -top-3 left-6 rounded-full bg-blue-600 px-3 py-1 txt-10 font-semibold uppercase tracking-widest text-white">
-                    Most requested
-                  </div>
-                )}
-                {tier.image && (
-                  <div className="-mx-7 -mt-7 mb-5 h-32 overflow-hidden rounded-t-[14px] border-b border-slate-200 bg-white">
-                    <img
-                      src={tier.image}
-                      alt={`${tier.name} sample`}
-                      className="h-full w-full object-cover object-center"
-                    />
-                  </div>
-                )}
-                <div
-                  className={`grid h-11 w-11 place-items-center rounded-lg ${
-                    tier.highlight ? "bg-blue-500/20 text-blue-300" : "bg-blue-50 text-blue-600"
-                  }`}
-                >
-                  <Icon size={20} />
-                </div>
-                <h3 className="mt-5 font-serif text-xl leading-tight lg:text-2xl">{tier.name}</h3>
-                <p
-                  className={`mt-2 text-sm leading-relaxed ${
-                    tier.highlight ? "text-slate-300" : "text-slate-600"
-                  }`}
-                >
-                  {tier.pitch}
-                </p>
-
-                <div className="mt-4 flex flex-wrap gap-1.5">
-                  {tier.formats.map((f) => (
-                    <span
-                      key={f}
-                      className={`rounded-md border px-2 py-0.5 font-mono txt-10 uppercase tracking-wider ${
-                        tier.highlight
-                          ? "border-slate-700 text-slate-300"
-                          : "border-slate-200 text-slate-500"
-                      }`}
-                    >
-                      {f}
-                    </span>
-                  ))}
-                </div>
-
-                <ul
-                  className={`mt-5 space-y-2.5 text-sm ${
-                    tier.highlight ? "text-slate-200" : "text-slate-700"
-                  }`}
-                >
-                  {tier.bullets.map((b, j) => (
-                    <li key={j} className="flex gap-2">
-                      <Check
-                        size={15}
-                        className={`mt-0.5 shrink-0 ${
-                          tier.highlight ? "text-blue-300" : "text-blue-600"
-                        }`}
-                      />
-                      <span>{b}</span>
-                    </li>
-                  ))}
-                </ul>
-
-                <a
-                  href="#quote"
-                  className={`mt-6 inline-flex items-center gap-2 border-t pt-4 text-sm font-medium transition-colors ${
-                    tier.highlight
-                      ? "border-slate-800 text-blue-300 hover:text-blue-200"
-                      : "border-slate-100 text-blue-600 hover:text-blue-700"
-                  }`}
-                >
-                  Request pricing
-                  <ArrowUpRight size={14} />
-                </a>
-              </div>
-            );
-          })}
-        </div>
+        {/* Carousel — cycles through the 4 core deliverables */}
+        <DeliverablesCarousel items={primary} />
 
         {/* Advanced offerings — the 3 extras */}
         <div className="mt-12 flex items-center gap-4">

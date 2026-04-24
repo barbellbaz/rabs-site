@@ -576,10 +576,10 @@ function PainPoints() {
   ];
 
   return (
-    <section id="pain" className="relative overflow-hidden bg-slate-50 py-24 lg:py-32">
+    <section id="pain" className="relative overflow-hidden bg-slate-50 py-16 lg:py-24">
       <div className="mx-auto max-w-7xl px-6 lg:px-10">
         <div className="mx-auto max-w-3xl text-center">
-          <DimensionLine label="01 · Why it matters" className="justify-center" />
+          <DimensionLine label="02 · Why it matters" className="justify-center" />
           <h2 className="mt-4 font-serif text-4xl tracking-tight text-slate-900 lg:text-5xl">
             The real cost of inaccurate plans.
           </h2>
@@ -973,10 +973,10 @@ function Deliverables() {
 
   return (
     <>
-    <section id="deliverables" className="bg-white py-24 lg:py-32">
+    <section id="deliverables" className="bg-white py-16 lg:py-24">
       <div className="mx-auto max-w-7xl px-6 lg:px-10">
         <div className="mx-auto max-w-2xl text-center">
-          <DimensionLine label="02 · Deliverables" className="justify-center" />
+          <DimensionLine label="01 · Deliverables" className="justify-center" />
           <h2 className="mt-4 font-serif text-4xl tracking-tight text-slate-900 lg:text-5xl">
             One visit. Every drawing you need.
           </h2>
@@ -1063,7 +1063,7 @@ function Process() {
   ];
 
   return (
-    <section id="process" className="relative overflow-hidden bg-slate-50 py-24 lg:py-32">
+    <section id="process" className="relative overflow-hidden bg-slate-50 py-16 lg:py-24">
       <div className="mx-auto max-w-7xl px-6 lg:px-10">
         <div className="grid gap-12 lg:grid-cols-12">
           <div className="lg:col-span-4">
@@ -1116,7 +1116,7 @@ function WhyUs() {
   ];
 
   return (
-    <section className="relative overflow-hidden bg-slate-900 py-24 text-white lg:py-32">
+    <section className="relative overflow-hidden bg-slate-900 py-16 text-white lg:py-24">
       <div className="pointer-events-none absolute inset-0 text-blue-400/10">
         <BlueprintGrid className="h-full w-full" />
       </div>
@@ -1172,7 +1172,7 @@ function Samples() {
   ];
 
   return (
-    <section id="samples" className="bg-slate-50 py-24 lg:py-32">
+    <section id="samples" className="bg-slate-50 py-16 lg:py-24">
       <div className="mx-auto max-w-7xl px-6 lg:px-10">
         <div className="flex flex-col justify-between gap-4 md:flex-row md:items-end">
           <div>
@@ -1237,7 +1237,7 @@ function Testimonials() {
   ];
 
   return (
-    <section id="testimonials" className="bg-white py-24 lg:py-32">
+    <section id="testimonials" className="bg-white py-16 lg:py-24">
       <div className="mx-auto max-w-7xl px-6 lg:px-10">
         <div className="mx-auto max-w-2xl text-center">
           <DimensionLine label="06 · Reviews" className="justify-center" />
@@ -1532,7 +1532,7 @@ function QuoteForm() {
     "w-full rounded-lg border border-slate-200 bg-white px-4 py-3 text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all";
 
   return (
-    <section id="quote" className="relative overflow-hidden bg-gradient-to-b from-white to-slate-50 py-24 lg:py-32">
+    <section id="quote" className="relative overflow-hidden bg-gradient-to-b from-white to-slate-50 py-16 lg:py-24">
       <div className="pointer-events-none absolute inset-0 text-blue-500/10">
         <BlueprintGrid className="h-full w-full" />
       </div>
@@ -1751,7 +1751,7 @@ function FAQ() {
   ];
 
   return (
-    <section id="faq" className="bg-slate-50 py-24 lg:py-32">
+    <section id="faq" className="bg-slate-50 py-16 lg:py-24">
       <div className="mx-auto max-w-4xl px-6 lg:px-10">
         <div className="text-center">
           <DimensionLine label="07 · FAQ" className="justify-center" />

@@ -847,7 +847,56 @@ function DeliverablesCarousel({ items }) {
  *  DELIVERABLES
  * =====================================================================
  */
+/**
+ * =====================================================================
+ *  IMAGE LIGHTBOX — click an image in the Also-available grid to enlarge it.
+ *  Closes on Escape, backdrop click, or the X button.
+ * =====================================================================
+ */
+function ImageLightbox({ src, alt, onClose }) {
+  useEffect(() => {
+    if (!src) return;
+    const handleKey = (e) => { if (e.key === "Escape") onClose(); };
+    document.addEventListener("keydown", handleKey);
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", handleKey);
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [src, onClose]);
+
+  if (!src) return null;
+
+  return (
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-label={alt || "Enlarged image"}
+      onClick={onClose}
+      className="fixed inset-0 z-[100] flex items-center justify-center p-4 lg:p-10"
+    >
+      <div className="absolute inset-0 bg-slate-900/85 backdrop-blur-sm" />
+      <button
+        onClick={onClose}
+        aria-label="Close"
+        className="absolute right-5 top-5 z-10 grid h-10 w-10 place-items-center rounded-full bg-white/90 text-slate-800 shadow-lg transition-colors hover:bg-white hover:text-slate-900"
+      >
+        <X size={20} />
+      </button>
+      <img
+        src={src}
+        alt={alt || ""}
+        onClick={(e) => e.stopPropagation()}
+        className="relative max-h-full max-w-full rounded-lg object-contain shadow-2xl"
+      />
+    </div>
+  );
+}
+
 function Deliverables() {
+  const [lightboxImg, setLightboxImg] = useState(null);
+
   const primary = [
     {
       icon: Ruler,
@@ -918,11 +967,12 @@ function Deliverables() {
     {
       img: "/images/02-alsoavailable-3dvirtualvisit.png",
       name: "Virtual Visits",
-      pitch: "Interactive 3D walk-through with dollhouse view and built-in measurement tool.",
+      pitch: "A shared, on-demand view of the home — for planning, coordinating teams, and documenting existing conditions.",
     },
   ];
 
   return (
+    <>
     <section id="deliverables" className="bg-white py-24 lg:py-32">
       <div className="mx-auto max-w-7xl px-6 lg:px-10">
         <div className="mx-auto max-w-2xl text-center">
@@ -954,13 +1004,18 @@ function Deliverables() {
               key={i}
               className="group overflow-hidden rounded-xl border border-slate-200 bg-slate-50/50 transition-all hover:border-slate-300 hover:bg-white hover:shadow-md"
             >
-              <div className="aspect-[4/3] overflow-hidden bg-white">
+              <button
+                type="button"
+                onClick={() => setLightboxImg({ src: item.img, alt: item.name })}
+                aria-label={`View enlarged ${item.name}`}
+                className="block aspect-[4/3] w-full overflow-hidden bg-white cursor-zoom-in"
+              >
                 <img
                   src={item.img}
                   alt={item.name}
                   className="h-full w-full object-cover"
                 />
-              </div>
+              </button>
               <div className="p-6">
                 <h3 className="font-serif text-lg text-slate-900">{item.name}</h3>
                 <p className="mt-1.5 text-sm leading-relaxed text-slate-600">{item.pitch}</p>
@@ -974,6 +1029,12 @@ function Deliverables() {
         </p>
       </div>
     </section>
+    <ImageLightbox
+      src={lightboxImg?.src}
+      alt={lightboxImg?.alt}
+      onClose={() => setLightboxImg(null)}
+    />
+    </>
   );
 }
 

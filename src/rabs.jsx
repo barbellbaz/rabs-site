@@ -634,10 +634,10 @@ function CTABanner({ headline, sub, ctaLabel = "Request a quote" }) {
       <div className="pointer-events-none absolute inset-0 text-blue-400/10">
         <BlueprintGrid className="h-full w-full" />
       </div>
-      <div className="relative mx-auto flex max-w-7xl flex-col items-center justify-between gap-6 px-6 text-center lg:flex-row lg:items-center lg:text-left lg:px-10">
+      <div className="relative mx-auto flex max-w-3xl flex-col items-center gap-6 px-6 text-center lg:px-10">
         <div>
           <h3 className="font-serif text-2xl leading-tight tracking-tight lg:text-3xl">{headline}</h3>
-          {sub && <p className="mt-2 max-w-2xl text-slate-300">{sub}</p>}
+          {sub && <p className="mt-2 text-slate-300">{sub}</p>}
         </div>
         <a
           href="#quote"
@@ -1087,12 +1087,16 @@ function Process() {
  */
 function Samples() {
   const samples = [
+    {
+      title: "Modern hillside residence · Los Angeles",
+      tag: "Floor plans + elevations + landscape + Revit",
+      image: "/images/02-alsoavailable-revitcali.png",
+    },
     { title: "Single-family ranch · Floor plan", tag: "Floor Plan" },
     { title: "Brownstone triplex · Elevations", tag: "Elevations" },
     { title: "Mid-century split · Ceiling plan", tag: "Ceiling Plan" },
     { title: "Victorian row · Floor plan", tag: "Floor Plan" },
     { title: "New-build condo · Elevations", tag: "Elevations" },
-    { title: "Craftsman bungalow · Full set", tag: "Full Set" },
   ];
 
   return (
@@ -1111,20 +1115,30 @@ function Samples() {
         <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {samples.map((s, i) => (
             <figure key={i} className="group relative overflow-hidden rounded-xl border border-slate-200 bg-white">
-              <div className="relative bg-gradient-to-br from-blue-100 via-slate-50 to-blue-50" style={{ aspectRatio: '4 / 3' }}>
-                <div className="pointer-events-none absolute inset-0 text-blue-500/30">
-                  <BlueprintGrid className="h-full w-full" />
+              {s.image ? (
+                <div className="overflow-hidden bg-slate-100" style={{ aspectRatio: '4 / 3' }}>
+                  <img
+                    src={s.image}
+                    alt={s.title}
+                    className="h-full w-full object-cover"
+                  />
                 </div>
-                <HouseSilhouette className="absolute left-1/2 top-1/2 h-20 w-20 -translate-x-1/2 -translate-y-1/2 text-blue-400/40" />
-                <div className="absolute bottom-3 left-1/2 -translate-x-1/2">
-                  <span className="rounded-md bg-white/80 px-3 py-1 font-mono txt-10 uppercase tracking-widest text-slate-500 backdrop-blur-sm">
-                    Placeholder · swap in real scan
-                  </span>
+              ) : (
+                <div className="relative bg-gradient-to-br from-blue-100 via-slate-50 to-blue-50" style={{ aspectRatio: '4 / 3' }}>
+                  <div className="pointer-events-none absolute inset-0 text-blue-500/30">
+                    <BlueprintGrid className="h-full w-full" />
+                  </div>
+                  <HouseSilhouette className="absolute left-1/2 top-1/2 h-20 w-20 -translate-x-1/2 -translate-y-1/2 text-blue-400/40" />
+                  <div className="absolute bottom-3 left-1/2 -translate-x-1/2">
+                    <span className="rounded-md bg-white/80 px-3 py-1 font-mono txt-10 uppercase tracking-widest text-slate-500 backdrop-blur-sm">
+                      Placeholder · swap in real scan
+                    </span>
+                  </div>
                 </div>
-              </div>
-              <figcaption className="flex items-center justify-between border-t border-slate-100 px-5 py-4">
+              )}
+              <figcaption className="flex items-center justify-between gap-3 border-t border-slate-100 px-5 py-4">
                 <span className="text-sm font-medium text-slate-900">{s.title}</span>
-                <span className="rounded-md border border-slate-200 px-2 py-0.5 font-mono txt-10 uppercase tracking-wider text-slate-500">
+                <span className="shrink-0 rounded-md border border-slate-200 px-2 py-0.5 font-mono txt-10 uppercase tracking-wider text-slate-500">
                   {s.tag}
                 </span>
               </figcaption>

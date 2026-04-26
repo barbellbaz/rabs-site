@@ -393,9 +393,6 @@ function Hero() {
 
           <div className="order-2 relative lg:col-span-5">
             <div className="relative">
-              <DimensionLine label="24' 6&quot;" className="absolute -top-6 left-8 z-20" />
-              <DimensionLine label="32' 0&quot;" className="absolute -bottom-6 right-8 z-20" />
-
               <div className="relative overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl shadow-blue-900/10">
                 <div className="flex items-center justify-between border-b border-slate-200 bg-slate-50 px-5 py-3">
                   <div className="flex items-center gap-2">
@@ -436,7 +433,7 @@ function Hero() {
                 </div>
               </div>
 
-              <div className="absolute -right-4 -bottom-4 hidden rounded-xl border border-slate-200 bg-white px-4 py-3 shadow-xl md:block">
+              <div className="absolute -right-4 -bottom-9 hidden rounded-xl border border-slate-200 bg-white px-4 py-3 shadow-xl md:block">
                 <div className="text-xs uppercase tracking-wider text-slate-500">Avg. delivery</div>
                 <div className="font-serif text-2xl text-slate-900">4.2 days</div>
               </div>

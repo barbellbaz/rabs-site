@@ -7,7 +7,6 @@ import {
   ChevronLeft,
   ChevronRight,
   Clock,
-  DollarSign,
   HardHat,
   Home,
   Layers,
@@ -16,7 +15,6 @@ import {
   Plus,
   Ruler,
   Shield,
-  Sparkles,
   Star,
   Wallpaper,
   X,
@@ -524,10 +522,6 @@ function Approach() {
           laser scanner, every drawing true to what's actually there. Design against them. Bid against
           them. Permit with them. Hand them to anyone who needs to know the house.
         </p>
-        <p className="mt-8 text-base leading-relaxed text-slate-600 lg:text-lg lg:leading-relaxed">
-          Our nationwide technician network captures your home on-site. A centralized drafting team produces
-          the deliverables. The combination brings you both speed and economy on every project.
-        </p>
       </div>
     </section>
   );
@@ -968,8 +962,7 @@ function Deliverables() {
             One visit. Every drawing you need.
           </h2>
           <p className="mt-4 text-lg text-slate-600">
-            We capture your entire home in a single visit, then draft the drawings your project requires.
-            Pick the drawings you need — we'll send you a quote.
+            Pick the drawings you need — we'll quote what fits.
           </p>
         </div>
 
@@ -1092,59 +1085,6 @@ function Process() {
 
 /**
  * =====================================================================
- *  WHY US
- * =====================================================================
- */
-function WhyUs() {
-  const reasons = [
-    { icon: Zap, title: "Delivered in days", body: `Drawings in your inbox within ${BRAND.turnaround} — not weeks. Every scan is prioritized.` },
-    { icon: DollarSign, title: "Honest quoting", body: "Every quote is tailored to your home, location, and scope. You'll know the full price before we pick up the scanner." },
-    { icon: Sparkles, title: "Built by specialists", body: `${BRAND.yearsExperience} years of residential scanning. ${BRAND.projectsDelivered} projects measured, drawn, and delivered.` },
-  ];
-
-  return (
-    <section className="relative overflow-hidden bg-slate-900 py-16 text-white lg:py-24">
-      <div className="pointer-events-none absolute inset-0 text-blue-400/10">
-        <BlueprintGrid className="h-full w-full" />
-      </div>
-
-      <div className="relative mx-auto max-w-7xl px-6 lg:px-10">
-        <div className="mx-auto max-w-2xl text-center">
-          <DimensionLine label="04 · Why us" className="justify-center text-blue-400/80" />
-          <h2 className="mt-4 font-serif text-4xl tracking-tight lg:text-5xl">
-            Fast, fair, and <span className="text-blue-400">obsessively accurate.</span>
-          </h2>
-        </div>
-
-        <div className="mt-16 grid gap-8 md:grid-cols-3">
-          {reasons.map((r, i) => {
-            const Icon = r.icon;
-            return (
-              <div key={i} className="rounded-2xl border border-white/10 bg-white/5 p-8 backdrop-blur-sm">
-                <Icon size={24} className="text-blue-400" />
-                <h3 className="mt-5 font-serif text-2xl">{r.title}</h3>
-                <p className="mt-3 leading-relaxed text-slate-300">{r.body}</p>
-              </div>
-            );
-          })}
-        </div>
-
-        <div className="mt-12 text-center">
-          <a
-            href="#quote"
-            className="group inline-flex items-center gap-2 rounded-full bg-blue-600 px-6 py-3.5 text-sm font-semibold text-white transition-all hover:bg-blue-500"
-          >
-            Request a quote
-            <ArrowRight size={16} className="transition-transform group-hover:translate-x-0.5" />
-          </a>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/**
- * =====================================================================
  *  SAMPLES
  * =====================================================================
  */
@@ -1163,7 +1103,7 @@ function Samples() {
       <div className="mx-auto max-w-7xl px-6 lg:px-10">
         <div className="flex flex-col justify-between gap-4 md:flex-row md:items-end">
           <div>
-            <DimensionLine label="05 · Samples" />
+            <DimensionLine label="04 · Samples" />
             <h2 className="mt-4 font-serif text-4xl tracking-tight text-slate-900 lg:text-5xl">Recent homes.</h2>
           </div>
           <p className="max-w-md text-slate-600">
@@ -1227,7 +1167,7 @@ function Testimonials() {
     <section id="testimonials" className="bg-white py-16 lg:py-24">
       <div className="mx-auto max-w-7xl px-6 lg:px-10">
         <div className="mx-auto max-w-2xl text-center">
-          <DimensionLine label="06 · Reviews" className="justify-center" />
+          <DimensionLine label="05 · Reviews" className="justify-center" />
           <h2 className="mt-4 font-serif text-4xl tracking-tight text-slate-900 lg:text-5xl">
             Trusted by homeowners, contractors, and architects.
           </h2>
@@ -1526,7 +1466,7 @@ function QuoteForm() {
 
       <div className="relative mx-auto max-w-5xl px-6 lg:px-10">
         <div className="mx-auto max-w-2xl text-center">
-          <DimensionLine label="08 · Request quote" className="justify-center" />
+          <DimensionLine label="07 · Request quote" className="justify-center" />
           <h2 className="mt-4 font-serif text-4xl tracking-tight text-slate-900 lg:text-5xl">
             Fast quote. Fair price. Easy call.
           </h2>
@@ -1741,7 +1681,7 @@ function FAQ() {
     <section id="faq" className="bg-slate-50 py-16 lg:py-24">
       <div className="mx-auto max-w-4xl px-6 lg:px-10">
         <div className="text-center">
-          <DimensionLine label="07 · FAQ" className="justify-center" />
+          <DimensionLine label="06 · FAQ" className="justify-center" />
           <h2 className="mt-4 font-serif text-4xl tracking-tight text-slate-900 lg:text-5xl">
             Questions, answered.
           </h2>
@@ -2106,7 +2046,6 @@ export default function Rabs() {
           ctaLabel="Get your quote"
         />
         <Process />
-        <WhyUs />
         <Samples />
         <CTABanner
           headline="Your home deserves precise plans."

@@ -1088,7 +1088,7 @@ function Process() {
 function Samples() {
   const samples = [
     {
-      title: "Modern hillside residence · Los Angeles",
+      title: "Modern hillside residence · California",
       tag: "Floor plans + elevations + landscape + Revit",
       image: "/images/02-alsoavailable-revitcali.png",
     },
@@ -1136,11 +1136,13 @@ function Samples() {
                   </div>
                 </div>
               )}
-              <figcaption className="flex items-center justify-between gap-3 border-t border-slate-100 px-5 py-4">
-                <span className="text-sm font-medium text-slate-900">{s.title}</span>
-                <span className="shrink-0 rounded-md border border-slate-200 px-2 py-0.5 font-mono txt-10 uppercase tracking-wider text-slate-500">
-                  {s.tag}
-                </span>
+              <figcaption className="border-t border-slate-100 px-5 py-4">
+                <div className="text-sm font-medium text-slate-900">{s.title}</div>
+                <div className="mt-2">
+                  <span className="inline-block rounded-md border border-slate-200 px-2 py-0.5 font-mono txt-10 uppercase tracking-wider text-slate-500">
+                    {s.tag}
+                  </span>
+                </div>
               </figcaption>
             </figure>
           ))}

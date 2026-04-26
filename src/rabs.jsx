@@ -1609,9 +1609,9 @@ function FAQ() {
       category: "Scan day",
       items: [
         { q: "How long does the scan take?", a: "Most homes wrap in a single day or less. Our technicians are discreet, friendly, and swift." },
-        { q: "Do I need to be home?", a: "Someone over 18 needs to let the technician in. You don't have to shadow them — they work independently and respect your space." },
-        { q: "Does every room need to be accessible?", a: "Yes — closets, basements, and attics should be unlocked so the scanner has clear line-of-sight to capture every surface accurately." },
-        { q: "What should I do to prepare?", a: "Move pets to a contained area and clear main walkways. Make sure every space has good lighting — either sunlight or artificial — so the scanner can properly capture each room. You don't need to clean or tidy; the scanner sees through clutter." },
+        { q: "Do I need to be home?", a: "Not necessarily — but someone over 18 has to be on-site to let the technician in and lock up after. That can be you, a family member, your contractor, or anyone you trust with access. You're welcome to stick around or carry on with your day; the technician works independently." },
+        { q: "Does every room need to be accessible?", a: "Yes — every space we don't see won't appear in the drawings. That includes closets, basements, garages, and any locked rooms. Attics and crawlspaces can be scanned but typically add to the quote — let us know in advance if you need them included. If a space is genuinely off-limits (a renter's unit, a sealed crawlspace), we'll either work around it or note the exclusion on the deliverable." },
+        { q: "What should I do to prepare?", a: "Very little. Don't worry about cleaning or tidying — the scanner works around clutter, though anything fully covering a wall or floor should be moved a few feet so we can capture what's underneath. Beyond that: secure pets somewhere out of the way, and turn on the lights in any darker spaces. That's it." },
       ],
     },
     {

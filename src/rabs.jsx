@@ -940,7 +940,7 @@ function Deliverables() {
     {
       img: "/images/02-alsoavailable-revitcali.png",
       name: "Revit Models",
-      pitch: "LOD 200–300 parametric BIM model ready to design against.",
+      pitch: "For your architect or designer — an editable 3D model of your home, ready to design against from day one (LOD 200–300).",
     },
     {
       img: "/images/02-alsoavailable-3dvirtualvisit.png",
@@ -1327,13 +1327,34 @@ function QuoteForm() {
   const [modalOpen, setModalOpen] = useState(false);
   const [form, setForm] = useState({
     name: "", email: "", phone: "", address: "", sqft: "", sqftExact: "",
-    propertyType: "", timeline: "", purpose: "", notes: "",
+    propertyType: "", timeline: "", purpose: "", deliverables: [], notes: "",
   });
 
   const update = (k, v) => setForm((f) => ({ ...f, [k]: v }));
 
+  const toggleDeliverable = (item) => {
+    setStatus((s) => (s === "missing-deliverables" ? "idle" : s));
+    setForm((f) => {
+      // "Not sure" is mutually exclusive with the others
+      if (item === "Not sure — help me figure it out") {
+        return { ...f, deliverables: f.deliverables.includes(item) ? [] : [item] };
+      }
+      const filtered = f.deliverables.filter((d) => d !== "Not sure — help me figure it out");
+      return {
+        ...f,
+        deliverables: filtered.includes(item)
+          ? filtered.filter((d) => d !== item)
+          : [...filtered, item],
+      };
+    });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (form.deliverables.length === 0) {
+      setStatus("missing-deliverables");
+      return;
+    }
     setStatus("sending");
     try {
       const sqftDisplay = form.sqft === EXACT_SQFT_KEY && form.sqftExact
@@ -1351,6 +1372,7 @@ function QuoteForm() {
         "Property type": form.propertyType,
         Timeline: form.timeline || "(not specified)",
         Purpose: form.purpose || "(not specified)",
+        "Deliverables of interest": form.deliverables.length ? form.deliverables.join(", ") : "(not specified)",
         "Additional notes": form.notes || "(none)",
       };
 
@@ -1434,6 +1456,13 @@ function QuoteForm() {
                   <div className="mt-1 text-slate-900">{form.purpose || "—"}</div>
                 </div>
               </div>
+
+              {form.deliverables.length > 0 && (
+                <div className="mt-6 border-t border-slate-100 pt-6">
+                  <div className="font-mono txt-10 uppercase tracking-widest text-slate-500">What you need</div>
+                  <div className="mt-1 text-slate-900">{form.deliverables.join(", ")}</div>
+                </div>
+              )}
             </div>
           </div>
 
@@ -1502,7 +1531,7 @@ function QuoteForm() {
             <Field label="Home address" required>
               <AddressAutocomplete required value={form.address} onChange={(v) => update("address", v)} className={inputCls} />
             </Field>
-            <Field label="Approx. square footage" required>
+            <Field label="Approx. interior square footage" required>
               <Select
                 required
                 value={form.sqft}
@@ -1544,6 +1573,45 @@ function QuoteForm() {
               <Select value={form.purpose} onChange={(v) => update("purpose", v)} options={["Renovation / remodel", "Permit / zoning", "Historical / records", "Other"]} />
             </Field>
 
+            <Field label="What you need" required className="md:col-span-2">
+              <div className="grid gap-2 sm:grid-cols-2">
+                {[
+                  "Floor plans",
+                  "Interior elevations",
+                  "Exterior elevations",
+                  "Reflected ceiling plans",
+                  "Roof plans",
+                  "Site & landscape plans",
+                  "Revit model",
+                  "Virtual 3D walk-through",
+                  "Not sure — help me figure it out",
+                ].map((opt) => {
+                  const checked = form.deliverables.includes(opt);
+                  return (
+                    <label
+                      key={opt}
+                      className={`flex cursor-pointer items-start gap-2.5 rounded-lg border px-3 py-2.5 text-sm transition-all ${
+                        checked
+                          ? "border-blue-500 bg-blue-50/50 text-slate-900"
+                          : "border-slate-200 bg-white text-slate-700 hover:border-slate-300"
+                      }`}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={checked}
+                        onChange={() => toggleDeliverable(opt)}
+                        className="mt-0.5 h-4 w-4 shrink-0 rounded border-slate-300 text-blue-600 focus:ring-blue-500/30"
+                      />
+                      <span>{opt}</span>
+                    </label>
+                  );
+                })}
+              </div>
+              <p className="mt-2 text-xs text-slate-500">
+                Note: attics and crawlspaces aren't included in standard pricing — mention them in the notes below or we'll cover it on the call.
+              </p>
+            </Field>
+
             <Field label="Anything else?" className="md:col-span-2">
               <textarea rows={4} value={form.notes} onChange={(e) => update("notes", e.target.value)} className={inputCls} placeholder="Access notes, gate codes, pets, preferred arrival window, etc." />
             </Field>
@@ -1563,6 +1631,11 @@ function QuoteForm() {
             </button>
           </div>
 
+          {status === "missing-deliverables" && (
+            <p className="mt-4 text-sm text-red-600">
+              Please pick at least one deliverable above — or "Not sure" if you'd like our help figuring it out.
+            </p>
+          )}
           {status === "error" && (
             <p className="mt-4 text-sm text-red-600">
               Something went wrong. Please check your connection and try again.
@@ -1909,7 +1982,7 @@ function ServiceAreas() {
           to   { transform: translateX(0); }
         }
         .marquee-track {
-          animation-duration: 125s;
+          animation-duration: 137.5s;
           animation-timing-function: linear;
           animation-iteration-count: infinite;
           will-change: transform;
